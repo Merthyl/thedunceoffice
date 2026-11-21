@@ -14,11 +14,12 @@
     </style>
   </head>
   <body>
-    <div id="valeroth-map"></div>
+    <div id="rp-app"></div>
 
     <script>
-      // Dữ liệu bản đồ cố định — để trống npcs/tags mặc định (chỉ hiện khi chạm trán, nhắc đến hoặc tự thêm bằng nút + Gắn tag / NPC)
-      window.VALEROTH_DATA = {
+      // Bản đồ cố định của Kaldor — để trống npcs/tags mặc định (chỉ hiện khi chạm trán, nhắc đến hoặc tự thêm bằng + Gắn tag / NPC)
+      window.RP_DATA = {
+        world: 'kaldor-valeroth',
         mode: 'map',
         view: 'valeroth',
         playerLoc: 'loc-nors-southgate',
@@ -31,8 +32,10 @@
       };
     </script>
 
-    <!-- Khi đẩy lên GitHub, có thể thay src bên dưới thành:
-         https://cdn.jsdelivr.net/gh/<USER>/<REPO>@<COMMIT_SHA>/valeroth-map-engine.js -->
-    <script src="./valeroth-map-engine.js"></script>
+    <!-- Khi đẩy lên GitHub, đổi 2 dòng dưới thành link jsDelivr theo đúng @COMMIT_SHA:
+         <script src="https://cdn.jsdelivr.net/gh/<USER>/<REPO>@<COMMIT_SHA>/worlds/kaldor-valeroth.js"></script>
+         <script src="https://cdn.jsdelivr.net/gh/<USER>/<REPO>@<COMMIT_SHA>/engine.js"></script> -->
+    <script src="./worlds/kaldor-valeroth.js"></script>
+    <script src="./engine.js"></script>
   </body>
 </html>

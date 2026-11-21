@@ -106,33 +106,55 @@ function readFirstExisting(paths: string[]): Buffer {
   throw new Error(`Không tìm thấy tệp nguồn: ${paths[0]}`);
 }
 
-const README_CONTENT = `# VALEROTH — Unified RP Engine (/map · /recap · /transfer)
+const README_CONTENT = `# DUNCE RP ENGINE — Modular Multi-Character Kit (GitHub + jsDelivr + Google AI Studio)
 
-Gộp toàn bộ 3 lệnh RP + World Building vào **1 kho GitHub duy nhất** và **1 link jsDelivr (\`@COMMIT_SHA\`)**:
-**Google AI Studio → link jsDelivr (@SHA) → mã trên GitHub → Bản đồ / Biên bản Recap / Hồ sơ Transfer hiển thị trực tiếp**
+Kho mã nguồn **tách lõi dùng chung & gói bản đồ từng nhân vật** trên **1 kho GitHub duy nhất** và **1 mã \`@COMMIT_SHA\`**:
+- Mọi nhân vật/bot đều dùng chung \`engine.js\` cho \`/recap\`, \`/transfer\` và các lệnh mới về sau.
+- Mỗi nhân vật/thế giới có file \`worlds/<ten-bot>.js\` riêng — **tuyệt đối không lẫn bản đồ của Kaldor sang nhân vật khác**.
 
-## Cấu trúc tệp
-- \`valeroth-map-engine.js\`: Engine hợp nhất v2.1 hỗ trợ 3 chế độ theo \`window.VALEROTH_DATA.mode\`:
-  - \`mode: "map"\`: Bản đồ khắc mực Toàn cảnh Valeroth / Bên trong Bắc Ải, 14 khoanh vùng SVG, dấu Location đỏ tự di chuyển theo hội thoại, **hiển thị NPC có sẵn & NPC tạo mới (chỉ hiện khi chạm trán hoặc được nhắc đến)**, và hệ thống gắn tag RP.
-  - \`mode: "recap"\`: Biên bản \`TÓM TẮT DIỄN BIẾN\` [HARD_LOCK] theo phong cách khắc mực cổ + nút **Sao chép Markdown nguyên bản**.
-  - \`mode: "transfer"\`: \`NARRATIVE TRANSFER PACK\` [HARD_LOCK] tự nhúng sẵn \`NEW CHAT RESTORATION PROTOCOL [ABSOLUTE]\` + nút 1-bấm **Sao chép Transfer Pack (New Chat)** để dán thẳng sang chat mới.
-- \`index.html\`: Bản đồ cố định độc lập có sẵn nút \`+ Gắn tag / NPC\`.
-- \`commands/world-and-chessboard.md\`: Toàn bộ Section 3 (World Building) & Section 4 (The Chessboard NPCs).
-- \`commands/recap.md\`: Đặc tả chuẩn nguyên bản của lệnh \`/recap\`.
-- \`commands/transfer.md\`: Đặc tả chuẩn nguyên bản của lệnh \`/transfer\`.
-- \`assets/valeroth.jpg\` & \`assets/norsvale.jpg\`: 2 họa đồ khắc mực châu Âu cổ (tự động nạp theo đúng \`@COMMIT_SHA\`).
+## Cấu trúc thư mục
+\`\`\`text
+├── engine.js                         ← Lõi dùng chung mọi bot (/recap, /transfer, bộ vẽ /map, API mở rộng registerMode)
+├── worlds/
+│   ├── kaldor-valeroth.js            ← Gói bản đồ riêng của Kaldor (Valeroth & Bắc Ải, 14 khoanh vùng)
+│   └── _template.js                  ← Mẫu trống để copy tạo thêm nhân vật / thế giới mới
+├── assets/
+│   └── kaldor/
+│       ├── valeroth.jpg              ← Họa đồ toàn cảnh Valeroth
+│       └── norsvale.jpg              ← Họa đồ bên trong Bắc Ải
+├── commands/
+│   ├── world-and-chessboard.md       ← Section 3 & Section 4 của Kaldor
+│   ├── recap.md                      ← Đặc tả chuẩn lệnh /recap (dùng chung)
+│   └── transfer.md                   ← Đặc tả chuẩn lệnh /transfer (dùng chung)
+├── index.html                        ← Bản đồ cố định độc lập của Kaldor có sẵn + Gắn tag / NPC
+└── README.md
+\`\`\`
 
-## Cách cài đặt 3 bước
-1. Tạo 1 repository **Public** trên GitHub (ví dụ \`valeroth-rp\`) và đẩy toàn bộ các tệp này lên đúng cấu trúc thư mục.
-2. Mở mục **Commits** trên GitHub, sao chép mã **Commit SHA** (ví dụ \`a1b2c3d\`). Mỗi lần sửa giao diện trên GitHub, chỉ cần đổi \`@SHA\` mới là cả 3 lệnh đồng loạt tải bản mới, không dính cache.
-3. Dán System Instructions (copy trực tiếp từ ứng dụng Valeroth) vào Google AI Studio với link:
-   \`https://cdn.jsdelivr.net/gh/<USER>/<REPO>@<COMMIT_SHA>/valeroth-map-engine.js\`
+## Cách đẩy lên GitHub & gắn vào Google AI Studio
+1. Tạo 1 repository **Public** trên GitHub (ví dụ \`dunce-rp-kit\`) và đẩy toàn bộ thư mục này lên (giữ nguyên cấu trúc \`worlds/\`, \`assets/kaldor/\`, \`commands/\`).
+2. Vào mục **Commits** trên GitHub → sao chép mã **Commit SHA** (ví dụ \`a1b2c3d\`).
+   - Khi nâng cấp \`engine.js\` hay thêm nhân vật mới, chỉ cần đổi \`@SHA\` mới vào System Instructions là jsDelivr tải ngay bản mới, không bị dính cache cũ.
+3. Trong **Google AI Studio**:
+   - **Bot Kaldor**: Dán System Instructions đã điền sẵn 2 link \`...@SHA/worlds/kaldor-valeroth.js\` và \`...@SHA/engine.js\`.
+   - **Bot nhân vật khác (chỉ dùng \`/recap\` & \`/transfer\`)**: Chỉ cần gắn duy nhất 1 link \`...@SHA/engine.js\`.
+   - **Bot nhân vật khác (có bản đồ riêng)**: Copy \`worlds/_template.js\` → \`worlds/<ten-bot>.js\`, thêm ảnh vào \`assets/<ten-bot>/\`, rồi gắn \`worlds/<ten-bot>.js\` + \`engine.js\`.
+
+## Mở rộng thêm lệnh mới (/status, /inventory, /relationship...)
+Tạo thêm tệp \`modes/<ten-lenh>.js\` gọi \`window.RPEngine.registerMode('ten_lenh', function(container, data) { ... })\` hoặc bổ sung trực tiếp vào \`engine.js\`, commit và đổi \`@SHA\`.
 `;
 
 export function buildGithubKitZip(rootDir: string): Buffer {
   const engineJs = readFirstExisting([
-    path.resolve(rootDir, 'public/github-kit/valeroth-map-engine.js'),
-    path.resolve(rootDir, 'dist/github-kit/valeroth-map-engine.js'),
+    path.resolve(rootDir, 'public/github-kit/engine.js'),
+    path.resolve(rootDir, 'dist/github-kit/engine.js'),
+  ]);
+  const kaldorWorldJs = readFirstExisting([
+    path.resolve(rootDir, 'public/github-kit/worlds/kaldor-valeroth.js'),
+    path.resolve(rootDir, 'dist/github-kit/worlds/kaldor-valeroth.js'),
+  ]);
+  const templateWorldJs = readFirstExisting([
+    path.resolve(rootDir, 'public/github-kit/worlds/_template.js'),
+    path.resolve(rootDir, 'dist/github-kit/worlds/_template.js'),
   ]);
   const indexHtml = readFirstExisting([
     path.resolve(rootDir, 'public/github-kit/index.html'),
@@ -148,13 +170,15 @@ export function buildGithubKitZip(rootDir: string): Buffer {
   ]);
 
   return createZipBuffer([
-    { name: 'valeroth-map-engine.js', data: engineJs },
+    { name: 'engine.js', data: engineJs },
+    { name: 'worlds/kaldor-valeroth.js', data: kaldorWorldJs },
+    { name: 'worlds/_template.js', data: templateWorldJs },
     { name: 'index.html', data: indexHtml },
     { name: 'commands/world-and-chessboard.md', data: Buffer.from(VALEROTH_WORLD_AND_CHESSBOARD_PROMPT, 'utf8') },
     { name: 'commands/recap.md', data: Buffer.from(RECAP_COMMAND_MARKDOWN, 'utf8') },
     { name: 'commands/transfer.md', data: Buffer.from(TRANSFER_COMMAND_MARKDOWN, 'utf8') },
     { name: 'README.md', data: Buffer.from(README_CONTENT, 'utf8') },
-    { name: 'assets/valeroth.jpg', data: valerothJpg },
-    { name: 'assets/norsvale.jpg', data: norsvaleJpg },
+    { name: 'assets/kaldor/valeroth.jpg', data: valerothJpg },
+    { name: 'assets/kaldor/norsvale.jpg', data: norsvaleJpg },
   ]);
 }

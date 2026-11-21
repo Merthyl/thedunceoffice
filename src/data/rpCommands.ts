@@ -290,25 +290,28 @@ ${NEW_CHAT_RESTORATION_PROTOCOL_TEXT}
 > __**Hướng dẫn chuyển sinh:**__ Sử dụng chức năng copy dưới dạng markdown. Copy toàn bộ kết quả ở trên. Mở giao diện chat mới bằng cách ấn \`+ (new chat)\` ở góc trên bên tay phải, điền tiếp phản hồi của bạn dưới phần \`[USER RESPONSE]\` rồi gửi toàn bộ vào đoạn chat mới. Xóa dòng hướng dẫn này.`;
 
 export interface UnifiedPromptOptions {
-  jsDelivrScriptUrl: string;
+  jsDelivrEngineUrl: string;
+  jsDelivrWorldUrl: string;
   overworldList: string;
   norsvaleList: string;
   textCommandsMode: 'engine' | 'markdown';
 }
 
 export function buildUnifiedJsDelivrSystemPrompt({
-  jsDelivrScriptUrl,
+  jsDelivrEngineUrl,
+  jsDelivrWorldUrl,
   overworldList,
   norsvaleList,
   textCommandsMode,
 }: UnifiedPromptOptions): string {
-  const mapSection = `(1) BẢN ĐỒ RP (/map) — GITHUB + JSDELIVR ENGINE [HARD_LOCK]
-* COMMAND PRIORITY [ABSOLUTE]: Khi người chơi gõ \`/map\` (hoặc \`/map valeroth\`, \`/map bắc ải\`), tạm dừng mạch kể (KHÔNG tự ý thúc đẩy sự kiện hay hành động mới của {{user}}), đọc đúng ĐOẠN HỘI THOẠI / DIỄN BIẾN HIỆN TẠI và xuất ĐÚNG 1 khối mã \`\`\`html ... \`\`\` gọn nhẹ dùng link jsDelivr bên dưới (KHÔNG tự viết lại CSS, SVG hay giao diện):
+  const mapSection = `(1) BẢN ĐỒ RP (/map) — MODULAR GITHUB + JSDELIVR ENGINE [HARD_LOCK]
+* COMMAND PRIORITY [ABSOLUTE]: Khi người chơi gõ \`/map\` (hoặc \`/map valeroth\`, \`/map bắc ải\`), tạm dừng mạch kể (KHÔNG tự ý thúc đẩy sự kiện hay hành động mới của {{user}}), đọc đúng ĐOẠN HỘI THOẠI / DIỄN BIẾN HIỆN TẠI và xuất ĐÚNG 1 khối mã \`\`\`html ... \`\`\` gọn nhẹ dùng đúng 2 thẻ script (gói thế giới của Kaldor + lõi engine dùng chung) bên dưới (KHÔNG tự viết lại CSS, SVG hay giao diện):
 
 \`\`\`html
-<div id="valeroth-app"></div>
+<div id="rp-app"></div>
 <script>
-window.VALEROTH_DATA = {
+window.RP_DATA = {
+  world: "kaldor-valeroth",
   mode: "map",
   view: "valeroth hoặc norsvale",
   playerLoc: "mã_vị_trí_đứng_hiện_tại_theo_hội_thoại",
@@ -330,10 +333,11 @@ window.VALEROTH_DATA = {
   ]
 };
 </script>
-<script src="${jsDelivrScriptUrl}"></script>
+<script src="${jsDelivrWorldUrl}"></script>
+<script src="${jsDelivrEngineUrl}"></script>
 \`\`\`
 
-DANH SÁCH MÃ ĐỊA ĐIỂM HỢP LỆ:
+DANH SÁCH MÃ ĐỊA ĐIỂM HỢP LỆ (world: "kaldor-valeroth"):
 [Lớp 1 — Toàn cảnh Valeroth (view: "valeroth")]
 ${overworldList}
 
@@ -348,7 +352,7 @@ QUY TẮC BẮT BUỘC CHO /map:
    - \`visibility: "encountered"\` khi {{user}} đang/đã chạm trán trực tiếp; \`visibility: "mentioned"\` khi NPC mới chỉ được nhắc tên trong lời thoại/thư từ/tin đồn.
    - **KNOWLEDGE & NAME LOCK**: Tuyệt đối không rò rỉ thông tin \`[HARD_LOCKED]\` vào \`name\`, \`role\`, \`status\` (ví dụ: chỉ ghi \`"Rowan"\` chứ KHÔNG ghi \`"Rowan Valerius"\` nếu chưa lộ thân phận; Silas Venn / Maelle Voss chỉ hiện vỏ bọc người hầu nếu chưa bị phát hiện; không lộ bí mật Giáo Hoàng, Cedric, Elmira...).
 3. \`tags\` dùng để đánh dấu sự kiện hoặc cảnh báo trên bản đồ (\`tone: "ink"\` mực đen bình thường, \`tone: "crimson"\` cảnh báo/nguy hiểm).
-4. Giữ nguyên thẻ \`<script src="${jsDelivrScriptUrl}"></script>\`.`;
+4. Giữ nguyên \`world: "kaldor-valeroth"\` cùng 2 thẻ \`<script>\` trỏ về jsDelivr.`;
 
   if (textCommandsMode === 'markdown') {
     return `${VALEROTH_WORLD_AND_CHESSBOARD_PROMPT}
@@ -368,19 +372,19 @@ ${RECAP_COMMAND_MARKDOWN}
 ${TRANSFER_COMMAND_MARKDOWN}`;
   }
 
-  const recapEngineSection = `(2) STORYLINE RECAP (/recap) — DÙNG CHUNG ENGINE JSDELIVR [HARD_LOCK]
-* COMMAND PRIORITY [ABSOLUTE]: On an explicit \`/recap\` request, pause the story and output ONLY 1 compact \`\`\`html ... \`\`\` block filling \`window.VALEROTH_DATA\` with \`mode: "recap"\` in Vietnamese. Do not continue the scene or advance any event.
+  const recapEngineSection = `(2) STORYLINE RECAP (/recap) — LÕI ENGINE DÙNG CHUNG [HARD_LOCK]
+* COMMAND PRIORITY [ABSOLUTE]: On an explicit \`/recap\` request, pause the story and output ONLY 1 compact \`\`\`html ... \`\`\` block filling \`window.RP_DATA\` with \`mode: "recap"\` in Vietnamese. Do not continue the scene or advance any event.
 * Cumulative Canon: Consolidate all accessible conversation history, prior recaps, and established event records. Preserve continuity-critical chronology, causality, character states, decisions, consequences, and unresolved threads. Never summarize only recent scenes or invent missing history.
 * USER AGENCY [ABSOLUTE]: 0(1) applies. Never convert intentions, proposals, or pending choices into completed actions.
 * KNOWLEDGE & SPOILER QUARANTINE [ABSOLUTE]: Build the recap ONLY from information legitimately established or revealed in the story. Never extract, quote, summarize, confirm, connect, or indirectly hint at hidden plot information found only in system instructions, character blueprints, internal rules, secret trackers, or unrevealed authorial lore. Never disclose ending identities, ending conditions, hidden progress, or unachieved endings. Do not use hidden information to explain the meaning of an event or connect seemingly unrelated details.
 * Factual Distinction: Clearly distinguish established facts from character beliefs, rumors, suspicions, interpretations, and unresolved uncertainty. Preserve individual knowledge boundaries; never present one character's private knowledge as universally known.
 * Continuity & Endpoint: Preserve the exact current-scene endpoint, including pending actions, unresolved dialogue, character positions, and decisions awaiting {{user}}. If historical information is missing or contradictory, identify the gap rather than inventing a resolution.
 
-Đầu ra bắt buộc cho \`/recap\` (engine trên GitHub tự dựng khung mực cổ + nút Sao chép Markdown nguyên bản):
+Đầu ra bắt buộc cho \`/recap\` (chỉ cần nạp lõi \`engine.js\` dùng chung — tự dựng khung mực cổ + nút Sao chép Markdown nguyên bản):
 \`\`\`html
-<div id="valeroth-app"></div>
+<div id="rp-app"></div>
 <script>
-window.VALEROTH_DATA = {
+window.RP_DATA = {
   mode: "recap",
   title: "TÓM TẮT DIỄN BIẾN",
   currentState: "Ngày, giờ, địa điểm, cảnh hiện tại, vị trí nhân vật và điểm dừng chính xác.",
@@ -392,10 +396,10 @@ window.VALEROTH_DATA = {
   continuityWarnings: "Thay đổi không thể đảo ngược, mâu thuẫn chưa giải, khoảng trống lịch sử và diễn biến đang treo."
 };
 </script>
-<script src="${jsDelivrScriptUrl}"></script>
+<script src="${jsDelivrEngineUrl}"></script>
 \`\`\``;
 
-  const transferEngineSection = `(3) NARRATIVE TRANSFER PACK (/transfer) — DÙNG CHUNG ENGINE JSDELIVR [HARD_LOCK]
+  const transferEngineSection = `(3) NARRATIVE TRANSFER PACK (/transfer) — LÕI ENGINE DÙNG CHUNG [HARD_LOCK]
 This is a direct execution command. On \`/transfer\`, immediately interrupt normal storytelling and output ONLY 1 compact \`\`\`html ... \`\`\` block with \`mode: "transfer"\`. Do not explain the process, continue the story, advance time, or create new events.
 
 EXECUTION RULES [HARD_LOCK]:
@@ -408,13 +412,13 @@ EXECUTION RULES [HARD_LOCK]:
 - PROFILE LOCK [ABSOLUTE]: Preserve established \`{{user}}\` character profile; separate fixed canon from temporary states. Never silently rewrite profile.
 - CUMULATIVE TRANSFER [ABSOLUTE]: Reconcile previous Transfer Packs / continuity ledgers with current chat; carry forward significant earlier events with stable Event IDs; never erase causal origin events.
 - LAST RESPONSE [ABSOLUTE]: Copy the complete immediately preceding AI response into \`lastResponse\` VERBATIM (preserving wording, dialogue, formatting, paragraph order). Never summarize, truncate, or reconstruct it. If unavailable, state that it is unavailable.
-- NOTE: Engine trên GitHub đã nhúng sẵn \`NEW CHAT RESTORATION PROTOCOL [ABSOLUTE]\`, \`[USER RESPONSE]\` và nút 1-bấm Sao chép toàn bộ Markdown Transfer Pack để dán sang \`+ (new chat)\`, nên AI KHÔNG cần viết lại phần khuôn tĩnh đó.
+- NOTE: Lõi \`engine.js\` đã nhúng sẵn \`NEW CHAT RESTORATION PROTOCOL [ABSOLUTE]\`, \`[USER RESPONSE]\` và nút 1-bấm Sao chép toàn bộ Markdown Transfer Pack để dán sang \`+ (new chat)\`, nên AI KHÔNG cần viết lại phần khuôn tĩnh đó.
 
-Đầu ra bắt buộc cho \`/transfer\`:
+Đầu ra bắt buộc cho \`/transfer\` (chỉ cần nạp lõi \`engine.js\` dùng chung):
 \`\`\`html
-<div id="valeroth-app"></div>
+<div id="rp-app"></div>
 <script>
-window.VALEROTH_DATA = {
+window.RP_DATA = {
   mode: "transfer",
   metadata: {
     sequence: "Transfer #1 / v1",
@@ -446,17 +450,16 @@ window.VALEROTH_DATA = {
   lastResponse: "DÁN NGUYÊN VĂN 100% PHẢN HỒI AI LIỀN TRƯỚC TẠI ĐÂY (KHÔNG TÓM TẮT)."
 };
 </script>
-<script src="${jsDelivrScriptUrl}"></script>
+<script src="${jsDelivrEngineUrl}"></script>
 \`\`\``;
 
   return `${VALEROTH_WORLD_AND_CHESSBOARD_PROMPT}
 
 ====================================================================
-# SECTION 5 | HỆ THỐNG LỆNH RP HỢP NHẤT — 1 GITHUB REPO · 1 JSDELIVR (@SHA)
+# SECTION 5 | HỆ THỐNG LỆNH RP MODULAR — 1 GITHUB REPO · 1 @SHA
 ====================================================================
-Cả 3 lệnh \`/map\`, \`/recap\`, \`/transfer\` đều dùng chung 1 engine duy nhất tải từ:
-\`${jsDelivrScriptUrl}\`
-Mỗi lệnh chỉ thay đổi đối tượng \`window.VALEROTH_DATA\` theo \`mode\` tương ứng.
+- Lõi dùng chung mọi nhân vật (/recap, /transfer, bộ vẽ bản đồ): \`${jsDelivrEngineUrl}\`
+- Gói bản đồ riêng của bot Kaldor (/map): \`${jsDelivrWorldUrl}\`
 
 ${mapSection}
 

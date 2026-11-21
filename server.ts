@@ -111,7 +111,7 @@ async function startServer() {
     'norsvale.jpg': 'norsvale_interior_1795197881444.jpg',
   };
 
-  app.get('/github-kit/assets/:filename', (req, res) => {
+  function serveGithubKitAsset(req: express.Request, res: express.Response) {
     const mapped = GITHUB_KIT_ASSET_MAP[req.params.filename];
     if (!mapped) {
       res.status(404).send('Not found');
@@ -130,7 +130,10 @@ async function startServer() {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Cache-Control', 'public, max-age=3600');
     res.sendFile(resolved);
-  });
+  }
+
+  app.get('/github-kit/assets/kaldor/:filename', serveGithubKitAsset);
+  app.get('/github-kit/assets/:filename', serveGithubKitAsset);
 
   app.get('/api/map.png', async (req, res) => {
     try {

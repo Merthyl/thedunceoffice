@@ -51,6 +51,7 @@ const SAMPLE_VALEROTH_CALL = JSON.stringify(
 
 const DEFAULT_RP_SAMPLE = JSON.stringify(
   {
+    world: 'kaldor-valeroth',
     mode: 'map',
     view: 'norsvale',
     playerLoc: 'loc-nors-tavern',
@@ -240,7 +241,7 @@ export default function PlaygroundBridgeView({
   const [copiedBlock, setCopiedBlock] = useState<string | null>(null);
 
   // GitHub + jsDelivr config state
-  const [githubRepo, setGithubRepo] = useState('ten-tai-khoan/valeroth-rp');
+  const [githubRepo, setGithubRepo] = useState('ten-tai-khoan/dunce-rp-kit');
   const [commitSha, setCommitSha] = useState('COMMIT_SHA');
   const [textCommandsMode, setTextCommandsMode] = useState<'engine' | 'markdown'>('engine');
   const [rpPreviewJson, setRpPreviewJson] = useState(DEFAULT_RP_SAMPLE);
@@ -251,9 +252,12 @@ export default function PlaygroundBridgeView({
   const [executionSummaries, setExecutionSummaries] = useState<string[]>([]);
   const [parseError, setParseError] = useState<string | null>(null);
 
-  const cleanRepo = githubRepo.trim().replace(/^https?:\/\/github\.com\//, '').replace(/^\/+|\/+$/g, '') || 'ten-tai-khoan/valeroth-map';
+  const cleanRepo =
+    githubRepo.trim().replace(/^https?:\/\/github\.com\//, '').replace(/^\/+|\/+$/g, '') ||
+    'ten-tai-khoan/dunce-rp-kit';
   const cleanSha = commitSha.trim() || 'COMMIT_SHA';
-  const jsDelivrScriptUrl = `https://cdn.jsdelivr.net/gh/${cleanRepo}@${cleanSha}/valeroth-map-engine.js`;
+  const jsDelivrEngineUrl = `https://cdn.jsdelivr.net/gh/${cleanRepo}@${cleanSha}/engine.js`;
+  const jsDelivrWorldUrl = `https://cdn.jsdelivr.net/gh/${cleanRepo}@${cleanSha}/worlds/kaldor-valeroth.js`;
 
   const overworldList = useMemo(
     () =>
@@ -275,12 +279,13 @@ export default function PlaygroundBridgeView({
 
   const jsDelivrSystemPrompt = useMemo(() => {
     return buildUnifiedJsDelivrSystemPrompt({
-      jsDelivrScriptUrl,
+      jsDelivrEngineUrl,
+      jsDelivrWorldUrl,
       overworldList,
       norsvaleList,
       textCommandsMode,
     });
-  }, [jsDelivrScriptUrl, overworldList, norsvaleList, textCommandsMode]);
+  }, [jsDelivrEngineUrl, jsDelivrWorldUrl, overworldList, norsvaleList, textCommandsMode]);
 
   const livePreviewSrcDoc = useMemo(() => {
     let parsed: Record<string, unknown> = {};
@@ -293,8 +298,8 @@ export default function PlaygroundBridgeView({
     const injectedData = {
       ...parsed,
       assets: {
-        valeroth: '/github-kit/assets/valeroth.jpg',
-        norsvale: '/github-kit/assets/norsvale.jpg',
+        valeroth: '/github-kit/assets/kaldor/valeroth.jpg',
+        norsvale: '/github-kit/assets/kaldor/norsvale.jpg',
       },
     };
 
@@ -303,9 +308,10 @@ export default function PlaygroundBridgeView({
 <html lang="vi">
 <head><meta charset="UTF-8" /><style>body{margin:0;padding:8px;background:#EAE6DC;}</style></head>
 <body>
-  <div id="valeroth-app"></div>
-  <script>window.VALEROTH_DATA = ${safeJson};</script>
-  <script src="/github-kit/valeroth-map-engine.js"></script>
+  <div id="rp-app"></div>
+  <script>window.RP_DATA = ${safeJson};</script>
+  <script src="/github-kit/worlds/kaldor-valeroth.js"></script>
+  <script src="/github-kit/engine.js"></script>
 </body>
 </html>`;
   }, [rpPreviewJson]);
@@ -429,17 +435,17 @@ export default function PlaygroundBridgeView({
         {/* TAB 1: GITHUB + JSDELIVR ENGINE WORKFLOW */}
         {activeTab === 'jsdelivr' && (
           <div className="flex-1 overflow-y-auto p-5 space-y-5">
-            {/* Step 1: Download Ready-to-Push GitHub Package */}
+            {/* Step 1: Download Ready-to-Push Modular Multi-Character GitHub Package */}
             <section className="border border-[#111111] bg-white">
               <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#111111]/25 bg-[#F2EFE8] px-4 py-2.5">
                 <div>
                   <span className="font-display text-xs font-bold tracking-wide uppercase">
-                    01. Bộ mã nguồn 1 GitHub Repo duy nhất (/map · /recap · /transfer)
+                    01. Bộ mã nguồn Modular (1 Repo cho nhiều nhân vật · Tách lõi &amp; Map riêng)
                   </span>
                 </div>
                 <a
                   href="/api/github-kit.zip"
-                  download="valeroth-github-jsdelivr-kit.zip"
+                  download="dunce-rp-modular-github-kit.zip"
                   className="flex items-center gap-1.5 bg-[#111111] px-3.5 py-1.5 text-xs font-semibold text-[#FAF8F4] transition-colors hover:bg-[#8B1E1E] whitespace-nowrap"
                 >
                   <Download size={13} />
@@ -449,19 +455,35 @@ export default function PlaygroundBridgeView({
 
               <div className="p-4 text-xs space-y-3">
                 <p className="text-[#3D3A35] leading-relaxed">
-                  Gói <code>.zip</code> gom trọn <strong>1 repo GitHub + 1 mã @SHA</strong> cho cả 3 lệnh:
-                  <strong> <code>valeroth-map-engine.js</code></strong> (engine v2.1 xử lý <code>/map</code> với dấu vị trí theo hội thoại &amp; hiển thị NPC có sẵn/mới tạo chỉ khi chạm trán hoặc nhắc đến, <code>/recap</code> và <code>/transfer</code> kèm nút Sao chép Markdown),
-                  <strong> <code>index.html</code></strong> (bản đồ cố định có <em>+ Gắn tag / NPC</em>),
-                  <strong> <code>commands/*</code></strong> (Section 3–4, <code>recap.md</code>, <code>transfer.md</code>) và 2 họa đồ <strong><code>assets/*.jpg</code></strong>.
+                  Gói <code>.zip</code> đã tách sẵn 2 lớp rõ ràng để bạn dễ mở rộng cho nhiều nhân vật &amp; chức năng mới:
+                  <strong> <code>engine.js</code></strong> (lõi dùng chung cho mọi bot: <code>/recap</code>, <code>/transfer</code>, bộ vẽ <code>/map</code> + NPC + API mở rộng <code>registerMode</code>),
+                  <strong> <code>worlds/kaldor-valeroth.js</code></strong> (chỉ chứa bản đồ Kaldor, không bao giờ lẫn sang bot khác),
+                  <strong> <code>worlds/_template.js</code></strong> (mẫu sẵn tạo nhân vật mới), <strong><code>index.html</code></strong>, <strong><code>commands/*</code></strong> và <strong><code>assets/kaldor/*.jpg</code></strong>.
                 </p>
                 <div className="flex flex-wrap gap-2">
                   <a
-                    href="/github-kit/valeroth-map-engine.js"
-                    download="valeroth-map-engine.js"
+                    href="/github-kit/engine.js"
+                    download="engine.js"
                     className="flex items-center gap-1 border border-[#111111]/40 bg-[#FAF8F4] px-2.5 py-1 font-mono text-[11px] hover:bg-[#E7E3DA]"
                   >
                     <Download size={11} />
-                    <span>valeroth-map-engine.js</span>
+                    <span>engine.js (lõi chung)</span>
+                  </a>
+                  <a
+                    href="/github-kit/worlds/kaldor-valeroth.js"
+                    download="kaldor-valeroth.js"
+                    className="flex items-center gap-1 border border-[#111111]/40 bg-[#FAF8F4] px-2.5 py-1 font-mono text-[11px] hover:bg-[#E7E3DA]"
+                  >
+                    <Download size={11} />
+                    <span>worlds/kaldor-valeroth.js</span>
+                  </a>
+                  <a
+                    href="/github-kit/worlds/_template.js"
+                    download="_template.js"
+                    className="flex items-center gap-1 border border-[#111111]/40 bg-[#FAF8F4] px-2.5 py-1 font-mono text-[11px] hover:bg-[#E7E3DA]"
+                  >
+                    <Download size={11} />
+                    <span>worlds/_template.js</span>
                   </a>
                   <a
                     href="/github-kit/index.html"
@@ -469,23 +491,7 @@ export default function PlaygroundBridgeView({
                     className="flex items-center gap-1 border border-[#111111]/40 bg-[#FAF8F4] px-2.5 py-1 font-mono text-[11px] hover:bg-[#E7E3DA]"
                   >
                     <Download size={11} />
-                    <span>index.html (map cố định)</span>
-                  </a>
-                  <a
-                    href="/github-kit/assets/valeroth.jpg"
-                    download="valeroth.jpg"
-                    className="flex items-center gap-1 border border-[#111111]/40 bg-[#FAF8F4] px-2.5 py-1 font-mono text-[11px] hover:bg-[#E7E3DA]"
-                  >
-                    <Download size={11} />
-                    <span>assets/valeroth.jpg</span>
-                  </a>
-                  <a
-                    href="/github-kit/assets/norsvale.jpg"
-                    download="norsvale.jpg"
-                    className="flex items-center gap-1 border border-[#111111]/40 bg-[#FAF8F4] px-2.5 py-1 font-mono text-[11px] hover:bg-[#E7E3DA]"
-                  >
-                    <Download size={11} />
-                    <span>assets/norsvale.jpg</span>
+                    <span>index.html</span>
                   </a>
                   <a
                     href="/github-kit/index.html"
@@ -504,7 +510,7 @@ export default function PlaygroundBridgeView({
             <section className="border border-[#111111] bg-white">
               <div className="border-b border-[#111111]/25 bg-[#F2EFE8] px-4 py-2">
                 <span className="font-display text-xs font-bold tracking-wide uppercase">
-                  02. Gắn Repo & Commit SHA để tạo link jsDelivr
+                  02. Gắn Repo &amp; Commit SHA để tạo link jsDelivr (Lõi chung + Map Kaldor)
                 </span>
               </div>
               <div className="p-4 space-y-3 text-xs">
@@ -515,13 +521,13 @@ export default function PlaygroundBridgeView({
                       type="text"
                       value={githubRepo}
                       onChange={(e) => setGithubRepo(e.target.value)}
-                      placeholder="vd: dunceinthedungeon/valeroth-map"
+                      placeholder="vd: dunceinthedungeon/dunce-rp-kit"
                       className="w-full border border-[#111111]/40 bg-[#FAF8F4] px-2.5 py-1.5 font-mono text-xs focus:border-[#111111] focus:outline-none"
                     />
                   </div>
                   <div>
                     <label className="mb-1 block font-semibold">
-                      Commit SHA (đổi SHA để tải bản engine mới)
+                      Commit SHA (đổi SHA mới để cập nhật toàn bộ mọi bot)
                     </label>
                     <input
                       type="text"
@@ -533,16 +539,33 @@ export default function PlaygroundBridgeView({
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between gap-2 border border-[#111111]/25 bg-[#F5F3EE] px-3 py-2 font-mono text-[11px]">
-                  <span className="truncate">{jsDelivrScriptUrl}</span>
-                  <button
-                    type="button"
-                    onClick={() => handleCopy('jsdelivr-url', jsDelivrScriptUrl)}
-                    className="flex items-center gap-1 font-sans text-xs font-semibold text-[#8B1E1E] hover:underline whitespace-nowrap shrink-0"
-                  >
-                    {copiedBlock === 'jsdelivr-url' ? <Check size={12} /> : <Copy size={12} />}
-                    <span>{copiedBlock === 'jsdelivr-url' ? 'Đã chép' : 'Sao chép'}</span>
-                  </button>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between gap-2 border border-[#111111]/25 bg-[#F5F3EE] px-3 py-2 font-mono text-[11px]">
+                    <span className="truncate">
+                      <strong className="font-sans text-[#3D3A35]">Lõi chung:</strong> {jsDelivrEngineUrl}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => handleCopy('jsdelivr-engine', jsDelivrEngineUrl)}
+                      className="flex items-center gap-1 font-sans text-xs font-semibold text-[#8B1E1E] hover:underline whitespace-nowrap shrink-0"
+                    >
+                      {copiedBlock === 'jsdelivr-engine' ? <Check size={12} /> : <Copy size={12} />}
+                      <span>{copiedBlock === 'jsdelivr-engine' ? 'Đã chép' : 'Sao chép'}</span>
+                    </button>
+                  </div>
+                  <div className="flex items-center justify-between gap-2 border border-[#111111]/25 bg-[#F5F3EE] px-3 py-2 font-mono text-[11px]">
+                    <span className="truncate">
+                      <strong className="font-sans text-[#3D3A35]">Map Kaldor:</strong> {jsDelivrWorldUrl}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => handleCopy('jsdelivr-world', jsDelivrWorldUrl)}
+                      className="flex items-center gap-1 font-sans text-xs font-semibold text-[#8B1E1E] hover:underline whitespace-nowrap shrink-0"
+                    >
+                      {copiedBlock === 'jsdelivr-world' ? <Check size={12} /> : <Copy size={12} />}
+                      <span>{copiedBlock === 'jsdelivr-world' ? 'Đã chép' : 'Sao chép'}</span>
+                    </button>
+                  </div>
                 </div>
               </div>
             </section>
