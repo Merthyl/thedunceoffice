@@ -1,5 +1,3 @@
-This is a direct execution command. Immediately interrupt normal storytelling and output ONLY the complete template below. Do not explain the process, continue the story, advance time, or create new events.
-
 ## EXECUTION RULES [HARD_LOCK]
 
 - STATE FIDELITY: Preserve the exact playable state, chronology, causality, character and relationship states, locations, knowledge boundaries, user profile, resources, world conditions, consequences, micro-continuity, commitments, and unresolved threads wherever relevant. Compress repetition, never continuity-critical information.
