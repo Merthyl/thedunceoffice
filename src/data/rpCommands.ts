@@ -316,13 +316,25 @@ export function buildUnifiedJsDelivrSystemPrompt({
   commandDocsUrls,
 }: UnifiedPromptOptions): string {
   if (textCommandsMode === 'url-context' && commandDocsUrls) {
-    const cdnBase = jsDelivrEngineUrl.replace(/\/engine\.js(?:[?#].*)?$/, '');
-    return `# SECTION 5 | HỆ THỐNG LỆNH RP (/map · /recap · /transfer) [HARD_LOCK]
-* KÍCH HOẠT [ABSOLUTE]: Chỉ kích hoạt khi người chơi gõ đúng lệnh bên dưới. Lập tức tạm dừng mạch kể (KHÔNG thúc đẩy sự kiện hay hành động mới của {{user}}), dùng công cụ **URL Context** đọc tệp đặc tả từ \`raw.githubusercontent.com\` và xuất ĐÚNG kết quả theo quy tắc trong tệp:
-  - \`/map\` (hoặc \`/map valeroth\`, \`/map bắc ải\`): Đọc ${commandDocsUrls.mapKaldor} → điền dữ liệu RP hiện tại (vị trí \`{{user}}\`, NPC đã xuất hiện/nhắc đến kèm chức vụ và tình trạng \`Còn sống\` / \`Đã chết\` / \`Mất tích\`) và xuất DUY NHẤT 1 khối \`\`\`html ... \`\`\` hoàn chỉnh (\`<!DOCTYPE html>\`) dùng \`<CDN_BASE>\` = \`${cdnBase}\` cho 2 thẻ \`<script>\` jsDelivr để chạy Preview HTML trực tiếp.
-  - \`/recap\`: Đọc ${commandDocsUrls.recap} → chỉ xuất **thuần text** theo mẫu \`### TÓM TẮT DIỄN BIẾN\` trực tiếp ra màn hình (KHÔNG bọc HTML).
-  - \`/transfer\`: Đọc ${commandDocsUrls.transfer} → chỉ xuất **thuần text** gói \`Transfer Pack\` hoàn chỉnh trực tiếp ra màn hình (KHÔNG bọc HTML).
-* KHÔNG giải thích quy trình hay trích dẫn file đặc tả; giữ tuyệt đối nguyên tắc không spoil \`[HARD_LOCKED]\` và không tự ý hành động thay \`{{user}}\`.`;
+    return `# SECTION 5 | /map, /recap & /transfer COMMAND SYSTEM [HARD_LOCK]
+
+* COMMAND PRIORITY [ABSOLUTE]: Activate only when the player enters the exact command \`/map\` (or \`/map valeroth\`, \`/map bắc ải\`), \`/recap\`, or \`/transfer\`. Immediately interrupt all ongoing storytelling and switch to command execution mode. Do not continue the scene, advance the plot, progress time, or autonomously determine any actions on behalf of \`{{user}}\`.
+
+* SOURCE RETRIEVAL [MANDATORY]: Retrieve and read the entire original content of the corresponding source file before execution. Do not rely on memory, previously stored content, summaries, or assumptions in place of reading the source:
+  - \`/map\` (hoặc \`/map valeroth\`, \`/map bắc ải\`) → ${commandDocsUrls.mapKaldor}
+  - \`/recap\` → ${commandDocsUrls.recap}
+  - \`/transfer\` → ${commandDocsUrls.transfer}
+
+* EXECUTION FIDELITY [ABSOLUTE]: Execute all instructions in the corresponding source file completely and accurately. Preserve its exact requirements regarding content, structure, sequence, formatting, knowledge/spoiler locks (\`[HARD_LOCKED]\`), and output. Do not omit, add, reinterpret, or independently modify any part of the specified procedure. For \`/map\`, always load the two jsDelivr scripts \`${jsDelivrWorldUrl}\` and \`${jsDelivrEngineUrl}\`.
+
+* OUTPUT FORMAT [HARD_LOCK]:
+  - For \`/recap\` and \`/transfer\`: Output only the completed result directly in the response as plain text or Markdown. Strictly preserve the exact formatting and presentation required by the source template. Do not wrap the output in HTML or extra outer code blocks.
+  - For \`/map\`: Output ONLY a single complete, preview-ready \`\`\`html ... \`\`\` block (\`<!DOCTYPE html>\`) using the exact template in the source file.
+  - For ALL commands: Do not include introductions, explanations, procedural commentary, observations, or any content outside the scope of the command.
+
+* FAILURE HANDLING: If the source file cannot be accessed or fully retrieved, do not fabricate its contents, generate a substitute template, or claim successful execution. Briefly state that the source file could not be accessed and request another attempt.
+
+* POST-EXECUTION: Stop immediately after presenting the completed output. Do not resume roleplay or introduce new story developments in the same response.`;
   }
 
   const assetsSnippet = assetsUrls

@@ -174,12 +174,17 @@ export function buildGithubKitZip(rootDir: string): Buffer {
     path.resolve(rootDir, 'public/github-kit/commands/map-kaldor.md'),
     path.resolve(rootDir, 'dist/github-kit/commands/map-kaldor.md'),
   ]);
+  const mapKaldorTxt = readFirstExisting([
+    path.resolve(rootDir, 'map-kaldor.txt'),
+    path.resolve(rootDir, 'public/github-kit/commands/map-kaldor.md'),
+  ]);
 
   return createZipBuffer([
     { name: 'engine.js', data: engineJs },
     { name: 'worlds/kaldor-valeroth.js', data: kaldorWorldJs },
     { name: 'worlds/_template.js', data: templateWorldJs },
     { name: 'index.html', data: indexHtml },
+    { name: 'map-kaldor.txt', data: mapKaldorTxt },
     { name: 'transfer.txt', data: Buffer.from(TRANSFER_COMMAND_MARKDOWN, 'utf8') },
     { name: 'recap.txt', data: Buffer.from(RECAP_COMMAND_MARKDOWN, 'utf8') },
     { name: 'commands/map-kaldor.md', data: mapKaldorMd },

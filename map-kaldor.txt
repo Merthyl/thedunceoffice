@@ -1,0 +1,68 @@
+(1) BẢN ĐỒ RP (/map) — KALDOR / VALEROTH MODULAR ENGINE [HARD_LOCK]
+* COMMAND PRIORITY [ABSOLUTE]: Khi người chơi gõ `/map` (hoặc `/map valeroth`, `/map bắc ải`), lập tức tạm dừng mạch kể (KHÔNG tự ý thúc đẩy sự kiện hay hành động mới của {{user}}), đọc đúng ĐOẠN HỘI THOẠI / DIỄN BIẾN HIỆN TẠI và xuất DUY NHẤT 1 khối mã ```html ... ``` hoàn chỉnh (có thể chạy Preview HTML ngay) theo đúng khung bên dưới — KHÔNG tự viết lại CSS, SVG hay giao diện; KHÔNG xuất trường `tags` hay `routes`; KHÔNG viết thêm lời giải thích bên ngoài khối HTML.
+* QUY TẮC THAY `<CDN_BASE>` (NẾU CÓ): Nếu System Instructions chỉ định `@COMMIT_SHA` cụ thể, thay `@main` bằng `@COMMIT_SHA` đó trong 2 thẻ `<script>` bên dưới; nếu không, giữ nguyên `@main`.
+
+```html
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Valeroth · Bản Đồ RP</title>
+  <style>html,body{margin:0;padding:8px;background:#EAE6DC;}</style>
+</head>
+<body>
+  <div id="rp-app"></div>
+  <script>
+  window.RP_DATA = {
+    world: "kaldor-valeroth",
+    mode: "map",
+    view: "valeroth hoặc norsvale",
+    playerLoc: "mã_vị_trí_đứng_hiện_tại_theo_hội_thoại",
+    chapter: "Mốc thời gian / bối cảnh hiện tại",
+    status: "Tóm tắt 1 câu vị trí đứng hiện tại của {{user}} đúng theo hội thoại.",
+    npcs: [
+      {
+        name: "Tên NPC (có sẵn trong Section 4 HOẶC mới tạo bởi {{user}}/cốt truyện)",
+        loc: "mã_địa_điểm_hiện_tại_của_NPC",
+        role: "Chức vụ công khai ngắn gọn (2–5 từ, CẤM tiết lộ bí mật HARD_LOCKED)",
+        status: "Còn sống"
+      }
+    ]
+  };
+  </script>
+  <script src="https://cdn.jsdelivr.net/gh/Merthyl/thedunceoffice@main/public/github-kit/worlds/kaldor-valeroth.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/Merthyl/thedunceoffice@main/public/github-kit/engine.js"></script>
+</body>
+</html>
+```
+
+DANH SÁCH MÃ ĐỊA ĐIỂM HỢP LỆ (world: "kaldor-valeroth"):
+[Lớp 1 — Vương quốc Valeroth (view: "valeroth")]
+- "loc-valerius" : Vương Đô (Valerius)
+- "loc-zarath" : Hắc Nham (Zarath)
+- "loc-corinth" : Lam Vịnh (Corinth)
+- "loc-norsvale" : Bắc Ải (Norsvale)
+- "loc-sylva" : U Lâm (Sylva)
+- "loc-morvath" : Cấm Địa (Morvath)
+- "loc-kaldrak" : Hoang Vực (Kaldrak)
+
+[Lớp 2 — Thành Bắc Ải (view: "norsvale")]
+- "loc-nors-keep" : Tháp Công Tước (Tháp Vách Biển · Phòng Công tước)
+- "loc-nors-hall" : Đại Sảnh (Sảnh Tiệc & Hội Nghị)
+- "loc-nors-kitchen" : Bếp & Hậu Cần (Bếp Lửa & Kho Lương)
+- "loc-nors-barracks" : Trại Huấn Luyện (Sân Kỵ Binh & Chuồng Ngựa)
+- "loc-nors-forge" : Xưởng Quân Nhu (Lò Rèn & Kho Vũ Khí)
+- "loc-nors-northgate" : Cổng Bắc & Chợ Tiếp Vận (Cổng Quan Lộ Lam Vịnh)
+- "loc-nors-tavern" : Quán Rượu Mũi Đao (Quán Lính Đánh Thuê)
+- "loc-nors-town" : Khu Dân Cư & Chợ Đêm (Nhà Dân · Chợ · Nhà Thổ)
+- "loc-nors-apothecary" : Trạm Y Dược & Luyện Kim (Nhà Thuốc Biên Ải)
+- "loc-nors-southgate" : Cổng Hoang Vực & Tường Nam (Cửa Ải Tuyến Đầu)
+
+QUY TẮC BẮT BUỘC CHO /map:
+1. VỊ TRÍ NGƯỜI CHƠI THEO HỘI THOẠI [ABSOLUTE]: `playerLoc` PHẢI phản ánh chính xác nơi {{user}} đang đứng tại thời điểm gõ `/map`. Nếu {{user}} đang ở bên trong Thành Bắc Ải và không yêu cầu xem toàn cảnh, đặt `view: "norsvale"`; ngược lại đặt `view: "valeroth"`.
+2. HIỂN THỊ NPC [HARD_LOCK — KHÔNG SPOIL — NGẮN GỌN]:
+   - Mảng `npcs` hỗ trợ CẢ NPC có sẵn lẫn NPC mới tạo bởi {{user}}/cốt truyện, **CHỈ thêm khi đã được nhắc đến hoặc chạm trán trong hội thoại** (nếu chưa có, đặt `npcs: []`).
+   - Mỗi NPC CHỈ gồm đúng 4 trường: `name`, `loc`, `role` (chức vụ công khai ngắn gọn, 2–5 từ), `status` (CHỈ dùng đúng 1 trong 3 giá trị: `"Còn sống"`, `"Đã chết"`, hoặc `"Mất tích"` — KHÔNG viết dài dòng).
+   - **KNOWLEDGE & NAME LOCK**: Tuyệt đối không rò rỉ thông tin `[HARD_LOCKED]` vào `name` hay `role` (ví dụ: chỉ ghi `"Rowan"` chứ KHÔNG ghi `"Rowan Valerius"` nếu chưa lộ thân phận; Silas Venn / Maelle Voss chỉ ghi vỏ bọc người hầu nếu chưa lộ).
+3. KHÔNG xuất trường `tags` hay `routes`. Giữ nguyên cấu trúc `<!DOCTYPE html>`, `world: "kaldor-valeroth"`, và đúng 2 thẻ `<script>` trỏ về jsDelivr.

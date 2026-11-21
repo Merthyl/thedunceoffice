@@ -48,8 +48,9 @@ export default function PlaygroundBridgeView({
 }: PlaygroundBridgeModalProps) {
   const [copiedBlock, setCopiedBlock] = useState<string | null>(null);
   const [githubRepo, setGithubRepo] = useState('Merthyl/thedunceoffice');
-  const [commitSha, setCommitSha] = useState('THAY_SHA_MOI_O_DAY');
+  const [commitSha, setCommitSha] = useState('main');
   const [repoLayout, setRepoLayout] = useState<'aistudio' | 'zip'>('aistudio');
+  const [promptMode, setPromptMode] = useState<'url-context' | 'markdown'>('url-context');
   const [rpPreviewJson, setRpPreviewJson] = useState(DEFAULT_RP_SAMPLE);
 
   const cleanRepo =
@@ -58,8 +59,9 @@ export default function PlaygroundBridgeView({
       .replace(/^https?:\/\/github\.com\//, '')
       .replace(/\.git$/i, '')
       .replace(/^\/+|\/+$/g, '') || 'Merthyl/thedunceoffice';
-  const cleanSha = commitSha.trim() || 'THAY_SHA_MOI_O_DAY';
+  const cleanSha = commitSha.trim() || 'main';
   const baseCdn = `https://cdn.jsdelivr.net/gh/${cleanRepo}@${cleanSha}`;
+  const rawBase = `https://raw.githubusercontent.com/${cleanRepo}/${cleanSha}`;
 
   const jsDelivrEngineUrl =
     repoLayout === 'aistudio'
@@ -95,9 +97,14 @@ export default function PlaygroundBridgeView({
         jsDelivrWorldUrl,
         overworldList,
         norsvaleList,
-        textCommandsMode: 'markdown',
+        textCommandsMode: promptMode,
+        commandDocsUrls: {
+          mapKaldor: `${rawBase}/map-kaldor.txt`,
+          recap: `${rawBase}/recap.txt`,
+          transfer: `${rawBase}/transfer.txt`,
+        },
       }),
-    [jsDelivrEngineUrl, jsDelivrWorldUrl, overworldList, norsvaleList]
+    [jsDelivrEngineUrl, jsDelivrWorldUrl, overworldList, norsvaleList, promptMode, rawBase]
   );
 
   const livePreviewSrcDoc = useMemo(() => {
@@ -314,9 +321,35 @@ export default function PlaygroundBridgeView({
           {/* 03. System Instructions */}
           <section className="border border-[#111111] bg-white">
             <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#111111]/25 bg-[#F2EFE8] px-4 py-2">
-              <span className="font-display text-xs font-bold tracking-wide uppercase">
-                03. System Instructions (/map HTML jsDelivr · /recap &amp; /transfer thuần text)
-              </span>
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="font-display text-xs font-bold tracking-wide uppercase">
+                  03. System Instructions (/map · /recap · /transfer)
+                </span>
+                <div className="flex border border-[#111111]/45 bg-white p-0.5 text-[11px]">
+                  <button
+                    type="button"
+                    onClick={() => setPromptMode('url-context')}
+                    className={`px-2 py-0.5 font-semibold transition-colors ${
+                      promptMode === 'url-context'
+                        ? 'bg-[#111111] text-[#FAF8F4]'
+                        : 'text-[#111111] hover:bg-[#EAE6DC]'
+                    }`}
+                  >
+                    Gọn · GitHub Raw
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPromptMode('markdown')}
+                    className={`px-2 py-0.5 font-semibold transition-colors ${
+                      promptMode === 'markdown'
+                        ? 'bg-[#111111] text-[#FAF8F4]'
+                        : 'text-[#111111] hover:bg-[#EAE6DC]'
+                    }`}
+                  >
+                    Đầy đủ (Inline)
+                  </button>
+                </div>
+              </div>
               <button
                 type="button"
                 onClick={() => handleCopy('jsdelivr-prompt', jsDelivrSystemPrompt)}
