@@ -295,6 +295,7 @@ export interface UnifiedPromptOptions {
   overworldList: string;
   norsvaleList: string;
   textCommandsMode: 'url-context' | 'markdown' | 'engine';
+  includeWorldLore?: boolean;
   assetsUrls?: {
     valeroth: string;
     norsvale: string;
@@ -312,15 +313,16 @@ export function buildUnifiedJsDelivrSystemPrompt({
   overworldList,
   norsvaleList,
   textCommandsMode,
+  includeWorldLore = false,
   assetsUrls,
   commandDocsUrls,
 }: UnifiedPromptOptions): string {
   if (textCommandsMode === 'url-context' && commandDocsUrls) {
     return `# SECTION 5 | /map, /recap & /transfer COMMAND SYSTEM [HARD_LOCK]
 
-* COMMAND PRIORITY [ABSOLUTE]: Activate only when the player enters the exact command \`/map\` (or \`/map valeroth\`, \`/map bắc ải\`), \`/recap\`, or \`/transfer\`. Immediately interrupt all ongoing storytelling and switch to command execution mode. Do not continue the scene, advance the plot, progress time, or autonomously determine any actions on behalf of \`{{user}}\`.
+* COMMAND PRIORITY [ABSOLUTE]: Activate only when the player sends a dedicated command message starting with \`/map\` (or \`/map valeroth\`, \`/map bắc ải\`), \`/recap\`, or \`/transfer\` — with or without the source URL attached in the same message (e.g., \`/transfer ${commandDocsUrls.transfer}\`). Immediately interrupt all ongoing storytelling and switch to command execution mode. Do not continue the scene, advance the plot, progress time, or autonomously determine any actions on behalf of \`{{user}}\`.
 
-* SOURCE RETRIEVAL [MANDATORY]: Retrieve and read the entire original content of the corresponding source file before execution. Do not rely on memory, previously stored content, summaries, or assumptions in place of reading the source:
+* SOURCE RETRIEVAL [MANDATORY]: Retrieve and read the entire original content of the corresponding source file before execution. Prefer the URL provided directly in the user's message (required on platforms that restrict opening System-Prompt-only URLs); otherwise use the mapped source URL if accessible. Do not rely on memory, previously stored content, summaries, or assumptions in place of reading the source:
   - \`/map\` (hoặc \`/map valeroth\`, \`/map bắc ải\`) → ${commandDocsUrls.mapKaldor}
   - \`/recap\` → ${commandDocsUrls.recap}
   - \`/transfer\` → ${commandDocsUrls.transfer}
@@ -332,7 +334,7 @@ export function buildUnifiedJsDelivrSystemPrompt({
   - For \`/map\`: Output ONLY a single complete, preview-ready \`\`\`html ... \`\`\` block (\`<!DOCTYPE html>\`) using the exact template in the source file.
   - For ALL commands: Do not include introductions, explanations, procedural commentary, observations, or any content outside the scope of the command.
 
-* FAILURE HANDLING: If the source file cannot be accessed or fully retrieved, do not fabricate its contents, generate a substitute template, or claim successful execution. Briefly state that the source file could not be accessed and request another attempt.
+* FAILURE HANDLING: If the source file cannot be accessed (e.g., the URL was not included in the user's message, the platform blocks System-Prompt URLs, or the repo is Private), do not fabricate its contents, generate a substitute template, or claim successful execution. Briefly state that the source file could not be accessed and ask the user to resend the command as a standalone message with its raw URL attached (e.g., \`/transfer ${commandDocsUrls.transfer}\`).
 
 * POST-EXECUTION: Stop immediately after presenting the completed output. Do not resume roleplay or introduce new story developments in the same response.`;
   }
@@ -342,7 +344,7 @@ export function buildUnifiedJsDelivrSystemPrompt({
     : '';
 
   const mapSection = `(1) BẢN ĐỒ RP (/map) — MODULAR GITHUB + JSDELIVR ENGINE [HARD_LOCK]
-* COMMAND PRIORITY [ABSOLUTE]: Khi người chơi gõ \`/map\` (hoặc \`/map valeroth\`, \`/map bắc ải\`), tạm dừng mạch kể (KHÔNG tự ý thúc đẩy sự kiện hay hành động mới của {{user}}), đọc đúng ĐOẠN HỘI THOẠI / DIỄN BIẾN HIỆN TẠI và xuất DUY NHẤT 1 khối mã \`\`\`html ... \`\`\` hoàn chỉnh (có thể chạy Preview HTML ngay) theo đúng khung bên dưới (KHÔNG tự viết lại CSS, SVG hay giao diện):
+* COMMAND PRIORITY [ABSOLUTE]: Khi người chơi gửi tin nhắn lệnh \`/map\` (hoặc \`/map valeroth\`, \`/map bắc ải\`), tạm dừng mạch kể (KHÔNG tự ý thúc đẩy sự kiện hay hành động mới của {{user}}), đọc đúng ĐOẠN HỘI THOẠI / DIỄN BIẾN HIỆN TẠI và xuất DUY NHẤT 1 khối mã \`\`\`html ... \`\`\` hoàn chỉnh (có thể chạy Preview HTML ngay) theo đúng khung bên dưới (KHÔNG tự viết lại CSS, SVG hay giao diện; AI không cần truy cập mạng vì trình duyệt của người chơi sẽ tự nạp 2 script jsDelivr):
 
 \`\`\`html
 <!DOCTYPE html>
@@ -393,14 +395,13 @@ QUY TẮC BẮT BUỘC CHO /map:
    - **CHỈ ĐIỀN NPC ĐÃ XUẤT HIỆN HOẶC ĐƯỢC NHẮC ĐẾN** trong mạch truyện (hỗ trợ cả NPC có sẵn lẫn NPC mới tạo). Nếu chưa có, để \`npcs: []\`.
    - **ĐỊNH DẠNG BẮT BUỘC (KHÔNG VIẾT DÀI DÒNG)**: Mỗi NPC CHỈ gồm 4 trường: \`name\` (Tên NPC), \`loc\` (mã địa điểm), \`role\` (chức vụ công khai thật ngắn gọn), và \`status\` CHỈ ĐƯỢC phép là 1 trong 3 giá trị: \`"Còn sống"\` | \`"Đã chết"\` | \`"Mất tích"\`. Tuyệt đối không viết mô tả hành động dài dòng vào \`status\` hay \`role\`.
    - **KNOWLEDGE & NAME LOCK**: Tuyệt đối không rò rỉ thông tin \`[HARD_LOCKED]\` vào \`name\` hay \`role\` (ví dụ: chỉ ghi \`"Rowan"\` chứ KHÔNG ghi \`"Rowan Valerius"\` nếu chưa lộ thân phận; Silas Venn / Maelle Voss chỉ hiện vỏ bọc người hầu nếu chưa bị phát hiện; không lộ bí mật Giáo Hoàng, Cedric, Elmira...).
-3. KHÔNG sinh mảng \`tags\` và KHÔNG vẽ tuyến đường. Giữ nguyên \`world: "kaldor-valeroth"\` cùng 2 thẻ \`<script>\` trỏ về jsDelivr.`;
+3. KHÔNG sinh mảng \`tags\` và KHÔNG vẽ tuyến đường. Giữ nguyên \`world: "kaldor-valeroth"\` cùng 2 thẻ \`<script>\` trỏ về jsDelivr.
+4. POST-EXECUTION: Dừng ngay sau khi xuất xong khối \`\`\`html ... \`\`\`, không viết lời mở đầu hay tiếp tục mạch truyện.`;
 
   if (textCommandsMode === 'markdown') {
-    return `${VALEROTH_WORLD_AND_CHESSBOARD_PROMPT}
+    const commandBlock = `# SECTION 5 | HỆ THỐNG LỆNH RP HỢP NHẤT (/map · /recap · /transfer) [HARD_LOCK]
 
-====================================================================
-# SECTION 5 | HỆ THỐNG LỆNH RP HỢP NHẤT (/map · /recap · /transfer)
-====================================================================
+* COMMAND PRIORITY [ABSOLUTE]: Chỉ kích hoạt khi người chơi gửi tin nhắn lệnh riêng \`/map\` (hoặc \`/map valeroth\`, \`/map bắc ải\`), \`/recap\`, hoặc \`/transfer\`. Tạm dừng hoàn toàn mạch kể, không tiếp tục cảnh, không tua thời gian, không tự ý hành động thay \`{{user}}\`. Sau khi xuất xong kết quả lệnh, dừng ngay lập tức.
 
 ${mapSection}
 
@@ -411,6 +412,10 @@ ${RECAP_COMMAND_MARKDOWN}
 ---
 
 ${TRANSFER_COMMAND_MARKDOWN}`;
+
+    return includeWorldLore
+      ? `${VALEROTH_WORLD_AND_CHESSBOARD_PROMPT}\n\n====================================================================\n${commandBlock}`
+      : commandBlock;
   }
 
   const recapEngineSection = `(2) STORYLINE RECAP (/recap) — LÕI ENGINE DÙNG CHUNG [HARD_LOCK]

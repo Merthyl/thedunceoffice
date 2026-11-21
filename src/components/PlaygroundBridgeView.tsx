@@ -50,7 +50,8 @@ export default function PlaygroundBridgeView({
   const [githubRepo, setGithubRepo] = useState('Merthyl/thedunceoffice');
   const [commitSha, setCommitSha] = useState('main');
   const [repoLayout, setRepoLayout] = useState<'aistudio' | 'zip'>('aistudio');
-  const [promptMode, setPromptMode] = useState<'url-context' | 'markdown'>('url-context');
+  const [promptMode, setPromptMode] = useState<'markdown' | 'url-context'>('markdown');
+  const [includeWorldLore, setIncludeWorldLore] = useState(false);
   const [rpPreviewJson, setRpPreviewJson] = useState(DEFAULT_RP_SAMPLE);
 
   const cleanRepo =
@@ -98,13 +99,31 @@ export default function PlaygroundBridgeView({
         overworldList,
         norsvaleList,
         textCommandsMode: promptMode,
+        includeWorldLore,
         commandDocsUrls: {
           mapKaldor: `${rawBase}/map-kaldor.txt`,
           recap: `${rawBase}/recap.txt`,
           transfer: `${rawBase}/transfer.txt`,
         },
       }),
-    [jsDelivrEngineUrl, jsDelivrWorldUrl, overworldList, norsvaleList, promptMode, rawBase]
+    [
+      jsDelivrEngineUrl,
+      jsDelivrWorldUrl,
+      overworldList,
+      norsvaleList,
+      promptMode,
+      includeWorldLore,
+      rawBase,
+    ]
+  );
+
+  const chatTriggerLines = useMemo(
+    () => [
+      { id: 'trigger-map', label: '/map', text: `/map ${rawBase}/map-kaldor.txt` },
+      { id: 'trigger-recap', label: '/recap', text: `/recap ${rawBase}/recap.txt` },
+      { id: 'trigger-transfer', label: '/transfer', text: `/transfer ${rawBase}/transfer.txt` },
+    ],
+    [rawBase]
   );
 
   const livePreviewSrcDoc = useMemo(() => {
@@ -328,17 +347,6 @@ export default function PlaygroundBridgeView({
                 <div className="flex border border-[#111111]/45 bg-white p-0.5 text-[11px]">
                   <button
                     type="button"
-                    onClick={() => setPromptMode('url-context')}
-                    className={`px-2 py-0.5 font-semibold transition-colors ${
-                      promptMode === 'url-context'
-                        ? 'bg-[#111111] text-[#FAF8F4]'
-                        : 'text-[#111111] hover:bg-[#EAE6DC]'
-                    }`}
-                  >
-                    Gọn · GitHub Raw
-                  </button>
-                  <button
-                    type="button"
                     onClick={() => setPromptMode('markdown')}
                     className={`px-2 py-0.5 font-semibold transition-colors ${
                       promptMode === 'markdown'
@@ -346,9 +354,31 @@ export default function PlaygroundBridgeView({
                         : 'text-[#111111] hover:bg-[#EAE6DC]'
                     }`}
                   >
-                    Đầy đủ (Inline)
+                    Cách 1 · Inline (Ổn định nhất)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPromptMode('url-context')}
+                    className={`px-2 py-0.5 font-semibold transition-colors ${
+                      promptMode === 'url-context'
+                        ? 'bg-[#111111] text-[#FAF8F4]'
+                        : 'text-[#111111] hover:bg-[#EAE6DC]'
+                    }`}
+                  >
+                    Cách 2 · Gọn (Kèm link chat)
                   </button>
                 </div>
+                {promptMode === 'markdown' && (
+                  <label className="flex cursor-pointer items-center gap-1.5 text-[11px] text-[#3D3A35] select-none">
+                    <input
+                      type="checkbox"
+                      checked={includeWorldLore}
+                      onChange={(e) => setIncludeWorldLore(e.target.checked)}
+                      className="accent-[#8B1E1E]"
+                    />
+                    <span>Kèm Lore Valeroth (Section 3–4)</span>
+                  </label>
+                )}
               </div>
               <button
                 type="button"
@@ -359,6 +389,41 @@ export default function PlaygroundBridgeView({
                 <span>{copiedBlock === 'jsdelivr-prompt' ? 'Đã chép' : 'Sao chép Prompt'}</span>
               </button>
             </div>
+
+            {promptMode === 'markdown' ? (
+              <div className="border-b border-[#111111]/15 bg-[#FAF8F4] px-4 py-2 text-[11px] leading-relaxed text-[#3D3A35]">
+                <strong>Ổn định 100%:</strong> Dán thẳng vào cuối System Instructions. Khi chơi chỉ cần gửi riêng{' '}
+                <code className="font-mono font-semibold text-[#111111]">/map</code>,{' '}
+                <code className="font-mono font-semibold text-[#111111]">/recap</code> hoặc{' '}
+                <code className="font-mono font-semibold text-[#111111]">/transfer</code> — AI không cần tự mở link GitHub nên không bao giờ bị chặn URL.
+              </div>
+            ) : (
+              <div className="space-y-1.5 border-b border-[#111111]/15 bg-[#FAF8F4] px-4 py-2.5 text-[11px] text-[#3D3A35]">
+                <p className="leading-relaxed">
+                  <strong>Lưu ý bảo mật URL:</strong> Công cụ duyệt web chỉ được phép mở link xuất hiện trong{' '}
+                  <strong>tin nhắn người dùng</strong> (và repo phải bật <strong>Public</strong>). Hãy lưu 3 dòng dưới đây vào phím tắt gõ nhanh (Text Replacement) để gửi khi gọi lệnh:
+                </p>
+                <div className="space-y-1">
+                  {chatTriggerLines.map((item) => (
+                    <div
+                      key={item.id}
+                      className="flex items-center justify-between gap-2 border border-[#111111]/20 bg-white px-2.5 py-1 font-mono text-[11px]"
+                    >
+                      <span className="truncate text-[#111111]">{item.text}</span>
+                      <button
+                        type="button"
+                        onClick={() => handleCopy(item.id, item.text)}
+                        className="flex items-center gap-1 font-sans text-[11px] font-semibold text-[#8B1E1E] hover:underline whitespace-nowrap shrink-0"
+                      >
+                        {copiedBlock === item.id ? <Check size={11} /> : <Copy size={11} />}
+                        <span>{copiedBlock === item.id ? 'Đã chép' : `Chép ${item.label}`}</span>
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
             <pre className="max-h-60 overflow-auto whitespace-pre-wrap p-3.5 font-mono text-[11px] leading-relaxed">
               {jsDelivrSystemPrompt}
             </pre>
