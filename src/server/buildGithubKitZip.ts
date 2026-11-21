@@ -116,7 +116,7 @@ Kho mã nguồn **tách lõi dùng chung & gói bản đồ từng nhân vật**
 \`\`\`text
 ├── engine.js                         ← Lõi dùng chung mọi bot (/recap, /transfer, bộ vẽ /map, API mở rộng registerMode)
 ├── worlds/
-│   ├── kaldor-valeroth.js            ← Gói bản đồ riêng của Kaldor (Valeroth & Bắc Ải, 14 khoanh vùng)
+│   ├── kaldor-valeroth.js            ← Gói bản đồ riêng của Kaldor (Valeroth 7 vùng & Bắc Ải 10 khu vực)
 │   └── _template.js                  ← Mẫu trống để copy tạo thêm nhân vật / thế giới mới
 ├── assets/
 │   └── kaldor/
@@ -126,7 +126,7 @@ Kho mã nguồn **tách lõi dùng chung & gói bản đồ từng nhân vật**
 │   ├── world-and-chessboard.md       ← Section 3 & Section 4 của Kaldor
 │   ├── recap.md                      ← Đặc tả chuẩn lệnh /recap (dùng chung)
 │   └── transfer.md                   ← Đặc tả chuẩn lệnh /transfer (dùng chung)
-├── index.html                        ← Bản đồ cố định độc lập của Kaldor có sẵn + Gắn tag / NPC
+├── index.html                        ← Bản đồ độc lập của Kaldor
 └── README.md
 \`\`\`
 
@@ -162,12 +162,12 @@ export function buildGithubKitZip(rootDir: string): Buffer {
     path.resolve(rootDir, 'dist/github-kit/index.html'),
   ]);
   const valerothJpg = readFirstExisting([
-    path.resolve(rootDir, 'src/assets/images/valeroth_map_v2_1795197882349.jpg'),
-    path.resolve(rootDir, 'dist/src/assets/images/valeroth_map_v2_1795197882349.jpg'),
+    path.resolve(rootDir, 'src/assets/images/valeroth_overworld_v22_1795283743457.jpg'),
+    path.resolve(rootDir, 'dist/src/assets/images/valeroth_overworld_v22_1795283743457.jpg'),
   ]);
   const norsvaleJpg = readFirstExisting([
-    path.resolve(rootDir, 'src/assets/images/norsvale_interior_1795197881444.jpg'),
-    path.resolve(rootDir, 'dist/src/assets/images/norsvale_interior_1795197881444.jpg'),
+    path.resolve(rootDir, 'src/assets/images/norsvale_interior_v12_1795283643903.jpg'),
+    path.resolve(rootDir, 'dist/src/assets/images/norsvale_interior_v12_1795283643903.jpg'),
   ]);
 
   const mapKaldorMd = readFirstExisting([
@@ -180,6 +180,8 @@ export function buildGithubKitZip(rootDir: string): Buffer {
     { name: 'worlds/kaldor-valeroth.js', data: kaldorWorldJs },
     { name: 'worlds/_template.js', data: templateWorldJs },
     { name: 'index.html', data: indexHtml },
+    { name: 'transfer.txt', data: Buffer.from(TRANSFER_COMMAND_MARKDOWN, 'utf8') },
+    { name: 'recap.txt', data: Buffer.from(RECAP_COMMAND_MARKDOWN, 'utf8') },
     { name: 'commands/map-kaldor.md', data: mapKaldorMd },
     { name: 'commands/world-and-chessboard.md', data: Buffer.from(VALEROTH_WORLD_AND_CHESSBOARD_PROMPT, 'utf8') },
     { name: 'commands/recap.md', data: Buffer.from(RECAP_COMMAND_MARKDOWN, 'utf8') },

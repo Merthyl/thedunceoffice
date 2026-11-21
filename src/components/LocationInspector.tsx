@@ -1,163 +1,146 @@
 import React from 'react';
-import { ArrowRight, MapPin, X } from 'lucide-react';
-import {
-  LOCATION_STATUS_LABELS,
-  LOCATION_TYPE_LABELS,
-  ROUTE_STATUS_LABELS,
-  ROUTE_TYPE_LABELS,
-} from '../data/storyEngine';
-import type { StoryLocation, StoryRoute, StoryWorldState } from '../types/story';
+import { ArrowRight, X } from 'lucide-react';
+import { getLocationScope } from '../data/storyEngine';
+import type { StoryLocation, StoryWorldState } from '../types/story';
 
 interface LocationInspectorProps {
   world: StoryWorldState;
   selectedLocation: StoryLocation | null;
-  selectedRoute: StoryRoute | null;
   onClose: () => void;
-  onSetPlayerHere: (locationId: string) => void;
   onEnterNorsvale?: () => void;
+}
+
+function normalizeNpcStatusLabel(raw?: string): 'Còn sống' | 'Đã chết' | 'Mất tích' {
+  const s = (raw ?? '')
+    .trim()
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/đ/g, 'd');
+  if (
+    s.includes('chet') ||
+    s.includes('dead') ||
+    s.includes('deceased') ||
+    s.includes('tu vong') ||
+    s.includes('hy sinh')
+  ) {
+    return 'Đã chết';
+  }
+  if (
+    s.includes('mat tich') ||
+    s.includes('missing') ||
+    s.includes('bien mat') ||
+    s.includes('khong ro')
+  ) {
+    return 'Mất tích';
+  }
+  return 'Còn sống';
 }
 
 export default function LocationInspector({
   world,
   selectedLocation,
-  selectedRoute,
   onClose,
-  onSetPlayerHere,
   onEnterNorsvale,
 }: LocationInspectorProps) {
-  if (!selectedLocation && !selectedRoute) return null;
+  if (!selectedLocation) return null;
 
-  if (selectedLocation) {
-    const presentCharacters = world.characters.filter((c) => c.locationId === selectedLocation.id);
-    const isNorsvaleOverworld = selectedLocation.id === 'loc-norsvale';
+  const isNorsvaleOverworld = selectedLocation.id === 'loc-norsvale';
+  const norsvaleInteriorIds = new Set(
+    world.locations.filter((l) => getLocationScope(l) === 'norsvale').map((l) => l.id)
+  );
 
-    return (
-      <aside className="absolute top-14 right-3 z-30 w-76 max-h-[calc(100%-6rem)] overflow-y-auto border border-[#111111] bg-[#FAF8F4] text-[#111111] shadow-[4px_4px_0_rgba(17,17,17,0.16)]">
-        <div className="flex items-center justify-between border-b border-[#111111] bg-[#F2EFE8] px-4 py-2.5">
+  const presentNpcs = world.characters.filter((c) => {
+    if (c.isPlayer) return false;
+    if (c.locationId === selectedLocation.id) return true;
+    if (isNorsvaleOverworld && norsvaleInteriorIds.has(c.locationId)) return true;
+    return false;
+  });
+
+  const heading = selectedLocation.altName
+    ? `${selectedLocation.name} (${selectedLocation.altName})`
+    : selectedLocation.name;
+
+  return (
+    <aside className="absolute top-14 right-3 z-30 w-76 max-h-[calc(100%-6rem)] overflow-y-auto border border-[#111111] bg-[#FAF8F4] text-[#111111] shadow-[4px_4px_0_rgba(17,17,17,0.16)]">
+      <div className="flex items-center justify-between border-b border-[#111111] bg-[#F2EFE8] px-4 py-2.5">
+        <h2 className="font-display text-sm font-bold tracking-wide text-[#111111]">{heading}</h2>
+        <button
+          type="button"
+          onClick={onClose}
+          className="p-1 text-[#3D3A35] hover:bg-[#E4E0D6] hover:text-[#111111]"
+          aria-label="Đóng"
+        >
+          <X size={15} />
+        </button>
+      </div>
+
+      <div className="space-y-3 p-4 text-xs">
+        {selectedLocation.ruler && (
           <div>
-            {selectedLocation.altName && (
-              <p className="text-[11px] italic text-[#55524B]">{selectedLocation.altName}</p>
-            )}
-            <h2 className="font-display text-sm font-bold tracking-wide uppercase text-[#111111]">
-              · {selectedLocation.name} ·
-            </h2>
+            <span className="text-[#55524B]">Dưới quyền cai quản của: </span>
+            <strong className="text-[#111111]">{selectedLocation.ruler}</strong>
           </div>
+        )}
+
+        {selectedLocation.summary && (
+          <p className="leading-relaxed text-[#2E2C28]">{selectedLocation.summary}</p>
+        )}
+
+        {isNorsvaleOverworld && onEnterNorsvale && (
           <button
             type="button"
-            onClick={onClose}
-            className="p-1 text-[#3D3A35] hover:bg-[#E4E0D6] hover:text-[#111111]"
-            aria-label="Đóng"
+            onClick={onEnterNorsvale}
+            className="flex w-full items-center justify-between border border-[#111111] bg-[#111111] px-3 py-2 text-xs font-semibold text-[#FAF8F4] transition-colors hover:bg-[#8B1E1E]"
           >
-            <X size={15} />
+            <span>Vào Thành Bắc Ải</span>
+            <ArrowRight size={14} />
           </button>
-        </div>
+        )}
 
-        <div className="space-y-3 p-4 text-xs">
-          {isNorsvaleOverworld && onEnterNorsvale && (
-            <button
-              type="button"
-              onClick={onEnterNorsvale}
-              className="flex w-full items-center justify-between border border-[#111111] bg-[#111111] px-3 py-2 text-xs font-semibold text-[#FAF8F4] transition-colors hover:bg-[#8B1E1E]"
-            >
-              <span>Vào sơ đồ bên trong Bắc Ải</span>
-              <ArrowRight size={14} />
-            </button>
-          )}
-
-          <div className="grid grid-cols-2 gap-2 border-b border-[#111111]/15 pb-2.5 text-[11px]">
-            <div>
-              <p className="text-[#6B665D]">Loại hình</p>
-              <p className="font-semibold text-[#111111]">
-                {LOCATION_TYPE_LABELS[selectedLocation.type]}
-              </p>
-            </div>
-            <div>
-              <p className="text-[#6B665D]">Trạng thái</p>
-              <p className="font-semibold text-[#111111]">
-                {LOCATION_STATUS_LABELS[selectedLocation.status]}
-              </p>
-            </div>
-            {selectedLocation.ruler && (
-              <div className="col-span-2 pt-1">
-                <p className="text-[#6B665D]">Kiểm soát / Lãnh chúa</p>
-                <p className="font-semibold text-[#111111]">{selectedLocation.ruler}</p>
-              </div>
-            )}
-          </div>
-
-          <p className="leading-relaxed text-[#2A2824]">{selectedLocation.summary}</p>
-
-          <div className="border-t border-[#111111]/15 pt-2.5">
-            <div className="flex items-center justify-between gap-2">
-              <span className="font-semibold">Hiện diện ({presentCharacters.length})</span>
-              <button
-                type="button"
-                onClick={() => onSetPlayerHere(selectedLocation.id)}
-                className="flex items-center gap-1 font-semibold text-[#8B1E1E] hover:underline whitespace-nowrap shrink-0"
-              >
-                <MapPin size={12} />
-                <span>Đặt dấu vị trí tại đây</span>
-              </button>
-            </div>
-            {presentCharacters.length > 0 ? (
-              <ul className="mt-1.5 space-y-1 text-[#3D3A35]">
-                {presentCharacters.map((c) => (
-                  <li key={c.id} className="truncate">
-                    <span
-                      className={`font-semibold ${
-                        c.isPlayer ? 'text-[#8B1E1E]' : 'text-[#111111]'
-                      }`}
-                    >
-                      {c.name}
-                    </span>{' '}
-                    · {c.role}
+        <div className="border-t border-[#111111]/15 pt-2.5">
+          <div className="mb-2 font-semibold text-[#111111]">NPC tại đây:</div>
+          {presentNpcs.length > 0 ? (
+            <ul className="space-y-2.5">
+              {presentNpcs.map((c) => {
+                const npcStatus = normalizeNpcStatusLabel(c.status);
+                const borderClass =
+                  npcStatus === 'Đã chết'
+                    ? 'border-[#8B1E1E]'
+                    : npcStatus === 'Mất tích'
+                    ? 'border-[#6B665D]'
+                    : 'border-[#111111]';
+                const badgeClass =
+                  npcStatus === 'Đã chết'
+                    ? 'border-[#8B1E1E] bg-[#FAF2F0] text-[#8B1E1E]'
+                    : npcStatus === 'Mất tích'
+                    ? 'border-dashed border-[#6B665D] bg-[#F5F2EA] text-[#55524B]'
+                    : 'border-[#111111]/40 bg-[#EFECE4] text-[#111111]';
+                return (
+                  <li
+                    key={c.id}
+                    className={`border-l-[2.5px] pl-2.5 py-0.5 ${borderClass}`}
+                  >
+                    <div className="flex flex-wrap items-center gap-1.5 leading-snug">
+                      <span className="font-bold text-[#111111]">{c.name}</span>
+                      <span
+                        className={`inline-block border px-1.5 py-px text-[9.5px] font-bold uppercase tracking-[0.03em] leading-tight ${badgeClass}`}
+                      >
+                        {npcStatus}
+                      </span>
+                    </div>
+                    <div className="mt-0.5 text-[11.5px] text-[#3D3A35]">
+                      {c.role || 'Chưa rõ chức vụ'}
+                    </div>
                   </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="mt-1 text-[#6B665D]">Chưa có nhân vật tại khu vực này.</p>
-            )}
-          </div>
+                );
+              })}
+            </ul>
+          ) : (
+            <p className="italic text-[#6B665D]">Chưa có dữ liệu</p>
+          )}
         </div>
-      </aside>
-    );
-  }
-
-  if (selectedRoute) {
-    const fromLoc = world.locations.find((l) => l.id === selectedRoute.fromId);
-    const toLoc = world.locations.find((l) => l.id === selectedRoute.toId);
-
-    return (
-      <aside className="absolute top-14 right-3 z-30 w-72 border border-[#111111] bg-[#FAF8F4] text-[#111111] shadow-[4px_4px_0_rgba(17,17,17,0.16)]">
-        <div className="flex items-center justify-between border-b border-[#111111] bg-[#F2EFE8] px-4 py-2.5">
-          <div>
-            <p className="text-[10px] text-[#55524B]">Tuyến đường</p>
-            <h2 className="font-display text-sm font-bold text-[#111111]">
-              {fromLoc?.name ?? '?'} → {toLoc?.name ?? '?'}
-            </h2>
-          </div>
-          <button
-            type="button"
-            onClick={onClose}
-            className="p-1 text-[#3D3A35] hover:bg-[#E4E0D6]"
-            aria-label="Đóng"
-          >
-            <X size={15} />
-          </button>
-        </div>
-
-        <div className="space-y-2 p-4 text-xs">
-          <p className="font-semibold text-[#111111]">{selectedRoute.label}</p>
-          <div className="flex items-center justify-between text-[11px] text-[#55524B]">
-            <span>{ROUTE_TYPE_LABELS[selectedRoute.type]}</span>
-            <span className="font-semibold text-[#111111]">
-              {ROUTE_STATUS_LABELS[selectedRoute.status]}
-            </span>
-          </div>
-        </div>
-      </aside>
-    );
-  }
-
-  return null;
+      </div>
+    </aside>
+  );
 }

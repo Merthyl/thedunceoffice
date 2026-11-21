@@ -1,17 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { Code2, Map as MapIcon, MapPin, RotateCcw, Shield, Terminal, X } from 'lucide-react';
 import {
-  Map as MapIcon,
-  MapPin,
-  RotateCcw,
-  Shield,
-  Terminal,
-  Waypoints,
-  X,
-} from 'lucide-react';
-import {
-  applyMapQueryParams,
-  executeStoryToolCall,
-  getLocationScope,
   INITIAL_STORY_WORLD,
   MAP_SCOPE_LABELS,
   resolvePlayerPosition,
@@ -19,110 +8,35 @@ import {
 import StoryMapCanvas from './components/StoryMapCanvas';
 import LocationInspector from './components/LocationInspector';
 import PlaygroundBridgeView from './components/PlaygroundBridgeView';
+import SlashCommandDrawer from './components/SlashCommandDrawer';
 import type { MapScope, StoryWorldState } from './types/story';
 
-const STORAGE_KEY = 'valeroth-engraving-map-v5';
+const STORAGE_KEY = 'valeroth-engraving-map-v18';
 
-function hydrateWorld(parsed: StoryWorldState): StoryWorldState {
-  const hasNorsvaleInterior = parsed.locations.some((l) => getLocationScope(l) === 'norsvale');
-  const mergedLocations = hasNorsvaleInterior
-    ? parsed.locations
-    : [
-        ...parsed.locations,
-        ...INITIAL_STORY_WORLD.locations.filter((l) => getLocationScope(l) === 'norsvale'),
-      ];
-
-  const mergedRoutes = hasNorsvaleInterior
-    ? parsed.routes
-    : [
-        ...parsed.routes,
-        ...INITIAL_STORY_WORLD.routes.filter((r) => r.scope === 'norsvale'),
-      ];
-
-  return {
-    ...parsed,
-    activeMapScope: parsed.activeMapScope ?? 'valeroth',
-    playerLocationId: parsed.playerLocationId ?? INITIAL_STORY_WORLD.playerLocationId,
-    playerStatus: parsed.playerStatus ?? INITIAL_STORY_WORLD.playerStatus,
-    locations: mergedLocations,
-    routes: mergedRoutes,
-  };
-}
-
-function decodeWorldFromHash(): StoryWorldState | null {
+function loadInitialWorld(): StoryWorldState {
   try {
-    const hash = window.location.hash;
-    if (!hash || !hash.includes('world=')) return null;
-    const rawParam = hash.split('world=')[1]?.split('&')[0];
-    if (!rawParam) return null;
-    const binary = atob(decodeURIComponent(rawParam));
-    const bytes = new Uint8Array(binary.length);
-    for (let i = 0; i < binary.length; i++) {
-      bytes[i] = binary.charCodeAt(i);
-    }
-    const json = new TextDecoder().decode(bytes);
-    const parsed = JSON.parse(json) as StoryWorldState;
-    if (parsed && Array.isArray(parsed.locations) && Array.isArray(parsed.routes)) {
-      return hydrateWorld(parsed);
-    }
-    return null;
-  } catch {
-    return null;
-  }
-}
-
-function loadInitialBootstrap(): {
-  world: StoryWorldState;
-  scope: MapScope;
-  autoOpenMap: boolean;
-  focusLocationId: string | null;
-} {
-  let base: StoryWorldState = INITIAL_STORY_WORLD;
-  const fromHash = decodeWorldFromHash();
-  if (fromHash) {
-    base = fromHash;
-  } else {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) {
-        const parsed = JSON.parse(raw) as StoryWorldState;
-        if (parsed && Array.isArray(parsed.locations) && Array.isArray(parsed.routes)) {
-          base = hydrateWorld(parsed);
-        }
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw) as StoryWorldState;
+      if (parsed && Array.isArray(parsed.locations) && parsed.locations.length >= 17) {
+        return parsed;
       }
-    } catch {
-      base = INITIAL_STORY_WORLD;
     }
+  } catch {
+    // Ignore storage errors
   }
-
-  const fromQuery = applyMapQueryParams(base, window.location.search);
-  if (fromQuery) {
-    return fromQuery;
-  }
-
-  return {
-    world: base,
-    scope: base.activeMapScope ?? 'valeroth',
-    autoOpenMap: false,
-    focusLocationId: null,
-  };
+  return INITIAL_STORY_WORLD;
 }
 
 export default function App() {
-  const initialBootstrap = useMemo(() => loadInitialBootstrap(), []);
-  const [world, setWorld] = useState<StoryWorldState>(initialBootstrap.world);
-  const [activeScope, setActiveScope] = useState<MapScope>(initialBootstrap.scope);
+  const [world, setWorld] = useState<StoryWorldState>(() => loadInitialWorld());
+  const [activeScope, setActiveScope] = useState<MapScope>(() => world.activeMapScope ?? 'valeroth');
   const [selectedLocationId, setSelectedLocationId] = useState<string | null>(null);
-  const [selectedRouteId, setSelectedRouteId] = useState<string | null>(null);
-  const [highlightedLocationIds, setHighlightedLocationIds] = useState<string[]>(
-    initialBootstrap.focusLocationId ? [initialBootstrap.focusLocationId] : []
-  );
-  const [focusLocationId, setFocusLocationId] = useState<string | null>(
-    initialBootstrap.focusLocationId
-  );
-  const [showPlayerMapCard, setShowPlayerMapCard] = useState(initialBootstrap.autoOpenMap);
-  const [lastBridgeToast, setLastBridgeToast] = useState<string | null>(null);
+  const [highlightedLocationIds, setHighlightedLocationIds] = useState<string[]>([]);
+  const [focusLocationId, setFocusLocationId] = useState<string | null>(null);
+  const [showPlayerMapCard, setShowPlayerMapCard] = useState(false);
   const [isBridgeOpen, setIsBridgeOpen] = useState(false);
+  const [isCommandDrawerOpen, setIsCommandDrawerOpen] = useState(false);
 
   useEffect(() => {
     try {
@@ -131,6 +45,19 @@ export default function App() {
       // Ignore storage quota errors
     }
   }, [world, activeScope]);
+
+  useEffect(() => {
+    const handleGlobalKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== '/' || e.metaKey || e.ctrlKey || e.altKey) return;
+      const target = e.target as HTMLElement | null;
+      const tag = target?.tagName?.toLowerCase();
+      if (tag === 'input' || tag === 'textarea' || target?.isContentEditable) return;
+      e.preventDefault();
+      setIsCommandDrawerOpen(true);
+    };
+    window.addEventListener('keydown', handleGlobalKeyDown);
+    return () => window.removeEventListener('keydown', handleGlobalKeyDown);
+  }, []);
 
   const playerPosition = useMemo(() => resolvePlayerPosition(world), [world]);
 
@@ -145,113 +72,32 @@ export default function App() {
   const handleScopeChange = useCallback((nextScope: MapScope) => {
     setActiveScope(nextScope);
     setSelectedLocationId(null);
-    setSelectedRouteId(null);
     setWorld((prev) => ({ ...prev, activeMapScope: nextScope }));
   }, []);
 
-  const triggerPlayerMap = useCallback(
-    (targetWorld: StoryWorldState, preferredView?: string) => {
-      const outcome = executeStoryToolCall(targetWorld, 'show_player_map', {
-        ...(preferredView ? { preferredView } : {}),
-      });
-      const nextScope =
-        outcome.switchScope ?? resolvePlayerPosition(outcome.updatedWorld).recommendedScope;
+  const triggerPlayerMap = useCallback(() => {
+    const nextScope = playerPosition.recommendedScope;
+    setActiveScope(nextScope);
+    setSelectedLocationId(null);
+    setShowPlayerMapCard(true);
 
-      setWorld(outcome.updatedWorld);
-      setActiveScope(nextScope);
-      setSelectedLocationId(null);
-      setSelectedRouteId(null);
-      setShowPlayerMapCard(true);
-      setLastBridgeToast(null);
-
-      const pos = resolvePlayerPosition(outcome.updatedWorld);
-      const focusLoc = pos.displayLocationForScope(nextScope) ?? pos.exactLocation;
-      if (focusLoc) {
-        setTimeout(() => {
-          setFocusLocationId(focusLoc.id);
-          flashHighlights([focusLoc.id]);
-        }, 40);
-      }
-    },
-    [flashHighlights]
-  );
-
-  const handleSetPlayerHere = useCallback(
-    (locationId: string) => {
-      const target = world.locations.find((l) => l.id === locationId);
-      if (!target) return;
-      const outcome = executeStoryToolCall(world, 'set_player_location', {
-        targetLocationName: target.name,
-        markRouteTraversed: true,
-      });
-      setWorld(outcome.updatedWorld);
-      if (outcome.switchScope) {
-        setActiveScope(outcome.switchScope);
-      }
-      flashHighlights([locationId]);
-    },
-    [world, flashHighlights]
-  );
-
-  const handleExecuteRawBridgeCalls = useCallback(
-    (calls: Array<{ name: string; args?: Record<string, unknown> }>) => {
-      let workingWorld = world;
-      const responses: Array<{ name: string; response: Record<string, unknown> }> = [];
-      const summaries: string[] = [];
-      const affected: string[] = [];
-      let nextScope: MapScope | undefined;
-      let shouldShowMap = false;
-
-      for (const call of calls) {
-        const outcome = executeStoryToolCall(workingWorld, call.name, call.args ?? {});
-        workingWorld = outcome.updatedWorld;
-        responses.push({ name: call.name, response: outcome.result });
-        summaries.push(outcome.summary);
-        affected.push(...outcome.affectedLocationIds);
-        if (outcome.switchScope) nextScope = outcome.switchScope;
-        if (outcome.showPlayerMap) shouldShowMap = true;
-      }
-
-      setWorld(workingWorld);
-      if (nextScope) {
-        setActiveScope(nextScope);
-      }
-      if (shouldShowMap) {
-        setShowPlayerMapCard(true);
-        const pos = resolvePlayerPosition(workingWorld);
-        const focusScope = nextScope ?? pos.recommendedScope;
-        const focusLoc = pos.displayLocationForScope(focusScope) ?? pos.exactLocation;
-        if (focusLoc) {
-          setTimeout(() => {
-            setFocusLocationId(focusLoc.id);
-            flashHighlights([focusLoc.id]);
-          }, 50);
-        }
-      } else if (affected.length > 0) {
-        flashHighlights(affected);
-      }
-
-      setLastBridgeToast(summaries.join(' · ') || 'Đã thực thi hàm lên bản đồ.');
-
-      return { responses, summaries };
-    },
-    [world, flashHighlights]
-  );
+    const focusLoc = playerPosition.displayLocationForScope(nextScope) ?? playerPosition.exactLocation;
+    if (focusLoc) {
+      setTimeout(() => {
+        setFocusLocationId(focusLoc.id);
+        flashHighlights([focusLoc.id]);
+      }, 40);
+    }
+  }, [playerPosition, flashHighlights]);
 
   const handleResetWorld = () => {
     setWorld(INITIAL_STORY_WORLD);
     setActiveScope('valeroth');
-    setLastBridgeToast(null);
     setShowPlayerMapCard(false);
     setSelectedLocationId(null);
-    setSelectedRouteId(null);
-    if (window.location.hash) {
-      window.history.replaceState(null, '', window.location.pathname);
-    }
   };
 
   const selectedLocation = world.locations.find((l) => l.id === selectedLocationId) ?? null;
-  const selectedRoute = world.routes.find((r) => r.id === selectedRouteId) ?? null;
 
   return (
     <div className="relative h-screen w-screen overflow-hidden bg-[#EAE6DC] text-[#111111]">
@@ -260,17 +106,15 @@ export default function App() {
         world={world}
         activeScope={activeScope}
         selectedLocationId={selectedLocationId}
-        selectedRouteId={selectedRouteId}
         highlightedLocationIds={highlightedLocationIds}
         focusLocationId={focusLocationId}
         isPlayerMapHighlighted={showPlayerMapCard}
         onClearFocus={() => setFocusLocationId(null)}
         onSelectLocation={setSelectedLocationId}
-        onSelectRoute={setSelectedRouteId}
         onEnterNorsvale={() => handleScopeChange('norsvale')}
       />
 
-      {/* Top-Center Mode Switcher: Toàn cảnh Valeroth | Bên trong Bắc Ải */}
+      {/* Top-Center Layer Switcher: Toàn cảnh Valeroth | Bên trong Bắc Ải */}
       <div className="absolute top-3 left-1/2 z-20 -translate-x-1/2 flex items-center border border-[#111111] bg-[#FAF8F4]/96 p-0.5 shadow-[3px_3px_0_rgba(17,17,17,0.14)] backdrop-blur-xs">
         <button
           type="button"
@@ -282,7 +126,7 @@ export default function App() {
           }`}
         >
           <MapIcon size={13} />
-          <span>Toàn cảnh Valeroth</span>
+          <span>Vương quốc Valeroth</span>
           {playerPosition.recommendedScope === 'valeroth' && (
             <MapPin size={12} className="text-[#B83232]" />
           )}
@@ -300,18 +144,32 @@ export default function App() {
           }`}
         >
           <Shield size={13} />
-          <span>Bên trong Bắc Ải</span>
+          <span>Thành Bắc Ải</span>
           {playerPosition.recommendedScope === 'norsvale' && (
             <MapPin size={12} className="text-[#B83232]" />
           )}
         </button>
       </div>
 
-      {/* Minimal Top-Right Controls: /map + Function + Reset */}
+      {/* Minimal Top-Right Controls: Lệnh / + /map + GitHub jsDelivr + Reset */}
       <div className="absolute top-3 right-3 z-20 flex items-center gap-1 border border-[#111111] bg-[#FAF8F4]/96 p-1 shadow-sm backdrop-blur-xs">
         <button
           type="button"
-          onClick={() => triggerPlayerMap(world)}
+          onClick={() => setIsCommandDrawerOpen((v) => !v)}
+          className={`flex items-center gap-1 border px-2.5 py-1.5 font-mono text-[11px] font-semibold transition-colors whitespace-nowrap shrink-0 ${
+            isCommandDrawerOpen
+              ? 'border-[#111111] bg-[#111111] text-[#FAF8F4]'
+              : 'border-[#111111]/45 bg-[#FAF8F4] text-[#111111] hover:bg-[#E7E3DA]'
+          }`}
+          title="Mở bảng Slash Command kết nối GitHub Raw (/transfer, /recap)"
+        >
+          <Terminal size={12} />
+          <span>Lệnh /</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={triggerPlayerMap}
           className="flex items-center gap-1 border border-[#8B1E1E] bg-[#FAF8F4] px-2.5 py-1.5 font-mono text-[11px] font-semibold text-[#8B1E1E] transition-colors hover:bg-[#8B1E1E] hover:text-[#FAF8F4] whitespace-nowrap shrink-0"
           title="Hiển thị vị trí đứng hiện tại của bạn (/map)"
         >
@@ -324,8 +182,8 @@ export default function App() {
           onClick={() => setIsBridgeOpen(true)}
           className="flex items-center gap-1.5 bg-[#111111] px-3 py-1.5 text-xs font-semibold text-[#FAF8F4] transition-colors hover:bg-[#8B1E1E] whitespace-nowrap shrink-0"
         >
-          <Waypoints size={13} />
-          <span>jsDelivr / Function</span>
+          <Code2 size={13} />
+          <span>GitHub · jsDelivr</span>
         </button>
 
         <button
@@ -339,109 +197,77 @@ export default function App() {
         </button>
       </div>
 
-      {/* Clean Read-Only Territory / Route Inspector on Click */}
+      {/* Clean Territory Inspector on Click */}
       <LocationInspector
         world={world}
         selectedLocation={selectedLocation}
-        selectedRoute={selectedRoute}
-        onClose={() => {
-          setSelectedLocationId(null);
-          setSelectedRouteId(null);
-        }}
-        onSetPlayerHere={handleSetPlayerHere}
+        onClose={() => setSelectedLocationId(null)}
         onEnterNorsvale={() => handleScopeChange('norsvale')}
       />
 
-      {/* Floating Bottom-Center `/map` Current Position Card & Function Execution Notice */}
-      {(showPlayerMapCard || lastBridgeToast) && (
-        <div className="pointer-events-none absolute right-4 bottom-4 left-4 z-20 flex flex-col items-center gap-2">
-          {showPlayerMapCard && playerPosition.exactLocation && (
-            <div className="pointer-events-auto w-full max-w-lg border border-[#111111] bg-[#FAF8F4]/98 text-[#111111] shadow-[4px_4px_0_rgba(17,17,17,0.18)]">
-              <div className="flex items-center justify-between border-b border-[#111111]/25 bg-[#F2EFE8] px-3.5 py-2">
-                <div className="flex items-center gap-2">
-                  <MapPin size={14} className="text-[#8B1E1E]" />
-                  <span className="font-mono text-[11px] font-semibold text-[#8B1E1E]">/map</span>
-                  <span className="font-display text-xs font-bold tracking-wide uppercase">
-                    {playerPosition.exactLocation.name}
-                  </span>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setShowPlayerMapCard(false)}
-                  className="p-0.5 text-[#55524B] hover:text-[#111111]"
-                  aria-label="Đóng thẻ vị trí"
-                >
-                  <X size={14} />
-                </button>
+      {/* Floating Bottom-Center `/map` Current Position Card */}
+      {showPlayerMapCard && playerPosition.exactLocation && (
+        <div className="pointer-events-none absolute right-4 bottom-4 left-4 z-20 flex flex-col items-center">
+          <div className="pointer-events-auto w-full max-w-lg border border-[#111111] bg-[#FAF8F4]/98 text-[#111111] shadow-[4px_4px_0_rgba(17,17,17,0.18)]">
+            <div className="flex items-center justify-between border-b border-[#111111]/25 bg-[#F2EFE8] px-3.5 py-2">
+              <div className="flex items-center gap-2">
+                <MapPin size={14} className="text-[#8B1E1E]" />
+                <span className="font-mono text-[11px] font-semibold text-[#8B1E1E]">/map</span>
+                <span className="font-display text-xs font-bold tracking-wide uppercase">
+                  {playerPosition.exactLocation.name}
+                </span>
               </div>
-
-              <div className="space-y-2 px-3.5 py-2.5 text-xs">
-                <div className="flex flex-wrap items-center justify-between gap-2 text-[11px] text-[#55524B]">
-                  <span>
-                    Lớp bản đồ:{' '}
-                    <strong className="text-[#111111]">
-                      {MAP_SCOPE_LABELS[playerPosition.recommendedScope]}
-                    </strong>
-                    {playerPosition.interiorLocation && ' · Pháo đài Bắc Ải'}
-                  </span>
-                  {playerPosition.interiorLocation && (
-                    <button
-                      type="button"
-                      onClick={() =>
-                        handleScopeChange(activeScope === 'norsvale' ? 'valeroth' : 'norsvale')
-                      }
-                      className="font-semibold text-[#8B1E1E] hover:underline whitespace-nowrap"
-                    >
-                      {activeScope === 'norsvale'
-                        ? 'Xem trên toàn cảnh Valeroth'
-                        : 'Phóng vào bên trong Bắc Ải'}
-                    </button>
-                  )}
-                </div>
-
-                <p className="leading-relaxed text-[#111111]">{playerPosition.status}</p>
-
-                {playerPosition.nearbyLocations.length > 0 && (
-                  <div className="flex flex-wrap items-center gap-1.5 border-t border-[#111111]/15 pt-2">
-                    <span className="text-[11px] font-semibold text-[#55524B]">Lối đi gần đây:</span>
-                    {playerPosition.nearbyLocations.map((near) => (
-                      <button
-                        key={near.id}
-                        type="button"
-                        onClick={() => handleSetPlayerHere(near.id)}
-                        className="border border-[#111111]/35 bg-white px-2 py-0.5 text-[11px] font-medium text-[#111111] transition-colors hover:border-[#8B1E1E] hover:text-[#8B1E1E]"
-                      >
-                        → {near.name}
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-
-          {lastBridgeToast && (
-            <div className="pointer-events-auto flex max-w-lg items-center gap-2 border border-[#111111] bg-[#FAF8F4]/98 px-3.5 py-2 text-xs text-[#111111] shadow-md">
-              <Terminal size={13} className="shrink-0 text-[#8B1E1E]" />
-              <span className="flex-1">{lastBridgeToast}</span>
               <button
                 type="button"
-                onClick={() => setLastBridgeToast(null)}
-                className="text-[#55524B] hover:text-[#111111]"
-                aria-label="Đóng"
+                onClick={() => setShowPlayerMapCard(false)}
+                className="p-0.5 text-[#55524B] hover:text-[#111111]"
+                aria-label="Đóng thẻ vị trí"
               >
-                <X size={13} />
+                <X size={14} />
               </button>
             </div>
-          )}
+
+            <div className="space-y-2 px-3.5 py-2.5 text-xs">
+              <div className="flex flex-wrap items-center justify-between gap-2 text-[11px] text-[#55524B]">
+                <span>
+                  Lớp bản đồ:{' '}
+                  <strong className="text-[#111111]">
+                    {MAP_SCOPE_LABELS[playerPosition.recommendedScope]}
+                  </strong>
+                  {playerPosition.interiorLocation && ' · Thành Bắc Ải'}
+                </span>
+                {playerPosition.interiorLocation && (
+                  <button
+                    type="button"
+                    onClick={() =>
+                      handleScopeChange(activeScope === 'norsvale' ? 'valeroth' : 'norsvale')
+                    }
+                    className="font-semibold text-[#8B1E1E] hover:underline whitespace-nowrap"
+                  >
+                    {activeScope === 'norsvale'
+                      ? 'Xem trên Vương quốc Valeroth'
+                      : 'Phóng vào Thành Bắc Ải'}
+                  </button>
+                )}
+              </div>
+
+              <p className="leading-relaxed text-[#111111]">{playerPosition.status}</p>
+            </div>
+          </div>
         </div>
       )}
 
-      {/* Function Calling Panel Modal */}
+      {/* GitHub Raw Slash Command Drawer (/transfer, /recap, /map) */}
+      <SlashCommandDrawer
+        isOpen={isCommandDrawerOpen}
+        onClose={() => setIsCommandDrawerOpen(false)}
+        onTriggerMap={triggerPlayerMap}
+      />
+
+      {/* GitHub + jsDelivr Modal */}
       {isBridgeOpen && (
         <PlaygroundBridgeView
           world={{ ...world, activeMapScope: activeScope }}
-          onExecuteRawCalls={handleExecuteRawBridgeCalls}
           onClose={() => setIsBridgeOpen(false)}
         />
       )}

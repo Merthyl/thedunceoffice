@@ -70,7 +70,7 @@
       var style = document.createElement('style');
       style.id = 'rp-engine-css';
       style.textContent = [
-        '.vm-root{font-family:"Spectral",Georgia,serif;color:#111111;background:#EAE6DC;border:1px solid #111111;max-width:1080px;margin:0 auto;box-shadow:4px 4px 0 rgba(17,17,17,.16);user-select:none}',
+        '.vm-root{font-family:"Spectral",Georgia,serif;color:#111111;background:#EAE6DC;border:1px solid #111111;max-width:1200px;margin:0 auto;box-shadow:4px 4px 0 rgba(17,17,17,.16);user-select:none}',
         '.vm-bar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;padding:8px 12px;background:#F2EFE8;border-bottom:1px solid #111111}',
         '.vm-tabs{display:inline-flex;border:1px solid #111111;background:#FAF8F4;padding:2px;gap:2px}',
         '.vm-btn{font-family:"Spectral",Georgia,serif;font-size:12px;font-weight:600;border:none;background:transparent;color:#111111;padding:4px 10px;cursor:pointer;display:inline-flex;align-items:center;gap:5px}',
@@ -80,25 +80,25 @@
         '.vm-btn-crimson{border:1px solid #8B1E1E;color:#8B1E1E;background:#FAF8F4}',
         '.vm-btn-crimson:hover{background:#8B1E1E;color:#FAF8F4}',
         '.vm-stage{position:relative;width:100%;background:#FAF8F4;overflow:hidden}',
-        '.vm-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none;filter:contrast(1.06)}',
+        '.vm-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none}',
         '.vm-svg{position:relative;z-index:2;width:100%;height:100%;display:block}',
         '.vm-zone{cursor:pointer}',
         '.vm-zone:hover .vm-zone-fill{fill:rgba(17,17,17,.08)}',
         '.vm-zone:hover .vm-zone-stroke{stroke-width:1.9}',
         '.vm-foot{padding:10px 14px;background:#FAF8F4;border-top:1px solid #111111;font-size:12.5px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px}',
         '.vm-loc-title{font-family:"Playfair Display","Spectral",Georgia,serif;font-weight:700;letter-spacing:.03em;color:#8B1E1E}',
-        '.vm-inspector{position:absolute;top:12px;right:12px;z-index:10;width:276px;max-height:calc(100% - 24px);overflow-y:auto;background:#FAF8F4;border:1px solid #111111;box-shadow:4px 4px 0 rgba(17,17,17,.18);font-size:12px}',
+        '.vm-inspector{position:absolute;top:12px;right:12px;z-index:10;width:280px;max-height:calc(100% - 24px);overflow-y:auto;background:#FAF8F4;border:1px solid #111111;box-shadow:4px 4px 0 rgba(17,17,17,.18);font-size:12px}',
         '.vm-inspector-hd{display:flex;align-items:center;justify-content:space-between;padding:7px 10px;background:#F2EFE8;border-bottom:1px solid #111111;font-family:"Playfair Display",Georgia,serif;font-weight:700;text-transform:uppercase;font-size:12px}',
         '.vm-inspector-bd{padding:10px;line-height:1.5}',
-        '.vm-tag-form{display:flex;flex-wrap:wrap;gap:6px;padding:8px 12px;background:#F5F2EA;border-top:1px solid rgba(17,17,17,.2);align-items:center;font-size:12px}',
-        '.vm-input{font-family:"Spectral",Georgia,serif;font-size:12px;padding:4px 8px;border:1px solid rgba(17,17,17,.45);background:#FFFFFF;color:#111111}',
-        '.vm-npc-bar{padding:8px 12px;background:#F5F2EA;border-top:1px solid rgba(17,17,17,.22);display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:12px}',
-        '.vm-npc-chip{display:inline-flex;align-items:center;gap:5px;padding:3px 8px;background:#FAF8F4;border:1px solid #111111;color:#111111;font-family:"Spectral",Georgia,serif;font-size:11.5px;cursor:pointer}',
-        '.vm-npc-chip:hover{background:#E7E3DA}',
-        '.vm-npc-chip.is-mentioned{border-style:dashed;color:#3D3A35}',
-        '.vm-npc-badge{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;padding:1px 4px;border:1px solid rgba(17,17,17,.35);background:#EFECE4}',
-        '.vm-npc-badge.is-custom{border-color:#8B1E1E;color:#8B1E1E;background:#FAF2F0}',
-        '.vm-insp-npc{border-top:1px solid rgba(17,17,17,.18);padding-top:6px;margin-top:6px;font-size:11.5px}',
+        '.vm-npc-badge{display:inline-block;font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;padding:1px 5px;border:1px solid rgba(17,17,17,.4);background:#EFECE4;color:#111111;vertical-align:middle;line-height:1.35}',
+        '.vm-npc-badge.is-dead{border-color:#8B1E1E;color:#8B1E1E;background:#FAF2F0}',
+        '.vm-npc-badge.is-missing{border-style:dashed;border-color:#6B665D;color:#55524B;background:#F5F2EA}',
+        '.vm-insp-npc{border-top:1px solid rgba(17,17,17,.18);padding-top:8px;margin-top:8px;font-size:12px}',
+        '.vm-npc-callout{border-left:2.5px solid #111111;padding:1px 0 1px 9px;margin-bottom:8px}',
+        '.vm-npc-callout.is-dead{border-left-color:#8B1E1E}',
+        '.vm-npc-callout.is-missing{border-left-color:#6B665D}',
+        '.vm-npc-head{display:flex;flex-wrap:wrap;align-items:center;gap:6px;line-height:1.35}',
+        '.vm-npc-role{font-size:11.5px;color:#3D3A35;margin-top:2px}',
         /* Shared Dossier Styles for /recap, /transfer & future text modes */
         '.vd-root{font-family:"Spectral",Georgia,serif;color:#111111;background:#FAF8F4;border:1.5px solid #111111;max-width:960px;margin:0 auto;box-shadow:5px 5px 0 rgba(17,17,17,.16);line-height:1.62;user-select:text}',
         '.vd-inner{border:1px solid rgba(17,17,17,.35);margin:4px}',
@@ -174,14 +174,28 @@
     return best;
   }
 
-  function curvedPath(a, b) {
-    var dx = b.x - a.x;
-    var dy = b.y - a.y;
-    var dist = Math.hypot(dx, dy) || 1;
-    var bend = Math.min(20, dist * 0.09);
-    var mx = (a.x + b.x) / 2 - (dy / dist) * bend;
-    var my = (a.y + b.y) / 2 + (dx / dist) * bend;
-    return 'M ' + a.x + ' ' + a.y + ' Q ' + mx.toFixed(1) + ' ' + my.toFixed(1) + ' ' + b.x + ' ' + b.y;
+
+  function normalizeNpcStatus(rawStatus) {
+    var s = norm(rawStatus || '');
+    if (!s) return 'Còn sống';
+    if (
+      s.indexOf('chet') !== -1 ||
+      s.indexOf('dead') !== -1 ||
+      s.indexOf('deceased') !== -1 ||
+      s.indexOf('tu vong') !== -1 ||
+      s.indexOf('hy sinh') !== -1
+    ) {
+      return 'Đã chết';
+    }
+    if (
+      s.indexOf('mat tich') !== -1 ||
+      s.indexOf('missing') !== -1 ||
+      s.indexOf('bien mat') !== -1 ||
+      s.indexOf('khong ro') !== -1
+    ) {
+      return 'Mất tích';
+    }
+    return 'Còn sống';
   }
 
   function normalizeNpcs(list) {
@@ -193,25 +207,17 @@
           return {
             name: n.trim(),
             loc: '',
-            role: '',
-            status: '',
-            source: 'custom',
-            visibility: 'mentioned',
+            role: 'Chưa rõ chức vụ',
+            status: 'Còn sống',
           };
         }
         var name = String(n.name || '').trim();
         if (!name) return null;
-        var vis = norm(n.visibility || n.seen || 'encountered');
-        var isMentioned = vis === 'mentioned' || vis === 'nhac den' || vis === 'rumored';
-        var src = norm(n.source || n.origin || 'canon');
-        var isCustom = src === 'custom' || src === 'new' || src === 'user' || src === 'tao moi';
         return {
           name: name,
           loc: String(n.loc || n.location || '').trim(),
-          role: String(n.role || '').trim(),
-          status: String(n.status || '').trim(),
-          source: isCustom ? 'custom' : 'canon',
-          visibility: isMentioned ? 'mentioned' : 'encountered',
+          role: String(n.role || n.title || '').trim() || 'Chưa rõ chức vụ',
+          status: normalizeNpcStatus(n.status || n.state || n.condition),
         };
       })
       .filter(Boolean);
@@ -260,14 +266,12 @@
       ? worldDef.layers
       : [{ id: 'main', label: worldDef.name || 'Bản đồ', titlePlate: '· ' + (worldDef.name || 'MAP').toUpperCase() + ' ·', image: '' }];
     var LOCATIONS = Array.isArray(worldDef.locations) ? worldDef.locations : [];
-    var ROUTES = Array.isArray(worldDef.routes) ? worldDef.routes : [];
     var parentLinks = worldDef.parentLayerLinks || {};
 
     var defaultLoc =
       findLocationInWorld(LOCATIONS, raw.playerLoc || raw.loc || worldDef.defaultPlayerLoc) ||
       LOCATIONS[0] ||
       null;
-    var fromLocObj = raw.fromLoc || raw.from ? findLocationInWorld(LOCATIONS, raw.fromLoc || raw.from) : null;
 
     var layerIds = LAYERS.map(function (ly) { return ly.id; });
     var initialScope =
@@ -278,15 +282,10 @@
     var state = {
       scope: initialScope,
       showZones: true,
-      showRoutes: true,
-      showNpcs: true,
       selectedLocId: null,
-      showTagBar: Boolean(raw.enableTagEditor),
       playerLoc: defaultLoc,
-      fromLoc: fromLocObj,
       status: raw.status || (defaultLoc ? 'Đang có mặt tại ' + defaultLoc.name + '.' : ''),
       chapter: raw.chapter || '',
-      tags: Array.isArray(raw.tags) ? raw.tags.slice() : [],
       npcs: normalizeNpcs(raw.npcs),
     };
 
@@ -303,12 +302,10 @@
     function mapLocToScope(locObj, scope) {
       if (!locObj) return null;
       if (locObj.scope === scope) return locObj;
-      // Check if locObj's layer is nested inside a parent location on `scope`
       var link = parentLinks[locObj.scope];
       if (link && link.parentScope === scope) {
         return findLocationInWorld(LOCATIONS, link.parentLocId);
       }
-      // Or if user stands on parentLocId and switches into child layer
       for (var childScope in parentLinks) {
         if (
           Object.prototype.hasOwnProperty.call(parentLinks, childScope) &&
@@ -344,36 +341,21 @@
       }
 
       var scopedLocs = LOCATIONS.filter(function (l) { return l.scope === state.scope; });
-      var scopedRoutes = ROUTES.filter(function (r) { return r.scope === state.scope; });
       var locById = {};
       scopedLocs.forEach(function (l) { locById[l.id] = l; });
 
       var activePinLoc = mapLocToScope(state.playerLoc, state.scope);
       var titlePlate = activeLayer.titlePlate || ('· ' + activeLayer.label.toUpperCase() + ' ·');
 
-      var tagsByLoc = {};
-      state.tags.forEach(function (t) {
-        if (!t || !t.label) return;
-        var resolved = findLocationInWorld(LOCATIONS, t.loc || t.location || '');
-        if (!resolved || !locById[resolved.id]) return;
-        if (!tagsByLoc[resolved.id]) tagsByLoc[resolved.id] = [];
-        tagsByLoc[resolved.id].push({
-          label: String(t.label).trim(),
-          tone: t.tone === 'crimson' ? 'crimson' : 'ink',
-        });
-      });
-
       var npcsByLoc = {};
-      if (state.showNpcs) {
-        state.npcs.forEach(function (npc) {
-          if (!npc.loc) return;
-          var found = findLocationInWorld(LOCATIONS, npc.loc);
-          var mapped = mapLocToScope(found, state.scope);
-          if (!mapped || !locById[mapped.id]) return;
-          if (!npcsByLoc[mapped.id]) npcsByLoc[mapped.id] = [];
-          npcsByLoc[mapped.id].push(npc);
-        });
-      }
+      state.npcs.forEach(function (npc) {
+        if (!npc.loc) return;
+        var found = findLocationInWorld(LOCATIONS, npc.loc);
+        var mapped = mapLocToScope(found, state.scope);
+        if (!mapped || !locById[mapped.id]) return;
+        if (!npcsByLoc[mapped.id]) npcsByLoc[mapped.id] = [];
+        npcsByLoc[mapped.id].push(npc);
+      });
 
       // 1. Zones
       var zonesSvg = '';
@@ -402,34 +384,7 @@
           .join('');
       }
 
-      // 2. Routes
-      var routesSvg = '';
-      if (state.showRoutes) {
-        routesSvg = scopedRoutes
-          .map(function (r) {
-            var a = locById[r.from];
-            var b = locById[r.to];
-            if (!a || !b) return '';
-            var isTrav =
-              state.fromLoc &&
-              activePinLoc &&
-              ((r.from === state.fromLoc.id && r.to === activePinLoc.id) ||
-                (r.to === state.fromLoc.id && r.from === activePinLoc.id));
-            var d = curvedPath(a, b);
-            var dash = r.type === 'secret' ? '2 4' : r.type === 'portal' ? '6 3 2 3' : '5 4';
-            return (
-              (isTrav
-                ? '<path d="' + d + '" fill="none" stroke="rgba(250,248,244,0.9)" stroke-width="4.2" stroke-linecap="round" />'
-                : '') +
-              '<path d="' + d + '" fill="none" stroke="' + (isTrav ? CRIMSON : INK) + '" stroke-width="' + (isTrav ? 2.1 : 1.05) + '" ' +
-              (isTrav ? '' : 'stroke-dasharray="' + dash + '"') +
-              ' opacity="' + (isTrav ? 0.94 : 0.4) + '" stroke-linecap="round" />'
-            );
-          })
-          .join('');
-      }
-
-      // 3. Banners, Pin, Tags & Encountered/Mentioned NPCs
+      // 2. Banners & User Location Pin ONLY (no routes, no canvas NPC markers, no tags)
       var bannersSvg = scopedLocs
         .map(function (loc) {
           var isPin = activePinLoc && activePinLoc.id === loc.id;
@@ -438,8 +393,6 @@
           var titleText = '· ' + loc.name.toUpperCase() + ' ·';
           var bw = Math.max(96, titleText.length * 6.5 + 22);
           var half = bw / 2;
-          var locTags = tagsByLoc[loc.id] || [];
-          var locNpcs = npcsByLoc[loc.id] || [];
 
           var pinSvg = isPin
             ? '<g transform="translate(0,-10)">' +
@@ -451,32 +404,6 @@
               '<circle cx="0" cy="-20.5" r="4.3" fill="' + PAPER + '" stroke="' + INK + '" stroke-width="0.95" />' +
               '</g>'
             : '';
-
-          var tagSvg = '';
-          if (locTags.length > 0) {
-            var joined = locTags.slice(0, 2).map(function (t) { return t.label; }).join(' · ');
-            if (locTags.length > 2) joined += ' +' + (locTags.length - 2);
-            var tw = Math.min(188, joined.length * 6.1 + 22);
-            var hasCrimson = locTags.some(function (t) { return t.tone === 'crimson'; });
-            var ty = isPin ? -48 : -16;
-            tagSvg =
-              '<g transform="translate(0,' + ty + ')">' +
-              '<rect x="' + (-tw / 2) + '" y="-8.5" width="' + tw + '" height="16.5" fill="' + (hasCrimson ? CRIMSON : INK) + '" stroke="' + PAPER + '" stroke-width="0.9" />' +
-              '<text text-anchor="middle" y="2.8" font-size="8.6" font-weight="600" fill="' + PAPER + '" font-family="Spectral, Georgia, serif">' + esc(joined) + '</text></g>';
-          }
-
-          var npcSvg = '';
-          if (locNpcs.length > 0) {
-            var hasEnc = locNpcs.some(function (n) { return n.visibility === 'encountered'; });
-            var npcText = '◈ ' + locNpcs.slice(0, 2).map(function (n) { return n.name; }).join(', ');
-            if (locNpcs.length > 2) npcText += ' +' + (locNpcs.length - 2);
-            var nw = Math.min(205, npcText.length * 5.6 + 22);
-            var ny = loc.altName ? 38 : 26;
-            npcSvg =
-              '<g transform="translate(0,' + ny + ')">' +
-              '<rect x="' + (-nw / 2) + '" y="-8" width="' + nw + '" height="15.5" fill="' + PAPER + '" stroke="' + INK + '" stroke-width="' + (hasEnc ? 1.15 : 0.95) + '" ' + (hasEnc ? '' : 'stroke-dasharray="3 2.5"') + ' />' +
-              '<text text-anchor="middle" y="2.5" font-size="8.4" font-weight="' + (hasEnc ? 700 : 600) + '" fill="' + (hasEnc ? INK : INK_SOFT) + '" font-family="Spectral, Georgia, serif">' + esc(npcText) + '</text></g>';
-          }
 
           var altSvg = loc.altName
             ? '<g transform="translate(0,22)">' +
@@ -494,10 +421,8 @@
             '<rect x="' + (-half + 2.5) + '" y="-7.5" width="' + (bw - 5) + '" height="18" fill="none" stroke="' + borderCol + '" stroke-width="0.45" opacity="0.65" />' +
             '<text text-anchor="middle" y="5" font-size="10.2" font-weight="700" fill="' + borderCol + '" font-family="Playfair Display, Spectral, Georgia, serif" letter-spacing="0.4">' + esc(titleText) + '</text>' +
             altSvg +
-            npcSvg +
             '</g>' +
             pinSvg +
-            tagSvg +
             '</g>'
           );
         })
@@ -506,83 +431,49 @@
       var selectedObj = state.selectedLocId ? locById[state.selectedLocId] : null;
       var inspectorHtml = '';
       if (selectedObj) {
-        var selTags = tagsByLoc[selectedObj.id] || [];
         var selNpcs = npcsByLoc[selectedObj.id] || [];
         var childInfo = findChildLayerForLoc(selectedObj.id);
+        var regionHeading = selectedObj.altName
+          ? selectedObj.name + ' (' + selectedObj.altName + ')'
+          : selectedObj.name;
+        var rulerHtml = selectedObj.ruler
+          ? '<div style="margin-bottom:6px;font-size:12px">' +
+            '<span style="color:#55524B">Dưới quyền cai quản của:</span> ' +
+            '<strong>' + esc(selectedObj.ruler) + '</strong>' +
+            '</div>'
+          : '';
+        var summaryHtml = selectedObj.summary
+          ? '<p style="margin:0 0 8px 0;font-size:12px;line-height:1.55;color:#2E2C28">' + esc(selectedObj.summary) + '</p>'
+          : '';
         inspectorHtml =
           '<div class="vm-inspector">' +
-          '<div class="vm-inspector-hd"><span>· ' + esc(selectedObj.name) + ' ·</span><button type="button" data-action="close-insp" class="vm-btn" style="padding:1px 5px">×</button></div>' +
+          '<div class="vm-inspector-hd"><span>' + esc(regionHeading) + '</span><button type="button" data-action="close-insp" class="vm-btn" style="padding:1px 5px">×</button></div>' +
           '<div class="vm-inspector-bd">' +
-          (selectedObj.ruler ? '<div style="color:#55524B;font-size:11px;margin-bottom:6px"><strong>' + esc(selectedObj.ruler) + '</strong></div>' : '') +
-          (selectedObj.summary ? '<p style="margin:0 0 8px">' + esc(selectedObj.summary) + '</p>' : '') +
+          rulerHtml +
+          summaryHtml +
+          (childInfo
+            ? '<button type="button" data-action="enter-child" data-target-scope="' + esc(childInfo.scope) + '" class="vm-btn is-active" style="width:100%;justify-content:center;margin-bottom:8px">' + esc(childInfo.label) + '</button>'
+            : '') +
+          '<div class="vm-insp-npc">' +
+          '<div style="font-weight:700;margin-bottom:6px">NPC tại đây:</div>' +
           (selNpcs.length
-            ? '<div class="vm-insp-npc" style="margin-bottom:8px">' +
-              '<div style="font-weight:700;margin-bottom:4px">NPC tại đây (' + selNpcs.length + '):</div>' +
-              selNpcs
+            ? selNpcs
                 .map(function (n) {
+                  var modClass = n.status === 'Đã chết' ? ' is-dead' : n.status === 'Mất tích' ? ' is-missing' : '';
                   return (
-                    '<div style="margin-bottom:5px;padding-left:6px;border-left:2px solid ' + (n.visibility === 'encountered' ? INK : '#888379') + '">' +
-                    '<strong>' + esc(n.name) + '</strong> ' +
-                    '<span class="vm-npc-badge">' + (n.visibility === 'encountered' ? 'Chạm trán' : 'Nhắc đến') + '</span>' +
-                    (n.source === 'custom' ? ' <span class="vm-npc-badge is-custom">Tạo mới</span>' : '') +
-                    (n.role ? '<div style="color:#55524B;font-size:10.5px">' + esc(n.role) + '</div>' : '') +
-                    (n.status ? '<div style="font-style:italic;font-size:11px">' + esc(n.status) + '</div>' : '') +
+                    '<div class="vm-npc-callout' + modClass + '">' +
+                    '<div class="vm-npc-head">' +
+                    '<strong style="color:#111111">' + esc(n.name) + '</strong>' +
+                    '<span class="vm-npc-badge' + modClass + '">' + esc(n.status) + '</span>' +
+                    '</div>' +
+                    '<div class="vm-npc-role">' + esc(n.role) + '</div>' +
                     '</div>'
                   );
                 })
-                .join('') +
-              '</div>'
-            : '') +
-          (selTags.length
-            ? '<div style="margin-bottom:8px;font-size:11px"><strong>Tag:</strong> ' + selTags.map(function (t) { return esc(t.label); }).join(' · ') + '</div>'
-            : '') +
-          (childInfo
-            ? '<button type="button" data-action="enter-child" data-target-scope="' + esc(childInfo.scope) + '" class="vm-btn is-active" style="width:100%;justify-content:center;margin-bottom:6px">' + esc(childInfo.label) + '</button>'
-            : '') +
-          '<button type="button" data-action="pin-here" data-id="' + selectedObj.id + '" class="vm-btn vm-btn-crimson" style="width:100%;justify-content:center">Đặt dấu vị trí tại đây</button>' +
+                .join('')
+            : '<div style="color:#6B665D;font-style:italic">Chưa có dữ liệu</div>') +
+          '</div>' +
           '</div></div>';
-      }
-
-      var tagBarHtml = '';
-      if (state.showTagBar) {
-        var options = scopedLocs.map(function (l) {
-          return '<option value="' + l.id + '">' + esc(l.name) + '</option>';
-        }).join('');
-        tagBarHtml =
-          '<form class="vm-tag-form" data-action="add-tag-form">' +
-          '<select class="vm-input" name="kind">' +
-          '<option value="npc-enc">NPC (Chạm trán)</option>' +
-          '<option value="npc-men">NPC (Nhắc đến)</option>' +
-          '<option value="tag-ink">Tag (Mực đen)</option>' +
-          '<option value="tag-crimson">Tag (Đỏ sẫm)</option>' +
-          '</select>' +
-          '<select class="vm-input" name="loc">' + options + '</select>' +
-          '<input class="vm-input" name="label" placeholder="Tên NPC (có sẵn / mới) hoặc sự kiện..." style="flex:1;min-width:150px" />' +
-          '<input class="vm-input" name="role" placeholder="Vai trò / ghi chú ngắn (tùy chọn)..." style="width:165px" />' +
-          '<button type="submit" class="vm-btn is-active">Thêm lên bản đồ</button>' +
-          '</form>';
-      }
-
-      var npcRosterHtml = '';
-      if (state.showNpcs && state.npcs.length > 0) {
-        npcRosterHtml =
-          '<div class="vm-npc-bar">' +
-          '<strong style="font-family:Playfair Display,Georgia,serif;font-size:11.5px;text-transform:uppercase;letter-spacing:.03em">NPC hiện diện / nhắc đến:</strong>' +
-          state.npcs
-            .map(function (n, idx) {
-              var resolved = n.loc ? findLocationInWorld(LOCATIONS, n.loc) : null;
-              var locLabel = resolved ? ' · ' + resolved.name : '';
-              return (
-                '<button type="button" class="vm-npc-chip ' + (n.visibility === 'mentioned' ? 'is-mentioned' : '') + '" data-npc-idx="' + idx + '" title="' + esc((n.role ? n.role + ' — ' : '') + (n.status || 'Bấm để xem vị trí')) + '">' +
-                '<span>◈ ' + esc(n.name) + '</span>' +
-                '<span class="vm-npc-badge">' + (n.visibility === 'encountered' ? 'Chạm trán' : 'Nhắc đến') + '</span>' +
-                (n.source === 'custom' ? '<span class="vm-npc-badge is-custom">Mới</span>' : '') +
-                (locLabel ? '<span style="color:#55524B;font-size:10.5px">' + esc(locLabel) + '</span>' : '') +
-                '</button>'
-              );
-            })
-            .join('') +
-          '</div>';
       }
 
       var layerTabsHtml = LAYERS.map(function (ly) {
@@ -604,18 +495,12 @@
         '<div class="vm-tabs">' + layerTabsHtml + '</div>' +
         '<div style="display:flex;gap:6px;flex-wrap:wrap">' +
         '<button type="button" data-action="toggle-zones" class="vm-btn vm-btn-outline">Khoanh vùng: ' + (state.showZones ? 'Bật' : 'Tắt') + '</button>' +
-        '<button type="button" data-action="toggle-routes" class="vm-btn vm-btn-outline">Tuyến: ' + (state.showRoutes ? 'Bật' : 'Tắt') + '</button>' +
-        (state.npcs.length > 0
-          ? '<button type="button" data-action="toggle-npcs" class="vm-btn vm-btn-outline">NPC (' + state.npcs.length + '): ' + (state.showNpcs ? 'Hiện' : 'Ẩn') + '</button>'
-          : '') +
-        '<button type="button" data-action="toggle-tagbar" class="vm-btn vm-btn-outline">' + (state.showTagBar ? 'Ẩn gắn tag / NPC' : '+ Gắn tag / NPC') + '</button>' +
         '</div>' +
         '</div>' +
         '<div class="vm-stage" style="aspect-ratio:' + MAP_W + '/' + MAP_H + '">' +
         (imgSrc ? '<img class="vm-img" src="' + esc(imgSrc) + '" alt="' + esc(titlePlate) + '" />' : '') +
         '<svg class="vm-svg" viewBox="0 0 ' + MAP_W + ' ' + MAP_H + '">' +
         zonesSvg +
-        routesSvg +
         bannersSvg +
         '<rect x="7" y="7" width="' + (MAP_W - 14) + '" height="' + (MAP_H - 14) + '" fill="none" stroke="' + INK + '" stroke-width="2.2" pointer-events="none" />' +
         '<rect x="12" y="12" width="' + (MAP_W - 24) + '" height="' + (MAP_H - 24) + '" fill="none" stroke="' + INK + '" stroke-width="0.75" pointer-events="none" />' +
@@ -629,8 +514,6 @@
         '</svg>' +
         inspectorHtml +
         '</div>' +
-        npcRosterHtml +
-        tagBarHtml +
         '<div class="vm-foot">' +
         '<div><span class="vm-loc-title">● ' + esc(state.playerLoc ? state.playerLoc.name : (worldDef.name || 'Map')) + '</span>' +
         (state.chapter ? ' <span style="color:#55524B">(' + esc(state.chapter) + ')</span>' : '') +
@@ -682,92 +565,10 @@
         });
       }
 
-      var pinHere = container.querySelector('[data-action="pin-here"]');
-      if (pinHere) {
-        pinHere.addEventListener('click', function () {
-          var nextLoc = findLocationInWorld(LOCATIONS, pinHere.getAttribute('data-id'));
-          if (nextLoc) {
-            state.fromLoc = state.playerLoc;
-            state.playerLoc = nextLoc;
-            state.status = 'Đang có mặt tại ' + nextLoc.name + '.';
-            state.selectedLocId = null;
-            render();
-          }
-        });
-      }
-
       var toggleZones = container.querySelector('[data-action="toggle-zones"]');
       if (toggleZones) {
         toggleZones.addEventListener('click', function () {
           state.showZones = !state.showZones;
-          render();
-        });
-      }
-
-      var toggleRoutes = container.querySelector('[data-action="toggle-routes"]');
-      if (toggleRoutes) {
-        toggleRoutes.addEventListener('click', function () {
-          state.showRoutes = !state.showRoutes;
-          render();
-        });
-      }
-
-      var toggleNpcs = container.querySelector('[data-action="toggle-npcs"]');
-      if (toggleNpcs) {
-        toggleNpcs.addEventListener('click', function () {
-          state.showNpcs = !state.showNpcs;
-          render();
-        });
-      }
-
-      container.querySelectorAll('[data-npc-idx]').forEach(function (chip) {
-        chip.addEventListener('click', function () {
-          var idx = Number(chip.getAttribute('data-npc-idx'));
-          var npc = state.npcs[idx];
-          if (!npc || !npc.loc) return;
-          var resolved = findLocationInWorld(LOCATIONS, npc.loc);
-          if (resolved) {
-            state.scope = resolved.scope;
-            state.selectedLocId = resolved.id;
-            render();
-          }
-        });
-      });
-
-      var toggleTagBar = container.querySelector('[data-action="toggle-tagbar"]');
-      if (toggleTagBar) {
-        toggleTagBar.addEventListener('click', function () {
-          state.showTagBar = !state.showTagBar;
-          render();
-        });
-      }
-
-      var tagForm = container.querySelector('[data-action="add-tag-form"]');
-      if (tagForm) {
-        tagForm.addEventListener('submit', function (ev) {
-          ev.preventDefault();
-          var kindVal = tagForm.querySelector('[name="kind"]').value;
-          var locVal = tagForm.querySelector('[name="loc"]').value;
-          var labelVal = tagForm.querySelector('[name="label"]').value.trim();
-          var roleVal = (tagForm.querySelector('[name="role"]').value || '').trim();
-          if (!labelVal) return;
-          if (kindVal === 'npc-enc' || kindVal === 'npc-men') {
-            state.npcs.push({
-              name: labelVal,
-              loc: locVal,
-              role: roleVal,
-              status: '',
-              source: 'custom',
-              visibility: kindVal === 'npc-enc' ? 'encountered' : 'mentioned',
-            });
-            state.showNpcs = true;
-          } else {
-            state.tags.push({
-              loc: locVal,
-              label: labelVal,
-              tone: kindVal === 'tag-crimson' ? 'crimson' : 'ink',
-            });
-          }
           render();
         });
       }
@@ -776,22 +577,16 @@
     render();
 
     return {
-      addTag: function (loc, label, tone) {
-        state.tags.push({ loc: loc, label: label, tone: tone || 'ink' });
-        render();
-      },
       addNpc: function (npc) {
         var added = normalizeNpcs([npc]);
         if (added.length) {
           state.npcs.push(added[0]);
-          state.showNpcs = true;
           render();
         }
       },
       setPlayerLocation: function (loc, status) {
         var found = findLocationInWorld(LOCATIONS, loc);
         if (!found) return;
-        state.fromLoc = state.playerLoc;
         state.playerLoc = found;
         state.scope = found.scope;
         if (status) state.status = status;

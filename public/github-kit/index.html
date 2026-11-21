@@ -17,24 +17,17 @@
     <div id="rp-app"></div>
 
     <script>
-      // Bản đồ cố định của Kaldor — để trống npcs/tags mặc định (chỉ hiện khi chạm trán, nhắc đến hoặc tự thêm bằng + Gắn tag / NPC)
       window.RP_DATA = {
         world: 'kaldor-valeroth',
         mode: 'map',
         view: 'valeroth',
         playerLoc: 'loc-nors-southgate',
-        fromLoc: '',
         chapter: 'Bắc Ải',
         status: 'Đang đứng trực trên tường đá gần Cổng Hoang Vực.',
-        enableTagEditor: true,
         npcs: [],
-        tags: [],
       };
     </script>
 
-    <!-- Khi đẩy lên GitHub, đổi 2 dòng dưới thành link jsDelivr theo đúng @COMMIT_SHA:
-         <script src="https://cdn.jsdelivr.net/gh/<USER>/<REPO>@<COMMIT_SHA>/worlds/kaldor-valeroth.js"></script>
-         <script src="https://cdn.jsdelivr.net/gh/<USER>/<REPO>@<COMMIT_SHA>/engine.js"></script> -->
     <script src="./worlds/kaldor-valeroth.js"></script>
     <script src="./engine.js"></script>
   </body>

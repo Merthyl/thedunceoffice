@@ -1,7 +1,6 @@
 (1) BẢN ĐỒ RP (/map) — KALDOR / VALEROTH MODULAR ENGINE [HARD_LOCK]
-* COMMAND PRIORITY [ABSOLUTE]: Khi người chơi gõ `/map` (hoặc `/map valeroth`, `/map bắc ải`), lập tức tạm dừng mạch kể (KHÔNG tự ý thúc đẩy sự kiện hay hành động mới của {{user}}), đọc đúng ĐOẠN HỘI THOẠI / DIỄN BIẾN HIỆN TẠI và xuất DUY NHẤT 1 khối mã ```html ... ``` hoàn chỉnh (có thể chạy Preview HTML ngay) theo đúng khung bên dưới — KHÔNG tự viết lại CSS, SVG hay giao diện bản đồ, KHÔNG viết thêm lời giải thích bên ngoài khối HTML.
-* QUY TẮC THAY `<CDN_BASE>`: Lấy chính phần đầu URL của tệp `map-kaldor.md` này (bỏ đuôi `/commands/map-kaldor.md`) để điền vào `<CDN_BASE>` trong 2 thẻ `<script>` bên dưới.
-  - Ví dụ nếu tệp này nằm tại `https://cdn.jsdelivr.net/gh/Merthyl/thedunceoffice@abc123/public/github-kit/commands/map-kaldor.md` thì `<CDN_BASE>` là `https://cdn.jsdelivr.net/gh/Merthyl/thedunceoffice@abc123/public/github-kit`.
+* COMMAND PRIORITY [ABSOLUTE]: Khi người chơi gõ `/map` (hoặc `/map valeroth`, `/map bắc ải`), lập tức tạm dừng mạch kể (KHÔNG tự ý thúc đẩy sự kiện hay hành động mới của {{user}}), đọc đúng ĐOẠN HỘI THOẠI / DIỄN BIẾN HIỆN TẠI và xuất DUY NHẤT 1 khối mã ```html ... ``` hoàn chỉnh (có thể chạy Preview HTML ngay) theo đúng khung bên dưới — KHÔNG tự viết lại CSS, SVG hay giao diện; KHÔNG xuất trường `tags`; KHÔNG viết thêm lời giải thích bên ngoài khối HTML.
+* QUY TẮC THAY `<CDN_BASE>`: Lấy đúng tiền tố URL jsDelivr chứa repo và `@SHA` được chỉ định trong System Instructions để điền vào 2 thẻ `<script>` bên dưới.
 
 ```html
 <!DOCTYPE html>
@@ -20,21 +19,15 @@
     mode: "map",
     view: "valeroth hoặc norsvale",
     playerLoc: "mã_vị_trí_đứng_hiện_tại_theo_hội_thoại",
-    fromLoc: "mã_vị_trí_vừa_di_chuyển_từ_đó_hoặc_chuỗi_rỗng",
     chapter: "Mốc thời gian / bối cảnh hiện tại",
-    status: "Tóm tắt 1 câu vị trí đứng và tình huống hiện tại của {{user}} đúng theo hội thoại.",
+    status: "Tóm tắt 1 câu vị trí đứng hiện tại của {{user}} đúng theo hội thoại.",
     npcs: [
       {
         name: "Tên NPC (có sẵn trong Section 4 HOẶC mới tạo bởi {{user}}/cốt truyện)",
         loc: "mã_địa_điểm_hiện_tại_của_NPC",
-        role: "Vai trò công khai đã biết (CẤM tiết lộ bí mật HARD_LOCKED)",
-        status: "Tình trạng ngắn gọn đã thể hiện trong truyện",
-        source: "canon hoặc custom",
-        visibility: "encountered hoặc mentioned"
+        role: "Chức vụ ngắn gọn (CẤM tiết lộ bí mật HARD_LOCKED)",
+        status: "Còn sống | Đã chết | Mất tích"
       }
-    ],
-    tags: [
-      { loc: "mã_địa_điểm", label: "Sự kiện / cảnh báo đã xảy ra", tone: "ink" }
     ]
   };
   </script>
@@ -45,7 +38,7 @@
 ```
 
 DANH SÁCH MÃ ĐỊA ĐIỂM HỢP LỆ (world: "kaldor-valeroth"):
-[Lớp 1 — Toàn cảnh Valeroth (view: "valeroth")]
+[Lớp 1 — Vương quốc Valeroth (view: "valeroth")]
 - "loc-valerius" : Vương Đô (Valerius)
 - "loc-zarath" : Hắc Nham (Zarath)
 - "loc-corinth" : Lam Vịnh (Corinth)
@@ -54,21 +47,22 @@ DANH SÁCH MÃ ĐỊA ĐIỂM HỢP LỆ (world: "kaldor-valeroth"):
 - "loc-morvath" : Cấm Địa (Morvath)
 - "loc-kaldrak" : Hoang Vực (Kaldrak)
 
-[Lớp 2 — Bên trong Bắc Ải / Dinh thự Kaldor Oakhart (view: "norsvale")]
-- "loc-nors-keep" : Tháp Oakhart (Dinh thự & Đại Sảnh)
-- "loc-nors-northgate" : Cổng Bắc & Chợ Tiếp Vận (Bếp & Kho Tiếp Vận)
-- "loc-nors-forge" : Xưởng Rèn & Kho Quân Nhu (Lò Thiết Nhẫn)
-- "loc-nors-barracks" : Trại Lính & Sân Tập (Sân Kỵ Binh & Doanh Trại)
+[Lớp 2 — Thành Bắc Ải (view: "norsvale")]
+- "loc-nors-keep" : Tháp Công Tước (Tháp Vách Biển · Phòng Công tước)
+- "loc-nors-hall" : Đại Sảnh (Sảnh Tiệc & Hội Nghị)
+- "loc-nors-kitchen" : Bếp & Hậu Cần (Bếp Lửa & Kho Lương)
+- "loc-nors-barracks" : Trại Huấn Luyện (Sân Kỵ Binh & Chuồng Ngựa)
+- "loc-nors-forge" : Xưởng Quân Nhu (Lò Rèn & Kho Vũ Khí)
+- "loc-nors-northgate" : Cổng Bắc & Chợ Tiếp Vận (Cổng Quan Lộ Lam Vịnh)
 - "loc-nors-tavern" : Quán Rượu Mũi Đao (Quán Lính Đánh Thuê)
+- "loc-nors-town" : Khu Dân Cư & Chợ Đêm (Nhà Dân · Chợ · Nhà Thổ)
 - "loc-nors-apothecary" : Trạm Y Dược & Luyện Kim (Nhà Thuốc Biên Ải)
 - "loc-nors-southgate" : Cổng Hoang Vực & Tường Nam (Cửa Ải Tuyến Đầu)
 
 QUY TẮC BẮT BUỘC CHO /map:
-1. VỊ TRÍ NGƯỜI CHƠI THEO HỘI THOẠI [ABSOLUTE]: `playerLoc` và `fromLoc` PHẢI phản ánh chính xác nơi {{user}} đang đứng và nơi vừa rời đi dựa trên đoạn hội thoại tại thời điểm gõ `/map`. Nếu {{user}} chưa di chuyển sang địa điểm mới, giữ `fromLoc: ""`. Nếu {{user}} đang ở bên trong Bắc Ải và không yêu cầu xem toàn cảnh, đặt `view: "norsvale"`; ngược lại đặt `view: "valeroth"`.
-2. HIỂN THỊ NPC [HARD_LOCK — KHÔNG SPOIL]:
-   - Mảng `npcs` hỗ trợ CẢ **NPC có sẵn** (`source: "canon"`) lẫn **NPC mới được tạo bởi {{user}} hoặc cốt truyện** (`source: "custom"`).
-   - **CHỈ HIỂN THỊ KHI ĐƯỢC NHẮC ĐẾN HOẶC CHẠM TRÁN**: Tuyệt đối KHÔNG điền trước các NPC chưa xuất hiện hay chưa được nhắc tới trong đoạn hội thoại. Nếu chưa có NPC nào được nhắc đến hoặc chạm trán, đặt `npcs: []`.
-   - `visibility: "encountered"` khi {{user}} đang/đã chạm trán trực tiếp; `visibility: "mentioned"` khi NPC mới chỉ được nhắc tên trong lời thoại/thư từ/tin đồn.
-   - **KNOWLEDGE & NAME LOCK**: Tuyệt đối không rò rỉ thông tin `[HARD_LOCKED]` vào `name`, `role`, `status` (ví dụ: chỉ ghi `"Rowan"` chứ KHÔNG ghi `"Rowan Valerius"` nếu chưa lộ thân phận; Silas Venn / Maelle Voss chỉ hiện vỏ bọc người hầu nếu chưa bị phát hiện; không lộ bí mật Giáo Hoàng, Cedric, Elmira...).
-3. `tags` dùng để đánh dấu sự kiện hoặc cảnh báo trên bản đồ (`tone: "ink"` mực đen bình thường, `tone: "crimson"` cảnh báo/nguy hiểm).
-4. Giữ nguyên cấu trúc `<!DOCTYPE html>`, `world: "kaldor-valeroth"`, và đúng 2 thẻ `<script>` trỏ về jsDelivr.
+1. VỊ TRÍ NGƯỜI CHƠI THEO HỘI THOẠI [ABSOLUTE]: `playerLoc` PHẢI phản ánh chính xác nơi {{user}} đang đứng tại thời điểm gõ `/map`. Nếu {{user}} đang ở bên trong Bắc Ải và không yêu cầu xem toàn cảnh, đặt `view: "norsvale"`; ngược lại đặt `view: "valeroth"`.
+2. HIỂN THỊ NPC [HARD_LOCK — KHÔNG SPOIL — NGẮN GỌN]:
+   - Mảng `npcs` hỗ trợ CẢ NPC có sẵn lẫn NPC mới tạo bởi {{user}}/cốt truyện, **CHỈ thêm khi đã được nhắc đến hoặc chạm trán trong hội thoại** (nếu chưa có, đặt `npcs: []`).
+   - Mỗi NPC CHỈ gồm đúng 4 trường: `name`, `loc`, `role` (chức vụ ngắn gọn, 2–5 từ), `status` (CHỈ dùng đúng 1 trong 3 giá trị: `"Còn sống"`, `"Đã chết"`, hoặc `"Mất tích"` — KHÔNG viết dài dòng).
+   - **KNOWLEDGE & NAME LOCK**: Tuyệt đối không rò rỉ thông tin `[HARD_LOCKED]` vào `name` hay `role` (ví dụ: chỉ ghi `"Rowan"` chứ KHÔNG ghi `"Rowan Valerius"` nếu chưa lộ thân phận; Silas Venn / Maelle Voss chỉ ghi vỏ bọc người hầu nếu chưa lộ).
+3. KHÔNG xuất trường `tags` hay `routes`. Giữ nguyên cấu trúc `<!DOCTYPE html>`, `world: "kaldor-valeroth"`, và đúng 2 thẻ `<script>` trỏ về jsDelivr.

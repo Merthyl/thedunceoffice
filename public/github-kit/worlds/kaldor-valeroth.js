@@ -1,10 +1,10 @@
 /**
- * WORLD PACK: Kaldor Oakhart — The Kingdom of Valeroth & Norsvale
+ * WORLD PACK: Kaldor Oakhart — Vương quốc Valeroth & Thành Bắc Ải
  * World ID: "kaldor-valeroth"
  *
  * Load this file together with engine.js ONLY for Kaldor's RP bot:
- *   <script src="https://cdn.jsdelivr.net/gh/<USER>/<REPO>@<SHA>/worlds/kaldor-valeroth.js"></script>
- *   <script src="https://cdn.jsdelivr.net/gh/<USER>/<REPO>@<SHA>/engine.js"></script>
+ *   <script src="https://cdn.jsdelivr.net/gh/<USER>/<REPO>@<SHA>/public/github-kit/worlds/kaldor-valeroth.js"></script>
+ *   <script src="https://cdn.jsdelivr.net/gh/<USER>/<REPO>@<SHA>/public/github-kit/engine.js"></script>
  */
 (function (global) {
   'use strict';
@@ -31,19 +31,19 @@
     layers: [
       {
         id: 'valeroth',
-        label: 'Toàn cảnh Valeroth',
+        label: 'Vương quốc Valeroth',
         titlePlate: '· VALEROTH ·',
         image: isAiStudioRepo
-          ? 'src/assets/images/valeroth_map_v2_1795197882349.jpg'
+          ? 'src/assets/images/valeroth_overworld_v22_1795283743457.jpg'
           : 'assets/kaldor/valeroth.jpg',
         assetFile: 'valeroth.jpg',
       },
       {
         id: 'norsvale',
-        label: 'Bên trong Bắc Ải',
-        titlePlate: '· BẮC ẢI ·',
+        label: 'Thành Bắc Ải',
+        titlePlate: '· THÀNH BẮC ẢI ·',
         image: isAiStudioRepo
-          ? 'src/assets/images/norsvale_interior_1795197881444.jpg'
+          ? 'src/assets/images/norsvale_interior_v12_1795283643903.jpg'
           : 'assets/kaldor/norsvale.jpg',
         assetFile: 'norsvale.jpg',
       },
@@ -53,21 +53,23 @@
         parentScope: 'valeroth',
         parentLocId: 'loc-norsvale',
         defaultChildLocId: 'loc-nors-northgate',
-        enterLabel: 'Vào bên trong Bắc Ải →',
+        enterLabel: 'Vào Thành Bắc Ải →',
       },
     },
     locations: [
-      // --- LAYER 1: TOÀN CẢNH VALEROTH ---
+      // --- LAYER 1: VƯƠNG QUỐC VALEROTH (7 VÙNG ĐẤT) ---
       {
         id: 'loc-valerius',
         scope: 'valeroth',
         name: 'Vương Đô',
         altName: 'Valerius',
         ruler: 'Hoàng gia & Đại Giáo Đường',
-        x: 566,
-        y: 238,
-        zonePath: 'M 416 206 L 478 134 L 614 148 L 718 206 L 718 294 L 622 342 L 496 342 L 414 294 Z',
-        summary: 'Trung tâm quyền lực với Hoàng Cung mái vòm dát vàng và những ngọn tháp Đại Giáo Đường.',
+        summary:
+          'Kinh thành tường bát giác đồ sộ với tháp nhọn Đại Giáo Đường và mái vòm hoàng cung uy nghiêm giữa lòng đồng bằng trù phú; bao quanh bởi cối xay gió và đồng ruộng nối liền sang thương lộ Lam Vịnh.',
+        x: 572,
+        y: 278,
+        zonePath:
+          'M 310 218 L 414 196 L 496 138 L 538 158 L 718 228 L 728 346 L 638 410 L 586 468 L 456 446 L 434 364 L 408 264 Z',
       },
       {
         id: 'loc-zarath',
@@ -75,10 +77,12 @@
         name: 'Hắc Nham',
         altName: 'Zarath',
         ruler: 'Công tước Vayne Gillet',
-        x: 736,
-        y: 120,
-        zonePath: 'M 514 114 L 584 24 L 912 24 L 948 158 L 832 214 L 718 206 L 614 148 L 516 144 Z',
-        summary: 'Thành lũy luyện sắt và khai khoáng tựa sát dãy núi đá phía bắc, chìm trong khói than và mùi lưu huỳnh.',
+        summary:
+          'Dãy núi đá hiểm trở bao bọc phía bắc và đông bắc vương quốc như tường thành tự nhiên; trên mỏm đá cao sừng sững pháo đài của Công tước Vayne Gillet nhìn xuống mỏ lộ thiên, cửa hầm, cầu gỗ tải quặng, cụm lò nung và làng thợ mỏ.',
+        x: 742,
+        y: 162,
+        zonePath:
+          'M 520 10 L 992 10 L 992 246 L 866 266 L 718 228 L 538 158 L 496 138 Z',
       },
       {
         id: 'loc-corinth',
@@ -86,21 +90,25 @@
         name: 'Lam Vịnh',
         altName: 'Corinth',
         ruler: 'Công tước Diocles Ingelrandus',
-        x: 318,
-        y: 178,
-        zonePath: 'M 192 224 L 204 114 L 368 44 L 468 96 L 478 134 L 416 206 L 414 294 L 224 304 L 182 266 Z',
-        summary: 'Đô thị thương cảng sầm uất trải dài bên trái Vương Đô, hướng thẳng ra Biển Tây.',
+        summary:
+          'Đô thị thương cảng sầm uất mở ra The Far Sea với cầu cảng đá tấp nập tàu buôn, khu phố thương nhân san sát cùng các thương sảnh mái vòm và hành lang cột mang dấu ấn giao thoa phương Đông; phía đông nối qua đồng ruộng vào Vương Đô, phía nam áp sát trục thương lộ xuống Bắc Ải.',
+        x: 348,
+        y: 98,
+        zonePath:
+          'M 196 144 L 200 66 L 284 10 L 520 10 L 496 138 L 414 196 L 310 218 L 260 198 Z',
       },
       {
         id: 'loc-norsvale',
         scope: 'valeroth',
         name: 'Bắc Ải',
         altName: 'Norsvale',
-        ruler: 'Kaldor Oakhart',
-        x: 374,
-        y: 360,
-        zonePath: 'M 266 312 L 414 294 L 482 340 L 476 416 L 382 430 L 264 398 Z',
-        summary: 'Pháo đài đá xám lạnh giá dưới Lam Vịnh, tiếp giáp trực tiếp với U Lâm, Cấm Địa và Hoang Vực.',
+        ruler: 'Công tước Kaldor Oakhart',
+        summary:
+          'Tòa thành biên ải quy mô đồ sộ án ngữ ngay dưới chân Lam Vịnh, nổi bật với Tháp Công Tước sừng sững trên vách đá giáp biển The Far Sea nối cầu vòm đá vào Đại Sảnh, Thành Nội và khu phố ngoại thành — chắn kín mọi lối tiến từ Hoang Vực vào Valeroth.',
+        x: 326,
+        y: 344,
+        zonePath:
+          'M 164 368 L 180 198 L 260 198 L 310 218 L 408 264 L 434 364 L 456 446 L 316 440 Z',
       },
       {
         id: 'loc-sylva',
@@ -108,22 +116,26 @@
         name: 'U Lâm',
         altName: 'Sylva',
         ruler: 'Công tước Artur Houtmann',
-        x: 866,
-        y: 310,
-        zonePath: 'M 832 214 L 948 158 L 986 184 L 986 548 L 834 548 L 866 436 L 786 382 L 622 396 L 476 416 L 482 340 L 622 342 L 718 294 L 718 206 Z',
-        summary: 'Dải rừng già mạn phải vươn tới giáp tường đông Bắc Ải và hòa liền Cấm Địa.',
+        summary:
+          'Dải rừng cổ thụ rộng lớn ôm trọn mạn đông với tòa lâu đài Gothic ẩn sâu trong tán lá, đồng thời kéo dài liền mạch về phía tây nam dưới chân Bắc Ải giáp ranh Hoang Vực.',
+        x: 842,
+        y: 344,
+        zonePath:
+          'M 586 468 L 638 410 L 728 346 L 718 228 L 866 266 L 992 246 L 992 430 L 848 438 L 802 496 L 814 554 L 598 554 Z',
       },
       {
         id: 'loc-morvath',
         scope: 'valeroth',
         name: 'Cấm Địa',
         altName: 'Morvath',
-        ruler: 'Tin đồn về Phù Thủy',
-        x: 668,
-        y: 478,
-        zonePath: 'M 476 416 L 622 396 L 786 382 L 866 436 L 834 548 L 492 548 L 486 462 Z',
+        ruler: 'Vô chủ (Tin đồn về Phù Thủy)',
+        summary:
+          'Vùng trũng cây khô héo lẩn khuất sâu kín dưới tán rừng đông nam của U Lâm; ẩn khuất bên trong là một căn nhà gỗ nhỏ đơn độc gắn với lời đồn về Phù Thủy.',
+        x: 896,
+        y: 514,
+        zonePath:
+          'M 802 496 L 848 438 L 992 430 L 992 554 L 814 554 Z',
         softBlend: true,
-        summary: 'Rừng cổ thụ chết khô chìm trong sương độc hòa lẫn vào U Lâm, áp sát mạn đông nam Bắc Ải.',
       },
       {
         id: 'loc-kaldrak',
@@ -131,112 +143,128 @@
         name: 'Hoang Vực',
         altName: 'Kaldrak',
         ruler: 'Vô chủ',
-        x: 205,
-        y: 470,
-        zonePath: 'M 14 334 L 182 320 L 266 312 L 264 398 L 382 430 L 486 462 L 492 548 L 14 548 Z',
-        summary: 'Vùng khe nứt đá vỡ trải rộng mạn tây nam dưới chân Bắc Ải, lãnh địa quái vật.',
+        summary:
+          'Ngoại vực hiểm ác trải rộng ngay ngoài cổng Nam Bắc Ải — đá đen lởm chởm, cây chết trơ cành, phế tích tháp canh đổ nát, bia cự thạch và những bộ xương khổng lồ phơi mình giữa đất hoang đầy quái vật.',
+        x: 274,
+        y: 472,
+        zonePath:
+          'M 8 554 L 8 386 L 164 368 L 316 440 L 456 446 L 586 468 L 598 554 Z',
       },
 
-      // --- LAYER 2: BÊN TRONG BẮC ẢI ---
+      // --- LAYER 2: THÀNH BẮC ẢI (ĐỒNG BỘ HƯỚNG VỚI VALEROTH: BIỂN BÊN TRÁI · BẮC TRÊN · HOANG VỰC DƯỚI · RỪNG BÊN PHẢI) ---
       {
         id: 'loc-nors-keep',
         scope: 'norsvale',
-        name: 'Tháp Oakhart',
-        altName: 'Dinh thự & Đại Sảnh',
-        ruler: 'Kaldor Oakhart',
-        x: 548,
-        y: 178,
-        zonePath: 'M 412 36 L 584 28 L 692 162 L 694 278 L 574 314 L 412 214 Z',
-        summary: 'Pháo đài đá xám lạnh lẽo là bản doanh của Kaldor Oakhart, gồm Đại Sảnh, phòng Công tước trên tháp chính và sa bàn quân sự.',
+        name: 'Tháp Công Tước',
+        altName: 'Tháp Vách Biển · Phòng Công tước',
+        summary:
+          'Ngọn tháp đá vuông cao tách biệt hoàn toàn trên mỏm vách đá giáp biển The Far Sea ở cực tây Thành Nội, chỉ nối sang Đại Sảnh qua cây cầu đá vòm lộng gió biển; bên trong tối giản với giường phủ da thú, bàn bản đồ quân sự và rượu mạnh.',
+        x: 118,
+        y: 158,
+        zonePath: 'M 68 48 L 162 44 L 236 146 L 236 226 L 154 294 L 68 286 Z',
+      },
+      {
+        id: 'loc-nors-hall',
+        scope: 'norsvale',
+        name: 'Đại Sảnh',
+        altName: 'Sảnh Tiệc & Hội Nghị',
+        summary:
+          'Tòa sảnh đá mái dốc đồ sộ tọa lạc bên trong Thành Nội và nối thẳng hành lang cầu đá hướng tây ra Tháp Công Tước giáp biển; nổi bật với lò sưởi khổng lồ và dãy bàn sồi thô nơi Công tước cùng hiệp sĩ họp bàn.',
+        x: 292,
+        y: 186,
+        zonePath: 'M 224 128 L 324 98 L 364 166 L 352 258 L 228 242 Z',
+      },
+      {
+        id: 'loc-nors-kitchen',
+        scope: 'norsvale',
+        name: 'Bếp & Hậu Cần',
+        altName: 'Bếp Lửa & Kho Lương',
+        summary:
+          'Cụm nhà bếp đỏ lửa, lò nướng bánh và kho lương thực nằm kín đáo cạnh Đại Sảnh dọc tường bắc Thành Nội, do người hầu cùng thương binh cựu chiến vận hành.',
+        x: 454,
+        y: 124,
+        zonePath: 'M 332 82 L 570 84 L 568 184 L 364 166 Z',
+      },
+      {
+        id: 'loc-nors-barracks',
+        scope: 'norsvale',
+        name: 'Trại Huấn Luyện',
+        altName: 'Sân Kỵ Binh & Chuồng Ngựa',
+        summary:
+          'Sân tập rộng mở giữa lòng Thành Nội với bia bắn cung, chuồng ngựa chiến và bãi luyện kỵ binh, suốt ngày vang tiếng hò hét thao luyện cùng vó ngựa tuần biên.',
+        x: 422,
+        y: 248,
+        zonePath: 'M 352 258 L 364 166 L 568 184 L 520 318 L 434 344 L 348 290 Z',
+      },
+      {
+        id: 'loc-nors-forge',
+        scope: 'norsvale',
+        name: 'Xưởng Quân Nhu',
+        altName: 'Lò Rèn & Kho Vũ Khí',
+        summary:
+          'Khu xưởng rèn và kho quân nhu nằm sát tường nam Thành Nội nhìn ra vách biển, rực lửa lò bễ, đe sắt và giá binh khí phục vụ sửa giáp trụ chống quái vật.',
+        x: 318,
+        y: 334,
+        zonePath: 'M 204 260 L 228 242 L 352 258 L 434 344 L 444 416 L 266 392 L 204 320 Z',
       },
       {
         id: 'loc-nors-northgate',
         scope: 'norsvale',
         name: 'Cổng Bắc & Chợ Tiếp Vận',
-        altName: 'Bếp & Kho Tiếp Vận',
-        ruler: 'Đội quản kho biên ải',
-        x: 262,
-        y: 126,
-        zonePath: 'M 164 32 L 412 42 L 412 204 L 294 210 L 114 198 L 116 112 Z',
-        summary: 'Cửa ngõ đón đoàn xe lương thực từ Lam Vịnh và khu bếp lửa hậu cần của dinh thự.',
-      },
-      {
-        id: 'loc-nors-forge',
-        scope: 'norsvale',
-        name: 'Xưởng Rèn & Kho Quân Nhu',
-        altName: 'Lò Thiết Nhẫn',
-        ruler: 'Thợ rèn Bắc Ải',
-        x: 794,
-        y: 186,
-        zonePath: 'M 656 122 L 732 48 L 932 108 L 946 276 L 848 296 L 694 278 L 692 162 Z',
-        summary: 'Tiếng búa sắt vang nhịp ngày đêm; nơi nung than Hắc Nham, sửa giáp và trữ vũ khí chống quái vật.',
-      },
-      {
-        id: 'loc-nors-barracks',
-        scope: 'norsvale',
-        name: 'Trại Lính & Sân Tập',
-        altName: 'Sân Kỵ Binh & Doanh Trại',
-        ruler: 'Đội trưởng tuần biên',
-        x: 268,
-        y: 274,
-        zonePath: 'M 94 196 L 294 210 L 412 204 L 494 316 L 444 344 L 314 316 L 106 346 L 84 264 Z',
-        summary: 'Sân tập lầy bùn vây quanh bởi doanh trại đá ẩm lạnh và chuồng ngựa chiến.',
+        altName: 'Cổng Quan Lộ Lam Vịnh',
+        summary:
+          'Cửa ngõ phía bắc đón đoàn xe ngựa từ Lam Vịnh và Vương Đô, mở thẳng ra quảng trường chợ tiếp vận tấp nập sạp vải, thùng hàng và thương nhân.',
+        x: 656,
+        y: 162,
+        zonePath: 'M 570 46 L 688 46 L 786 116 L 764 232 L 664 238 L 568 220 Z',
       },
       {
         id: 'loc-nors-tavern',
         scope: 'norsvale',
         name: 'Quán Rượu Mũi Đao',
         altName: 'Quán Lính Đánh Thuê',
-        ruler: 'Chủ quán biên ải',
-        x: 302,
-        y: 404,
-        zonePath: 'M 106 346 L 314 316 L 444 344 L 462 456 L 254 504 L 114 426 Z',
-        summary: 'Quán rượu khói bếp mù mịt, ồn ã lính đánh thuê; bữa ăn nóng và cốc bia ấm giá 2 Xu bạc.',
+        summary:
+          'Quán rượu khung gỗ lớn nằm ngay ngã tư đường đá đối diện cổng tháp đôi Thành Nội, nồng mùi bia ấm, thịt nướng và tiếng cười thô ráp của lính đánh thuê.',
+        x: 656,
+        y: 282,
+        zonePath: 'M 578 232 L 704 224 L 732 296 L 696 350 L 584 328 Z',
+      },
+      {
+        id: 'loc-nors-town',
+        scope: 'norsvale',
+        name: 'Khu Dân Cư & Chợ Đêm',
+        altName: 'Nhà Dân · Chợ · Nhà Thổ',
+        summary:
+          'Khu thị trấn ngoại thành rộng lớn trải dài về mạn đông giáp rìa rừng U Lâm với dãy nhà dân khung gỗ san sát, ngõ đá buôn bán tấp nập, chợ đêm treo đèn lồng cùng dãy nhà thổ và quán trọ biên ải.',
+        x: 856,
+        y: 344,
+        zonePath:
+          'M 704 224 L 764 232 L 786 116 L 992 172 L 992 554 L 692 554 L 758 450 L 696 350 L 732 296 Z',
       },
       {
         id: 'loc-nors-apothecary',
         scope: 'norsvale',
         name: 'Trạm Y Dược & Luyện Kim',
         altName: 'Nhà Thuốc Biên Ải',
-        ruler: 'Y sĩ & Học giả',
-        x: 786,
-        y: 356,
-        zonePath: 'M 656 296 L 694 278 L 848 296 L 934 282 L 926 392 L 788 440 L 656 404 Z',
-        summary: 'Nhà đá chuyên băng bó thương binh, chưng cất thuốc giải sương độc và lưu mẫu xác quái vật.',
+        summary:
+          'Ngôi nhà đá mái vòm yên tĩnh cùng khu vườn thảo dược có tường bao nằm ở phía nam khu phố, chuyên băng bó thương binh từ tường Nam và bào chế thuốc giải độc.',
+        x: 634,
+        y: 454,
+        zonePath: 'M 508 446 L 642 356 L 758 450 L 642 554 L 568 554 Z',
       },
       {
         id: 'loc-nors-southgate',
         scope: 'norsvale',
         name: 'Cổng Hoang Vực & Tường Nam',
         altName: 'Cửa Ải Tuyến Đầu',
-        ruler: 'Đội trực chiến cổng nam',
-        x: 566,
-        y: 462,
-        zonePath: 'M 444 344 L 574 314 L 656 336 L 672 414 L 702 518 L 486 550 L 456 462 Z',
-        summary: 'Hai tháp canh đốt lửa báo hiệu cùng cổng sắt nặng hướng thẳng ra Hoang Vực và sương độc Cấm Địa.',
+        summary:
+          'Hai tháp canh đá dày kẹp cửa sắt nặng ở mạn nam hướng thẳng ra những mỏm đá đen lởm chởm và cây chết Hoang Vực — chốt gác tuyến đầu khắc nghiệt nhất Thành Bắc Ải.',
+        x: 386,
+        y: 486,
+        zonePath: 'M 266 392 L 444 416 L 568 554 L 244 554 L 248 444 Z',
       },
     ],
-    routes: [
-      { scope: 'valeroth', from: 'loc-valerius', to: 'loc-corinth', type: 'road' },
-      { scope: 'valeroth', from: 'loc-valerius', to: 'loc-zarath', type: 'road' },
-      { scope: 'valeroth', from: 'loc-valerius', to: 'loc-sylva', type: 'road' },
-      { scope: 'valeroth', from: 'loc-zarath', to: 'loc-sylva', type: 'road' },
-      { scope: 'valeroth', from: 'loc-corinth', to: 'loc-norsvale', type: 'road' },
-      { scope: 'valeroth', from: 'loc-norsvale', to: 'loc-valerius', type: 'road' },
-      { scope: 'valeroth', from: 'loc-norsvale', to: 'loc-sylva', type: 'secret' },
-      { scope: 'valeroth', from: 'loc-norsvale', to: 'loc-morvath', type: 'secret' },
-      { scope: 'valeroth', from: 'loc-norsvale', to: 'loc-kaldrak', type: 'portal' },
-      { scope: 'valeroth', from: 'loc-sylva', to: 'loc-morvath', type: 'secret' },
-
-      { scope: 'norsvale', from: 'loc-nors-northgate', to: 'loc-nors-keep', type: 'road' },
-      { scope: 'norsvale', from: 'loc-nors-northgate', to: 'loc-nors-barracks', type: 'road' },
-      { scope: 'norsvale', from: 'loc-nors-keep', to: 'loc-nors-forge', type: 'road' },
-      { scope: 'norsvale', from: 'loc-nors-keep', to: 'loc-nors-southgate', type: 'road' },
-      { scope: 'norsvale', from: 'loc-nors-barracks', to: 'loc-nors-tavern', type: 'road' },
-      { scope: 'norsvale', from: 'loc-nors-tavern', to: 'loc-nors-southgate', type: 'road' },
-      { scope: 'norsvale', from: 'loc-nors-forge', to: 'loc-nors-apothecary', type: 'road' },
-      { scope: 'norsvale', from: 'loc-nors-apothecary', to: 'loc-nors-southgate', type: 'road' },
-    ],
+    routes: [],
   };
 
   global.RP_WORLDS = global.RP_WORLDS || {};

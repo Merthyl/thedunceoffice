@@ -1,31 +1,28 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Eye, EyeOff, Maximize2, Minus, Plus, Route } from 'lucide-react';
+import { Eye, EyeOff, Maximize2, Minus, Plus } from 'lucide-react';
 import {
   getLocationScope,
-  getRouteScope,
   MAP_HEIGHT,
   MAP_WIDTH,
   resolvePlayerPosition,
 } from '../data/storyEngine';
-import type { MapScope, StoryLocation, StoryRoute, StoryWorldState } from '../types/story';
+import type { MapScope, StoryLocation, StoryWorldState } from '../types/story';
 
 interface StoryMapCanvasProps {
   world: StoryWorldState;
   activeScope: MapScope;
   selectedLocationId: string | null;
-  selectedRouteId: string | null;
   highlightedLocationIds: string[];
   focusLocationId: string | null;
   isPlayerMapHighlighted: boolean;
   onClearFocus: () => void;
   onSelectLocation: (id: string | null) => void;
-  onSelectRoute: (id: string | null) => void;
   onEnterNorsvale?: () => void;
 }
 
 const MAP_ARTWORK_BY_SCOPE: Record<MapScope, string> = {
-  valeroth: '/src/assets/images/valeroth_map_v2_1795197882349.jpg',
-  norsvale: '/src/assets/images/norsvale_interior_1795197881444.jpg',
+  valeroth: '/src/assets/images/valeroth_overworld_v22_1795283743457.jpg',
+  norsvale: '/src/assets/images/norsvale_interior_v12_1795283643903.jpg',
 };
 
 const INK = '#111111';
@@ -33,29 +30,15 @@ const INK_SOFT = '#3D3A35';
 const PAPER = '#FAF8F4';
 const WAX_CRIMSON = '#8B1E1E';
 
-function computeCurvedRoad(from: StoryLocation, to: StoryLocation) {
-  const dx = to.x - from.x;
-  const dy = to.y - from.y;
-  const dist = Math.hypot(dx, dy) || 1;
-  const bend = Math.min(20, dist * 0.09);
-  const mx = (from.x + to.x) / 2 - (dy / dist) * bend;
-  const my = (from.y + to.y) / 2 + (dx / dist) * bend;
-  return {
-    d: `M ${from.x} ${from.y} Q ${mx} ${my} ${to.x} ${to.y}`,
-  };
-}
-
 export default function StoryMapCanvas({
   world,
   activeScope,
   selectedLocationId,
-  selectedRouteId,
   highlightedLocationIds,
   focusLocationId,
   isPlayerMapHighlighted,
   onClearFocus,
   onSelectLocation,
-  onSelectRoute,
   onEnterNorsvale,
 }: StoryMapCanvasProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -65,7 +48,6 @@ export default function StoryMapCanvas({
   const [imgError, setImgError] = useState(false);
 
   const [showZones, setShowZones] = useState(true);
-  const [showRoutes, setShowRoutes] = useState(true);
   const [hoveredLocationId, setHoveredLocationId] = useState<string | null>(null);
 
   const [isPanning, setIsPanning] = useState(false);
@@ -82,7 +64,6 @@ export default function StoryMapCanvas({
   }, [activeScope]);
 
   const scopedLocations = world.locations.filter((l) => getLocationScope(l) === activeScope);
-  const scopedRoutes = world.routes.filter((r) => getRouteScope(r, world.locations) === activeScope);
 
   useEffect(() => {
     if (!focusLocationId) return;
@@ -112,7 +93,6 @@ export default function StoryMapCanvas({
     if ((e.target as HTMLElement).closest('[data-map-interactive="true"]')) return;
 
     onSelectLocation(null);
-    onSelectRoute(null);
 
     setIsPanning(true);
     panOriginRef.current = {
@@ -141,7 +121,6 @@ export default function StoryMapCanvas({
 
   const handleLocationClick = (e: React.MouseEvent, loc: StoryLocation) => {
     e.stopPropagation();
-    onSelectRoute(null);
     onSelectLocation(loc.id);
   };
 
@@ -152,33 +131,17 @@ export default function StoryMapCanvas({
     }
   };
 
-  const handleRouteClick = (e: React.MouseEvent, route: StoryRoute) => {
-    e.stopPropagation();
-    onSelectLocation(null);
-    onSelectRoute(route.id);
-  };
-
   const resetViewport = () => {
     setZoom(1);
     setPan({ x: 0, y: 0 });
   };
 
-  const locationMap = new Map(scopedLocations.map((l) => [l.id, l]));
   const playerPos = resolvePlayerPosition(world);
   const playerDisplayLoc = playerPos.displayLocationForScope(activeScope);
 
-  const npcsByLocation = new Map<string, typeof world.characters>();
-  for (const ch of world.characters) {
-    if (ch.isPlayer) continue;
-    if (locationMap.has(ch.locationId)) {
-      const list = npcsByLocation.get(ch.locationId) ?? [];
-      list.push(ch);
-      npcsByLocation.set(ch.locationId, list);
-    }
-  }
-
   const activeBgUrl = MAP_ARTWORK_BY_SCOPE[activeScope];
-  const titlePlateLabel = activeScope === 'valeroth' ? '· VALEROTH ·' : '· BẮC ẢI ·';
+  const titlePlateLabel = activeScope === 'valeroth' ? '· VALEROTH ·' : '· THÀNH BẮC ẢI ·';
+  const titlePlateWidth = activeScope === 'valeroth' ? 164 : 196;
 
   return (
     <div
@@ -210,7 +173,7 @@ export default function StoryMapCanvas({
               referrerPolicy="no-referrer"
               draggable={false}
               onError={() => setImgError(true)}
-              className="pointer-events-none absolute inset-0 h-full w-full object-cover contrast-[1.06]"
+              className="pointer-events-none absolute inset-0 h-full w-full object-cover"
             />
           )}
 
@@ -327,63 +290,12 @@ export default function StoryMapCanvas({
                 );
               })}
 
-            {/* 2. ROUTES LAYER */}
-            {showRoutes &&
-              scopedRoutes.map((route) => {
-                const from = locationMap.get(route.fromId);
-                const to = locationMap.get(route.toId);
-                if (!from || !to) return null;
-
-                const { d } = computeCurvedRoad(from, to);
-                const isSelected = selectedRouteId === route.id;
-                const isTraversed = route.status === 'traversed';
-
-                const strokeColor = isSelected || isTraversed ? WAX_CRIMSON : INK;
-                const dashArray =
-                  route.type === 'secret'
-                    ? '2 4'
-                    : route.type === 'portal'
-                    ? '6 3 2 3'
-                    : '5 4';
-
-                return (
-                  <g
-                    key={route.id}
-                    data-map-interactive="true"
-                    onClick={(e) => handleRouteClick(e, route)}
-                    className="cursor-pointer"
-                  >
-                    <path d={d} fill="none" stroke="transparent" strokeWidth="14" />
-                    {(isSelected || isTraversed) && (
-                      <path
-                        d={d}
-                        fill="none"
-                        stroke="rgba(250, 248, 244, 0.9)"
-                        strokeWidth={isSelected ? 5.5 : 4.2}
-                        strokeLinecap="round"
-                      />
-                    )}
-                    <path
-                      d={d}
-                      fill="none"
-                      stroke={strokeColor}
-                      strokeWidth={isSelected ? 2.5 : isTraversed ? 1.9 : 1.05}
-                      strokeDasharray={isTraversed ? undefined : dashArray}
-                      opacity={isSelected || isTraversed ? 0.92 : 0.4}
-                      strokeLinecap="round"
-                      markerEnd={isTraversed || isSelected ? 'url(#ink-arrow-active)' : undefined}
-                    />
-                  </g>
-                );
-              })}
-
-            {/* 3. ENGRAVED VICTORIAN SCROLL BANNERS, NPC TAGS & USER LOCATION PIN */}
+            {/* 2. ENGRAVED VICTORIAN SCROLL BANNERS & USER LOCATION PIN ONLY */}
             {scopedLocations.map((loc) => {
               const isSelected = selectedLocationId === loc.id;
               const isHovered = hoveredLocationId === loc.id;
               const isHighlighted = highlightedLocationIds.includes(loc.id);
               const isPlayerHere = playerDisplayLoc?.id === loc.id;
-              const presentNpcs = npcsByLocation.get(loc.id) ?? [];
 
               const titleText = `· ${loc.name.toUpperCase()} ·`;
               const bannerWidth = Math.max(96, titleText.length * 6.5 + 22);
@@ -557,41 +469,6 @@ export default function StoryMapCanvas({
                       />
                     </g>
                   )}
-
-                  {/* NPC Character Marker Tag (placed cleanly above pin if user is also here) */}
-                  {presentNpcs.length > 0 && (
-                    <g transform={`translate(0, ${isPlayerHere ? -48 : -16})`}>
-                      <rect
-                        x={
-                          -Math.min(
-                            82,
-                            presentNpcs.map((c) => c.name).join(' · ').length * 3.1 + 12
-                          )
-                        }
-                        y={-8.5}
-                        width={Math.min(
-                          164,
-                          presentNpcs.map((c) => c.name).join(' · ').length * 6.2 + 24
-                        )}
-                        height={16}
-                        fill={INK}
-                        stroke={PAPER}
-                        strokeWidth="0.85"
-                      />
-                      <text
-                        textAnchor="middle"
-                        y={2.5}
-                        fontSize="8.4"
-                        fontWeight="600"
-                        fill={PAPER}
-                        style={{ fontFamily: '"Spectral", Georgia, serif' }}
-                      >
-                        {presentNpcs.length <= 2
-                          ? presentNpcs.map((c) => c.name).join(' · ')
-                          : `${presentNpcs[0].name} +${presentNpcs.length - 1}`}
-                      </text>
-                    </g>
-                  )}
                 </g>
               );
             })}
@@ -618,25 +495,33 @@ export default function StoryMapCanvas({
               className="pointer-events-none"
             />
 
-            {/* 5. ENGRAVED TITLE PLATE — STRICTLY "VALEROTH" (or "BẮC ẢI" in interior mode) */}
+            {/* 5. ENGRAVED TITLE PLATE */}
             <g transform="translate(26, 24)" className="pointer-events-none">
-              <rect x="2" y="2" width="164" height="36" fill={INK} opacity="0.16" />
-              <rect x="0" y="0" width="164" height="36" fill={PAPER} stroke={INK} strokeWidth="1.5" />
+              <rect x="2" y="2" width={titlePlateWidth} height="36" fill={INK} opacity="0.16" />
+              <rect
+                x="0"
+                y="0"
+                width={titlePlateWidth}
+                height="36"
+                fill={PAPER}
+                stroke={INK}
+                strokeWidth="1.5"
+              />
               <rect
                 x="3.5"
                 y="3.5"
-                width="157"
+                width={titlePlateWidth - 7}
                 height="29"
                 fill="none"
                 stroke={INK}
                 strokeWidth="0.6"
               />
               <circle cx="9" cy="9" r="1.2" fill={INK} />
-              <circle cx="155" cy="9" r="1.2" fill={INK} />
+              <circle cx={titlePlateWidth - 9} cy="9" r="1.2" fill={INK} />
               <circle cx="9" cy="27" r="1.2" fill={INK} />
-              <circle cx="155" cy="27" r="1.2" fill={INK} />
+              <circle cx={titlePlateWidth - 9} cy="27" r="1.2" fill={INK} />
               <text
-                x="82"
+                x={titlePlateWidth / 2}
                 y="23"
                 textAnchor="middle"
                 fontSize="13.5"
@@ -669,18 +554,6 @@ export default function StoryMapCanvas({
         >
           {showZones ? <Eye size={13} /> : <EyeOff size={13} />}
           <span>Khoanh vùng</span>
-        </button>
-
-        <button
-          type="button"
-          onClick={() => setShowRoutes((v) => !v)}
-          className={`flex items-center gap-1 px-2 py-1 text-xs font-medium transition-colors whitespace-nowrap shrink-0 ${
-            showRoutes ? 'bg-[#111111]/10 text-[#111111]' : 'text-[#6B665D] hover:bg-[#E7E3DA]'
-          }`}
-          title="Bật/tắt tuyến đường"
-        >
-          <Route size={13} />
-          <span>Tuyến</span>
         </button>
 
         <div className="mx-0.5 h-4 w-px bg-[#111111]/25" />

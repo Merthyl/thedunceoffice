@@ -319,7 +319,7 @@ export function buildUnifiedJsDelivrSystemPrompt({
     const cdnBase = jsDelivrEngineUrl.replace(/\/engine\.js(?:[?#].*)?$/, '');
     return `# SECTION 5 | HỆ THỐNG LỆNH RP (/map · /recap · /transfer) [HARD_LOCK]
 * KÍCH HOẠT [ABSOLUTE]: Chỉ kích hoạt khi người chơi gõ đúng lệnh bên dưới. Lập tức tạm dừng mạch kể (KHÔNG thúc đẩy sự kiện hay hành động mới của {{user}}), dùng công cụ **URL Context** đọc tệp đặc tả từ \`raw.githubusercontent.com\` và xuất ĐÚNG kết quả theo quy tắc trong tệp:
-  - \`/map\` (hoặc \`/map valeroth\`, \`/map bắc ải\`): Đọc ${commandDocsUrls.mapKaldor} → điền dữ liệu RP hiện tại (vị trí \`{{user}}\`, NPC đã chạm trán/nhắc đến, tag sự kiện) và xuất DUY NHẤT 1 khối \`\`\`html ... \`\`\` hoàn chỉnh (\`<!DOCTYPE html>\`) dùng \`<CDN_BASE>\` = \`${cdnBase}\` cho 2 thẻ \`<script>\` jsDelivr để chạy Preview HTML trực tiếp.
+  - \`/map\` (hoặc \`/map valeroth\`, \`/map bắc ải\`): Đọc ${commandDocsUrls.mapKaldor} → điền dữ liệu RP hiện tại (vị trí \`{{user}}\`, NPC đã xuất hiện/nhắc đến kèm chức vụ và tình trạng \`Còn sống\` / \`Đã chết\` / \`Mất tích\`) và xuất DUY NHẤT 1 khối \`\`\`html ... \`\`\` hoàn chỉnh (\`<!DOCTYPE html>\`) dùng \`<CDN_BASE>\` = \`${cdnBase}\` cho 2 thẻ \`<script>\` jsDelivr để chạy Preview HTML trực tiếp.
   - \`/recap\`: Đọc ${commandDocsUrls.recap} → chỉ xuất **thuần text** theo mẫu \`### TÓM TẮT DIỄN BIẾN\` trực tiếp ra màn hình (KHÔNG bọc HTML).
   - \`/transfer\`: Đọc ${commandDocsUrls.transfer} → chỉ xuất **thuần text** gói \`Transfer Pack\` hoàn chỉnh trực tiếp ra màn hình (KHÔNG bọc HTML).
 * KHÔNG giải thích quy trình hay trích dẫn file đặc tả; giữ tuyệt đối nguyên tắc không spoil \`[HARD_LOCKED]\` và không tự ý hành động thay \`{{user}}\`.`;
@@ -349,21 +349,15 @@ export function buildUnifiedJsDelivrSystemPrompt({
     mode: "map",
     view: "valeroth hoặc norsvale",
     playerLoc: "mã_vị_trí_đứng_hiện_tại_theo_hội_thoại",
-    fromLoc: "mã_vị_trí_vừa_di_chuyển_từ_đó_hoặc_chuỗi_rỗng",
     chapter: "Mốc thời gian / bối cảnh hiện tại",
     status: "Tóm tắt 1 câu vị trí đứng và tình huống hiện tại của {{user}} đúng theo hội thoại.",${assetsSnippet}
     npcs: [
       {
-        name: "Tên NPC (có sẵn trong Section 4 HOẶC mới tạo bởi {{user}}/cốt truyện)",
+        name: "Tên NPC",
         loc: "mã_địa_điểm_hiện_tại_của_NPC",
-        role: "Vai trò công khai đã biết (CẤM tiết lộ bí mật HARD_LOCKED)",
-        status: "Tình trạng ngắn gọn đã thể hiện trong truyện",
-        source: "canon hoặc custom",
-        visibility: "encountered hoặc mentioned"
+        role: "Chức vụ công khai ngắn gọn",
+        status: "Còn sống"
       }
-    ],
-    tags: [
-      { loc: "mã_địa_điểm", label: "Sự kiện / cảnh báo đã xảy ra", tone: "ink" }
     ]
   };
   </script>
@@ -374,21 +368,20 @@ export function buildUnifiedJsDelivrSystemPrompt({
 \`\`\`
 
 DANH SÁCH MÃ ĐỊA ĐIỂM HỢP LỆ (world: "kaldor-valeroth"):
-[Lớp 1 — Toàn cảnh Valeroth (view: "valeroth")]
+[Lớp 1 — Vương quốc Valeroth (view: "valeroth")]
 ${overworldList}
 
-[Lớp 2 — Bên trong Bắc Ải / Dinh thự Kaldor Oakhart (view: "norsvale")]
+[Lớp 2 — Thành Bắc Ải (view: "norsvale")]
 ${norsvaleList}
 
 QUY TẮC BẮT BUỘC CHO /map:
-1. VỊ TRÍ NGƯỜI CHƠI THEO HỘI THOẠI [ABSOLUTE]: \`playerLoc\` và \`fromLoc\` PHẢI phản ánh chính xác nơi {{user}} đang đứng và nơi vừa rời đi dựa trên đoạn hội thoại tại thời điểm gõ \`/map\`. Nếu {{user}} chưa di chuyển sang địa điểm mới, giữ \`fromLoc: ""\`. Nếu {{user}} đang ở bên trong Bắc Ải và không yêu cầu xem toàn cảnh, đặt \`view: "norsvale"\`; ngược lại đặt \`view: "valeroth"\`.
-2. HIỂN THỊ NPC [HARD_LOCK — KHÔNG SPOIL]:
-   - Mảng \`npcs\` hỗ trợ CẢ **NPC có sẵn** (\`source: "canon"\`) lẫn **NPC mới được tạo bởi {{user}} hoặc cốt truyện** (\`source: "custom"\`).
-   - **CHỈ HIỂN THỊ KHI ĐƯỢC NHẮC ĐẾN HOẶC CHẠM TRÁN**: Tuyệt đối KHÔNG điền trước các NPC chưa xuất hiện hay chưa được nhắc tới trong đoạn hội thoại. Nếu chưa có NPC nào được nhắc đến hoặc chạm trán, đặt \`npcs: []\`.
-   - \`visibility: "encountered"\` khi {{user}} đang/đã chạm trán trực tiếp; \`visibility: "mentioned"\` khi NPC mới chỉ được nhắc tên trong lời thoại/thư từ/tin đồn.
-   - **KNOWLEDGE & NAME LOCK**: Tuyệt đối không rò rỉ thông tin \`[HARD_LOCKED]\` vào \`name\`, \`role\`, \`status\` (ví dụ: chỉ ghi \`"Rowan"\` chứ KHÔNG ghi \`"Rowan Valerius"\` nếu chưa lộ thân phận; Silas Venn / Maelle Voss chỉ hiện vỏ bọc người hầu nếu chưa bị phát hiện; không lộ bí mật Giáo Hoàng, Cedric, Elmira...).
-3. \`tags\` dùng để đánh dấu sự kiện hoặc cảnh báo trên bản đồ (\`tone: "ink"\` mực đen bình thường, \`tone: "crimson"\` cảnh báo/nguy hiểm).
-4. Giữ nguyên \`world: "kaldor-valeroth"\` cùng 2 thẻ \`<script>\` trỏ về jsDelivr.`;
+1. VỊ TRÍ NGƯỜI CHƠI THEO HỘI THOẠI [ABSOLUTE]: \`playerLoc\` PHẢI phản ánh chính xác nơi {{user}} đang đứng dựa trên đoạn hội thoại tại thời điểm gõ \`/map\`. Nếu {{user}} đang ở bên trong Bắc Ải và không yêu cầu xem toàn cảnh, đặt \`view: "norsvale"\`; ngược lại đặt \`view: "valeroth"\`.
+2. HIỂN THỊ NPC TRONG TỪNG VÙNG [HARD_LOCK — NGẮN GỌN, KHÔNG SPOIL]:
+   - Giao diện chỉ hiển thị NPC khi người chơi bấm vào từng vùng đất. Vùng chưa có NPC sẽ tự động hiện \`Chưa có dữ liệu\`.
+   - **CHỈ ĐIỀN NPC ĐÃ XUẤT HIỆN HOẶC ĐƯỢC NHẮC ĐẾN** trong mạch truyện (hỗ trợ cả NPC có sẵn lẫn NPC mới tạo). Nếu chưa có, để \`npcs: []\`.
+   - **ĐỊNH DẠNG BẮT BUỘC (KHÔNG VIẾT DÀI DÒNG)**: Mỗi NPC CHỈ gồm 4 trường: \`name\` (Tên NPC), \`loc\` (mã địa điểm), \`role\` (chức vụ công khai thật ngắn gọn), và \`status\` CHỈ ĐƯỢC phép là 1 trong 3 giá trị: \`"Còn sống"\` | \`"Đã chết"\` | \`"Mất tích"\`. Tuyệt đối không viết mô tả hành động dài dòng vào \`status\` hay \`role\`.
+   - **KNOWLEDGE & NAME LOCK**: Tuyệt đối không rò rỉ thông tin \`[HARD_LOCKED]\` vào \`name\` hay \`role\` (ví dụ: chỉ ghi \`"Rowan"\` chứ KHÔNG ghi \`"Rowan Valerius"\` nếu chưa lộ thân phận; Silas Venn / Maelle Voss chỉ hiện vỏ bọc người hầu nếu chưa bị phát hiện; không lộ bí mật Giáo Hoàng, Cedric, Elmira...).
+3. KHÔNG sinh mảng \`tags\` và KHÔNG vẽ tuyến đường. Giữ nguyên \`world: "kaldor-valeroth"\` cùng 2 thẻ \`<script>\` trỏ về jsDelivr.`;
 
   if (textCommandsMode === 'markdown') {
     return `${VALEROTH_WORLD_AND_CHESSBOARD_PROMPT}
