@@ -130,14 +130,15 @@ Kho mã nguồn **tách lõi dùng chung & gói bản đồ từng nhân vật**
 └── README.md
 \`\`\`
 
-## Cách đẩy lên GitHub & gắn vào Google AI Studio
+## Cách đẩy lên GitHub & gắn vào Google AI Studio (KHÔNG cần API Key)
 1. Tạo 1 repository **Public** trên GitHub (ví dụ \`dunce-rp-kit\`) và đẩy toàn bộ thư mục này lên (giữ nguyên cấu trúc \`worlds/\`, \`assets/kaldor/\`, \`commands/\`).
+   - **Không cần API key hay token**: chỉ cần repo ở chế độ **Public** là jsDelivr tự phân phối miễn phí.
 2. Vào mục **Commits** trên GitHub → sao chép mã **Commit SHA** (ví dụ \`a1b2c3d\`).
    - Khi nâng cấp \`engine.js\` hay thêm nhân vật mới, chỉ cần đổi \`@SHA\` mới vào System Instructions là jsDelivr tải ngay bản mới, không bị dính cache cũ.
 3. Trong **Google AI Studio**:
-   - **Bot Kaldor**: Dán System Instructions đã điền sẵn 2 link \`...@SHA/worlds/kaldor-valeroth.js\` và \`...@SHA/engine.js\`.
-   - **Bot nhân vật khác (chỉ dùng \`/recap\` & \`/transfer\`)**: Chỉ cần gắn duy nhất 1 link \`...@SHA/engine.js\`.
-   - **Bot nhân vật khác (có bản đồ riêng)**: Copy \`worlds/_template.js\` → \`worlds/<ten-bot>.js\`, thêm ảnh vào \`assets/<ten-bot>/\`, rồi gắn \`worlds/<ten-bot>.js\` + \`engine.js\`.
+   - **Lệnh \`/recap\` & \`/transfer\`**: In **thuần text / Markdown trực tiếp ra màn hình** theo đúng mẫu trong \`commands/recap.md\` và \`commands/transfer.md\` (dùng chung cho mọi nhân vật, không cần tải HTML).
+   - **Lệnh \`/map\` của Kaldor**: Xuất 1 đoạn HTML gọn gọi 2 link \`...@SHA/worlds/kaldor-valeroth.js\` và \`...@SHA/engine.js\`.
+   - **Bot nhân vật khác (có bản đồ riêng)**: Copy \`worlds/_template.js\` → \`worlds/<ten-bot>.js\`, thêm ảnh vào \`assets/<ten-bot>/\`, rồi gắn \`worlds/<ten-bot>.js\` + \`engine.js\` (tuyệt đối không lẫn sang bản đồ của Kaldor).
 
 ## Mở rộng thêm lệnh mới (/status, /inventory, /relationship...)
 Tạo thêm tệp \`modes/<ten-lenh>.js\` gọi \`window.RPEngine.registerMode('ten_lenh', function(container, data) { ... })\` hoặc bổ sung trực tiếp vào \`engine.js\`, commit và đổi \`@SHA\`.

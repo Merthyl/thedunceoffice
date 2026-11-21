@@ -243,7 +243,7 @@ export default function PlaygroundBridgeView({
   // GitHub + jsDelivr config state
   const [githubRepo, setGithubRepo] = useState('ten-tai-khoan/dunce-rp-kit');
   const [commitSha, setCommitSha] = useState('COMMIT_SHA');
-  const [textCommandsMode, setTextCommandsMode] = useState<'engine' | 'markdown'>('engine');
+  const [textCommandsMode, setTextCommandsMode] = useState<'engine' | 'markdown'>('markdown');
   const [rpPreviewJson, setRpPreviewJson] = useState(DEFAULT_RP_SAMPLE);
 
   // Function Calling JSON state
@@ -590,17 +590,6 @@ export default function PlaygroundBridgeView({
                 <div className="flex border border-[#111111]/50 bg-white p-0.5">
                   <button
                     type="button"
-                    onClick={() => setTextCommandsMode('engine')}
-                    className={`px-2.5 py-1 text-[11px] font-semibold transition-colors ${
-                      textCommandsMode === 'engine'
-                        ? 'bg-[#111111] text-[#FAF8F4]'
-                        : 'text-[#111111] hover:bg-[#EAE6DC]'
-                    }`}
-                  >
-                    Dùng chung jsDelivr (khung mực cổ + nút Copy Markdown)
-                  </button>
-                  <button
-                    type="button"
                     onClick={() => setTextCommandsMode('markdown')}
                     className={`px-2.5 py-1 text-[11px] font-semibold transition-colors ${
                       textCommandsMode === 'markdown'
@@ -608,7 +597,18 @@ export default function PlaygroundBridgeView({
                         : 'text-[#111111] hover:bg-[#EAE6DC]'
                     }`}
                   >
-                    Thuần Markdown nguyên bản (chỉ /map gọi jsDelivr)
+                    Thuần text in ra màn hình (chỉ /map gọi jsDelivr)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setTextCommandsMode('engine')}
+                    className={`px-2.5 py-1 text-[11px] font-semibold transition-colors ${
+                      textCommandsMode === 'engine'
+                        ? 'bg-[#111111] text-[#FAF8F4]'
+                        : 'text-[#111111] hover:bg-[#EAE6DC]'
+                    }`}
+                  >
+                    Khung HTML jsDelivr (tùy chọn)
                   </button>
                 </div>
               </div>
@@ -651,7 +651,7 @@ export default function PlaygroundBridgeView({
               <div className="grid grid-cols-1 divide-y divide-[#111111]/15 lg:grid-cols-12 lg:divide-x lg:divide-y-0">
                 <div className="p-3 lg:col-span-4">
                   <p className="mb-1.5 text-[11px] font-semibold text-[#55524B]">
-                    window.VALEROTH_DATA (phần GGAI điền theo từng lệnh)
+                    window.RP_DATA (dữ liệu GGAI điền khi gọi lệnh)
                   </p>
                   <textarea
                     rows={14}
@@ -670,7 +670,7 @@ export default function PlaygroundBridgeView({
                     />
                   ) : (
                     <div className="flex h-[370px] items-center justify-center text-xs text-[#8B1E1E]">
-                      JSON trong VALEROTH_DATA chưa đúng cú pháp.
+                      JSON trong RP_DATA chưa đúng cú pháp.
                     </div>
                   )}
                 </div>
