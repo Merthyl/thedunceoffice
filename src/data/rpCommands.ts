@@ -294,7 +294,16 @@ export interface UnifiedPromptOptions {
   jsDelivrWorldUrl: string;
   overworldList: string;
   norsvaleList: string;
-  textCommandsMode: 'engine' | 'markdown';
+  textCommandsMode: 'url-context' | 'markdown' | 'engine';
+  assetsUrls?: {
+    valeroth: string;
+    norsvale: string;
+  };
+  commandDocsUrls?: {
+    mapKaldor: string;
+    recap: string;
+    transfer: string;
+  };
 }
 
 export function buildUnifiedJsDelivrSystemPrompt({
@@ -303,38 +312,64 @@ export function buildUnifiedJsDelivrSystemPrompt({
   overworldList,
   norsvaleList,
   textCommandsMode,
+  assetsUrls,
+  commandDocsUrls,
 }: UnifiedPromptOptions): string {
+  if (textCommandsMode === 'url-context' && commandDocsUrls) {
+    return `# SECTION 5 | HỆ THỐNG LỆNH RP (/map · /recap · /transfer) [HARD_LOCK]
+* KÍCH HOẠT [ABSOLUTE]: Chỉ kích hoạt khi người chơi gõ đúng lệnh bên dưới. Lập tức tạm dừng mạch kể (KHÔNG thúc đẩy sự kiện hay hành động mới của {{user}}), dùng công cụ **URL Context** đọc tệp đặc tả từ GitHub và xuất ĐÚNG kết quả theo quy tắc trong tệp:
+  - \`/map\` (hoặc \`/map valeroth\`, \`/map bắc ải\`): Đọc ${commandDocsUrls.mapKaldor} → điền dữ liệu RP hiện tại (vị trí \`{{user}}\`, NPC đã chạm trán/nhắc đến, tag sự kiện) và xuất DUY NHẤT 1 khối \`\`\`html ... \`\`\` hoàn chỉnh (\`<!DOCTYPE html>\`) dùng 2 thẻ \`<script>\` jsDelivr để chạy Preview HTML trực tiếp.
+  - \`/recap\`: Đọc ${commandDocsUrls.recap} → chỉ xuất **thuần text** theo mẫu \`### TÓM TẮT DIỄN BIẾN\` trực tiếp ra màn hình (KHÔNG bọc HTML).
+  - \`/transfer\`: Đọc ${commandDocsUrls.transfer} → chỉ xuất **thuần text** gói \`Transfer Pack\` hoàn chỉnh trực tiếp ra màn hình (KHÔNG bọc HTML).
+* KHÔNG giải thích quy trình hay trích dẫn file đặc tả; giữ tuyệt đối nguyên tắc không spoil \`[HARD_LOCKED]\` và không tự ý hành động thay \`{{user}}\`.`;
+  }
+
+  const assetsSnippet = assetsUrls
+    ? `\n    assets: {\n      valeroth: "${assetsUrls.valeroth}",\n      norsvale: "${assetsUrls.norsvale}"\n    },`
+    : '';
+
   const mapSection = `(1) BẢN ĐỒ RP (/map) — MODULAR GITHUB + JSDELIVR ENGINE [HARD_LOCK]
-* COMMAND PRIORITY [ABSOLUTE]: Khi người chơi gõ \`/map\` (hoặc \`/map valeroth\`, \`/map bắc ải\`), tạm dừng mạch kể (KHÔNG tự ý thúc đẩy sự kiện hay hành động mới của {{user}}), đọc đúng ĐOẠN HỘI THOẠI / DIỄN BIẾN HIỆN TẠI và xuất ĐÚNG 1 khối mã \`\`\`html ... \`\`\` gọn nhẹ dùng đúng 2 thẻ script (gói thế giới của Kaldor + lõi engine dùng chung) bên dưới (KHÔNG tự viết lại CSS, SVG hay giao diện):
+* COMMAND PRIORITY [ABSOLUTE]: Khi người chơi gõ \`/map\` (hoặc \`/map valeroth\`, \`/map bắc ải\`), tạm dừng mạch kể (KHÔNG tự ý thúc đẩy sự kiện hay hành động mới của {{user}}), đọc đúng ĐOẠN HỘI THOẠI / DIỄN BIẾN HIỆN TẠI và xuất DUY NHẤT 1 khối mã \`\`\`html ... \`\`\` hoàn chỉnh (có thể chạy Preview HTML ngay) theo đúng khung bên dưới (KHÔNG tự viết lại CSS, SVG hay giao diện):
 
 \`\`\`html
-<div id="rp-app"></div>
-<script>
-window.RP_DATA = {
-  world: "kaldor-valeroth",
-  mode: "map",
-  view: "valeroth hoặc norsvale",
-  playerLoc: "mã_vị_trí_đứng_hiện_tại_theo_hội_thoại",
-  fromLoc: "mã_vị_trí_vừa_di_chuyển_từ_đó_hoặc_chuỗi_rỗng",
-  chapter: "Mốc thời gian / bối cảnh hiện tại",
-  status: "Tóm tắt 1 câu vị trí đứng và tình huống hiện tại của {{user}} đúng theo hội thoại.",
-  npcs: [
-    {
-      name: "Tên NPC (có sẵn trong Section 4 HOẶC mới tạo bởi {{user}}/cốt truyện)",
-      loc: "mã_địa_điểm_hiện_tại_của_NPC",
-      role: "Vai trò công khai đã biết (CẤM tiết lộ bí mật HARD_LOCKED)",
-      status: "Tình trạng ngắn gọn đã thể hiện trong truyện",
-      source: "canon hoặc custom",
-      visibility: "encountered hoặc mentioned"
-    }
-  ],
-  tags: [
-    { loc: "mã_địa_điểm", label: "Sự kiện / cảnh báo đã xảy ra", tone: "ink" }
-  ]
-};
-</script>
-<script src="${jsDelivrWorldUrl}"></script>
-<script src="${jsDelivrEngineUrl}"></script>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Valeroth · Bản Đồ RP</title>
+  <style>html,body{margin:0;padding:8px;background:#EAE6DC;}</style>
+</head>
+<body>
+  <div id="rp-app"></div>
+  <script>
+  window.RP_DATA = {
+    world: "kaldor-valeroth",
+    mode: "map",
+    view: "valeroth hoặc norsvale",
+    playerLoc: "mã_vị_trí_đứng_hiện_tại_theo_hội_thoại",
+    fromLoc: "mã_vị_trí_vừa_di_chuyển_từ_đó_hoặc_chuỗi_rỗng",
+    chapter: "Mốc thời gian / bối cảnh hiện tại",
+    status: "Tóm tắt 1 câu vị trí đứng và tình huống hiện tại của {{user}} đúng theo hội thoại.",${assetsSnippet}
+    npcs: [
+      {
+        name: "Tên NPC (có sẵn trong Section 4 HOẶC mới tạo bởi {{user}}/cốt truyện)",
+        loc: "mã_địa_điểm_hiện_tại_của_NPC",
+        role: "Vai trò công khai đã biết (CẤM tiết lộ bí mật HARD_LOCKED)",
+        status: "Tình trạng ngắn gọn đã thể hiện trong truyện",
+        source: "canon hoặc custom",
+        visibility: "encountered hoặc mentioned"
+      }
+    ],
+    tags: [
+      { loc: "mã_địa_điểm", label: "Sự kiện / cảnh báo đã xảy ra", tone: "ink" }
+    ]
+  };
+  </script>
+  <script src="${jsDelivrWorldUrl}"></script>
+  <script src="${jsDelivrEngineUrl}"></script>
+</body>
+</html>
 \`\`\`
 
 DANH SÁCH MÃ ĐỊA ĐIỂM HỢP LỆ (world: "kaldor-valeroth"):

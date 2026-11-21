@@ -170,11 +170,17 @@ export function buildGithubKitZip(rootDir: string): Buffer {
     path.resolve(rootDir, 'dist/src/assets/images/norsvale_interior_1795197881444.jpg'),
   ]);
 
+  const mapKaldorMd = readFirstExisting([
+    path.resolve(rootDir, 'public/github-kit/commands/map-kaldor.md'),
+    path.resolve(rootDir, 'dist/github-kit/commands/map-kaldor.md'),
+  ]);
+
   return createZipBuffer([
     { name: 'engine.js', data: engineJs },
     { name: 'worlds/kaldor-valeroth.js', data: kaldorWorldJs },
     { name: 'worlds/_template.js', data: templateWorldJs },
     { name: 'index.html', data: indexHtml },
+    { name: 'commands/map-kaldor.md', data: mapKaldorMd },
     { name: 'commands/world-and-chessboard.md', data: Buffer.from(VALEROTH_WORLD_AND_CHESSBOARD_PROMPT, 'utf8') },
     { name: 'commands/recap.md', data: Buffer.from(RECAP_COMMAND_MARKDOWN, 'utf8') },
     { name: 'commands/transfer.md', data: Buffer.from(TRANSFER_COMMAND_MARKDOWN, 'utf8') },

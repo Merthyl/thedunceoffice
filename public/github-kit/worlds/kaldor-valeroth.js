@@ -11,8 +11,14 @@
 
   var currentScript = document.currentScript;
   var repoBase = '';
+  var isAiStudioRepo = false;
   if (currentScript && currentScript.src) {
-    repoBase = currentScript.src.replace(/\/worlds\/[^/?#]+(?:[?#].*)?$/, '');
+    if (/\/public\/github-kit\/worlds\/[^/?#]+(?:[?#].*)?$/.test(currentScript.src)) {
+      isAiStudioRepo = true;
+      repoBase = currentScript.src.replace(/\/public\/github-kit\/worlds\/[^/?#]+(?:[?#].*)?$/, '');
+    } else {
+      repoBase = currentScript.src.replace(/\/worlds\/[^/?#]+(?:[?#].*)?$/, '');
+    }
   }
 
   var worldDef = {
@@ -27,14 +33,18 @@
         id: 'valeroth',
         label: 'Toàn cảnh Valeroth',
         titlePlate: '· VALEROTH ·',
-        image: 'assets/kaldor/valeroth.jpg',
+        image: isAiStudioRepo
+          ? 'src/assets/images/valeroth_map_v2_1795197882349.jpg'
+          : 'assets/kaldor/valeroth.jpg',
         assetFile: 'valeroth.jpg',
       },
       {
         id: 'norsvale',
         label: 'Bên trong Bắc Ải',
         titlePlate: '· BẮC ẢI ·',
-        image: 'assets/kaldor/norsvale.jpg',
+        image: isAiStudioRepo
+          ? 'src/assets/images/norsvale_interior_1795197881444.jpg'
+          : 'assets/kaldor/norsvale.jpg',
         assetFile: 'norsvale.jpg',
       },
     ],

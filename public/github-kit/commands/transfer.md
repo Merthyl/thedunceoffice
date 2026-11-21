@@ -1,0 +1,105 @@
+(3) NARRATIVE TRANSFER PACK — LỆNH CHUYỂN SINH (/transfer) [HARD_LOCK]
+This is a direct execution command. On `/transfer`, immediately interrupt normal storytelling and output ONLY the complete Transfer Pack as plain-text Markdown directly on screen (do NOT wrap in HTML). Do not explain the process, continue the story, advance time, or create new events.
+
+## EXECUTION RULES [HARD_LOCK]
+- STATE FIDELITY: Preserve the exact playable state, chronology, causality, character and relationship states, locations, knowledge boundaries, user profile, resources, world conditions, consequences, micro-continuity, commitments, and unresolved threads wherever relevant. Compress repetition, never continuity-critical information.
+- ADAPTIVE FIELDS: Include information that is established and relevant. Omit genuinely irrelevant fields instead of filling every heading or inventing details. Mark uncertainty only when it matters.
+- RECONCILIATION: Incorporate the latest established developments. Update changed states while retaining the historical events that explain them. Preserve unresolved contradictions and distinguish fact from belief, rumor, inference, and speculation.
+- USER CANON [ABSOLUTE]: Never invent or complete `{{user}}`'s actions, dialogue, thoughts, feelings, intentions, reactions, discoveries, decisions, or consent. Plans are not completed actions.
+- KNOWLEDGE LOCK [ABSOLUTE]: Preserve who knows, suspects, misunderstands, remembers, or remains unaware of each relevant fact. Narrator knowledge must not become character knowledge without a valid information path.
+- SEALED CONTINUITY [ABSOLUTE]: Preserve existing hidden-information restrictions using only the minimum opaque lock necessary. Never reveal sealed content directly or indirectly.
+- PROFILE LOCK [ABSOLUTE]: Preserve the established `{{user}}` character profile and distinguish fixed canon from temporary states, development, and user-authorized changes. Never silently rewrite the profile to match recent behavior.
+- CUMULATIVE TRANSFER [ABSOLUTE]: If previous Transfer Packs or continuity ledgers are available, reconcile them with the current chat. Carry forward significant events from earlier chats even when they are no longer in recent context. Never assume missing history was uneventful.
+- LAST RESPONSE [ABSOLUTE]: Copy the complete immediately preceding AI response into `[LAST RESPONSE]` verbatim. Never summarize, truncate, or reconstruct it. If unavailable in accessible context, state that it is unavailable.
+- The resulting package must be self-contained and ready to paste into a new chat.
+
+## NARRATIVE TRANSFER PACK
+```Transfer Pack
+## TRANSFER METADATA
+- Transfer sequence / package version:
+- Previous Transfer Pack or ledger reference, if available:
+- Timeline coverage: earliest reliably preserved event → current scene.
+- Known history gaps or unresolved discrepancies, if relevant.
+
+## USER CHARACTER PROFILE LOCK
+[Preserve the established user-character profile needed to prevent drift: canonical name and identity, appearance, personality, voice and speech patterns, background, abilities, preferences, boundaries, important relationships, and other defining traits actually established in the story. Include only applicable details. Separate fixed canon from changeable states. Do not invent missing traits or turn temporary behavior into permanent characterization.]
+
+## CURRENT TIME, LOCATION & SCENE
+[Current in-universe time and timeline position; location; relevant characters' established positions; environment; active situation; current interaction; immediate circumstances and open responses. Include only relevant details.]
+
+## CURRENT CHARACTER & RELATIONSHIP STATES
+[Relevant characters' current conditions, motivations, intentions, limitations, relationship dynamics, trust, tension, commitments, and recent changes. Distinguish actual states from assumptions. Preserve unresolved user choices.]
+
+## WORLD, RESOURCES & ACTIVE PRESSURES
+[Relevant setting rules, locations, world conditions, possessions, resources, capabilities, obstacles, threats, social pressures, organizations, or faction states. Include only what affects continuity.]
+
+## KNOWLEDGE & SEALED CONTINUITY
+[Who knows, suspects, misunderstands, or remains unaware of important facts; relevant information sources; disputed claims; existing sealed-information restrictions and prerequisites. Do not reveal protected content.]
+
+## MICRO-CONTINUITY
+[Important established dialogue, nicknames, habits, preferences, promises, gifts, favors, recurring jokes, prior interactions, small discoveries, and details likely to matter again. Preserve who experienced or knows each detail.]
+
+## ACTIVE THREADS & PENDING COMMITMENTS
+[Ongoing goals, conflicts, investigations, promises, deadlines, planned events, unresolved mysteries, pending consequences, dependencies, and decisions awaiting `{{user}}`. Distinguish planned, attempted, ongoing, completed, failed, and unresolved.]
+
+## CUMULATIVE TRANSFER LEDGER [HARD_LOCK]
+[Maintain a compact, persistent record of significant events across the entire story and all previous transfers. Preserve stable Event IDs where possible.]
+
+For each continuity-critical event, retain only the fields needed:
+- Event ID / approximate in-universe time
+- Location and participants
+- Established event and causal context
+- Important decisions, discoveries, or changes
+- Who learned what, and how, when relevant
+- Persistent consequences and current status
+
+Ledger rules:
+- Merge previous ledgers with newly established events; do not replace older history with a summary of only the latest chat.
+- Preserve the original order of events and stable Event IDs. Add new IDs for new events.
+- Record meaningful changes as new events or state updates; never erase the event that caused a change.
+- Preserve important early-story events, defining interactions, irreversible decisions, major revelations, relationship turning points, and unresolved threads even after many transfers.
+- Compress repetitive scenes and obsolete intermediate states, but retain any information needed to understand current states or causal dependencies.
+- Distinguish confirmed canon from disputed, unverified, or sealed information.
+- If two records conflict, preserve the discrepancy until the conflict can be resolved from reliable context.
+- If an earlier Transfer Pack or chat history is unavailable, do not pretend to remember it. Preserve what is accessible and identify consequential gaps.
+- Do not include the entire conversation transcript here. Preserve a durable event ledger, not a verbatim chat archive.
+
+## PERSISTENT CONSEQUENCES & CONTINUITY WARNINGS
+[Irreversible or ongoing consequences; previous states that must not reset; uncertain outcomes; contradictions; missing information; causal dependencies; restrictions on knowledge; unresolved user actions; and details likely to drift across chats.]
+
+## CURRENT SCENE ANCHOR
+[The exact playable state at the end of the current AI response. Record established actions, positions, dialogue, revelations, ongoing events, and open interactions. Specify what has happened and what remains unresolved. Do not invent a user response.]
+
+## LAST VALID USER INPUT
+[The latest actual user input relevant to the current scene. Preserve its meaning without embellishment. If unavailable, mark it unavailable.]
+
+---
+
+## NEW CHAT RESTORATION PROTOCOL [ABSOLUTE]
+```Restoration Protocol
+Treat this Transfer Pack as authoritative continuation state, NOT a new story start.
+
+- RESTORE: Restore the current scene, cumulative event ledger, user profile, chronology, relationships, world state, knowledge boundaries, consequences, and unresolved threads. Never reset established continuity without an established in-world cause.
+- CUMULATIVE MEMORY: Use the carried-forward ledger as the continuity record for earlier transfers. Merge it with the current package and new developments. Do not discard early events merely because they are absent from the latest chat's recent context.
+- PROFILE LOCK: Preserve `{{user}}`'s established character profile. Do not silently alter defining traits, history, abilities, appearance, voice, preferences, or boundaries. Apply only established development or explicit user-authorized changes.
+- EPISTEMIC LOCK: Narrator-level knowledge must not become character knowledge. Preserve sealed information and valid information paths.
+- USER AGENCY: The package does not authorize new `{{user}}` behavior. Only new user input establishes new user-controlled actions, dialogue, thoughts, feelings, intentions, reactions, discoveries, decisions, and consent.
+- STATE RECONCILIATION: The structured package governs the recorded state. `[LAST RESPONSE]` supplies exact immediate context but does not override established state or fill gaps with invented continuity.
+- SEAMLESS RE-ENTRY: Resume directly from `[CURRENT SCENE ANCHOR]`, preserving established style, pacing, characterization, atmosphere, and open interactions. No recap, migration acknowledgment, new opening, or manufactured escalation.
+- UNCERTAINTY: Preserve unresolved contradictions and unsupported details. Ask for clarification only when essential.
+- NORMAL EXECUTION: Continue under all applicable existing system, world, character, style, causality, knowledge, and agency rules. This package does not override higher-priority instructions.
+```
+---
+
+## [LAST RESPONSE]
+[Copy the complete immediately preceding AI response verbatim, preserving wording, dialogue, formatting, and paragraph order. If unavailable in accessible context, explicitly state that it is unavailable.]
+
+---
+
+## [USER RESPONSE]
+[Write your next action or dialogue here. This placeholder is not an established action.]
+
+---
+
+> __**Hướng dẫn chuyển sinh:**__ Sử dụng chức năng copy dưới dạng markdown. Copy toàn bộ kết quả ở trên. Mở giao diện chat mới bằng cách ấn `+ (new chat)` ở góc trên bên tay phải, điền tiếp phản hồi của bạn dưới phần `[USER RESPONSE]` rồi gửi toàn bộ vào đoạn chat mới. Xóa dòng hướng dẫn này.
+```
