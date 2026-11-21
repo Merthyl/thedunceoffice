@@ -1,0 +1,37 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Playfair Display", "Spectral", Georgia, serif;
+  --font-serif: "Spectral", Georgia, serif;
+  --font-sans: "Spectral", Georgia, serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+    font-family: var(--font-serif);
+  }
+
+  h1,
+  h2,
+  h3,
+  .font-display {
+    font-family: var(--font-display);
+  }
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+.archival-paper {
+  background-color: #faf8f4;
+  background-image: radial-gradient(
+    ellipse at 50% 50%,
+    rgba(255, 255, 255, 0.4) 0%,
+    rgba(226, 222, 213, 0.35) 100%
+  );
+}

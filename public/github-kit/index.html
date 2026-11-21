@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VALEROTH</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 16px;
+        background: #eae6dc;
+        color: #111111;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="valeroth-map"></div>
+
+    <script>
+      // Dữ liệu bản đồ cố định — để trống npcs/tags mặc định (chỉ hiện khi chạm trán, nhắc đến hoặc tự thêm bằng nút + Gắn tag / NPC)
+      window.VALEROTH_DATA = {
+        mode: 'map',
+        view: 'valeroth',
+        playerLoc: 'loc-nors-southgate',
+        fromLoc: '',
+        chapter: 'Bắc Ải',
+        status: 'Đang đứng trực trên tường đá gần Cổng Hoang Vực.',
+        enableTagEditor: true,
+        npcs: [],
+        tags: [],
+      };
+    </script>
+
+    <!-- Khi đẩy lên GitHub, có thể thay src bên dưới thành:
+         https://cdn.jsdelivr.net/gh/<USER>/<REPO>@<COMMIT_SHA>/valeroth-map-engine.js -->
+    <script src="./valeroth-map-engine.js"></script>
+  </body>
+</html>

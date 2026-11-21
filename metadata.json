@@ -1,0 +1,8 @@
+{
+  "name": "Atlas Cốt Truyện",
+  "description": "tổng hợp các chức năng của dunce in the dungeon. ",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
