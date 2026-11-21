@@ -316,9 +316,10 @@ export function buildUnifiedJsDelivrSystemPrompt({
   commandDocsUrls,
 }: UnifiedPromptOptions): string {
   if (textCommandsMode === 'url-context' && commandDocsUrls) {
+    const cdnBase = jsDelivrEngineUrl.replace(/\/engine\.js(?:[?#].*)?$/, '');
     return `# SECTION 5 | HỆ THỐNG LỆNH RP (/map · /recap · /transfer) [HARD_LOCK]
-* KÍCH HOẠT [ABSOLUTE]: Chỉ kích hoạt khi người chơi gõ đúng lệnh bên dưới. Lập tức tạm dừng mạch kể (KHÔNG thúc đẩy sự kiện hay hành động mới của {{user}}), dùng công cụ **URL Context** đọc tệp đặc tả từ GitHub và xuất ĐÚNG kết quả theo quy tắc trong tệp:
-  - \`/map\` (hoặc \`/map valeroth\`, \`/map bắc ải\`): Đọc ${commandDocsUrls.mapKaldor} → điền dữ liệu RP hiện tại (vị trí \`{{user}}\`, NPC đã chạm trán/nhắc đến, tag sự kiện) và xuất DUY NHẤT 1 khối \`\`\`html ... \`\`\` hoàn chỉnh (\`<!DOCTYPE html>\`) dùng 2 thẻ \`<script>\` jsDelivr để chạy Preview HTML trực tiếp.
+* KÍCH HOẠT [ABSOLUTE]: Chỉ kích hoạt khi người chơi gõ đúng lệnh bên dưới. Lập tức tạm dừng mạch kể (KHÔNG thúc đẩy sự kiện hay hành động mới của {{user}}), dùng công cụ **URL Context** đọc tệp đặc tả từ \`raw.githubusercontent.com\` và xuất ĐÚNG kết quả theo quy tắc trong tệp:
+  - \`/map\` (hoặc \`/map valeroth\`, \`/map bắc ải\`): Đọc ${commandDocsUrls.mapKaldor} → điền dữ liệu RP hiện tại (vị trí \`{{user}}\`, NPC đã chạm trán/nhắc đến, tag sự kiện) và xuất DUY NHẤT 1 khối \`\`\`html ... \`\`\` hoàn chỉnh (\`<!DOCTYPE html>\`) dùng \`<CDN_BASE>\` = \`${cdnBase}\` cho 2 thẻ \`<script>\` jsDelivr để chạy Preview HTML trực tiếp.
   - \`/recap\`: Đọc ${commandDocsUrls.recap} → chỉ xuất **thuần text** theo mẫu \`### TÓM TẮT DIỄN BIẾN\` trực tiếp ra màn hình (KHÔNG bọc HTML).
   - \`/transfer\`: Đọc ${commandDocsUrls.transfer} → chỉ xuất **thuần text** gói \`Transfer Pack\` hoàn chỉnh trực tiếp ra màn hình (KHÔNG bọc HTML).
 * KHÔNG giải thích quy trình hay trích dẫn file đặc tả; giữ tuyệt đối nguyên tắc không spoil \`[HARD_LOCKED]\` và không tự ý hành động thay \`{{user}}\`.`;

@@ -242,7 +242,7 @@ export default function PlaygroundBridgeView({
 
   // GitHub + jsDelivr config state
   const [githubRepo, setGithubRepo] = useState('Merthyl/thedunceoffice');
-  const [commitSha, setCommitSha] = useState('adc82930477162111f780c453edf5affab37dbf1');
+  const [commitSha, setCommitSha] = useState('1650f92e2667b8957b010037d3a9e0838864ada5');
   const [repoLayout, setRepoLayout] = useState<'aistudio' | 'zip'>('aistudio');
   const [textCommandsMode, setTextCommandsMode] = useState<'url-context' | 'markdown' | 'engine'>('url-context');
   const [rpPreviewJson, setRpPreviewJson] = useState(DEFAULT_RP_SAMPLE);
@@ -259,8 +259,9 @@ export default function PlaygroundBridgeView({
       .replace(/^https?:\/\/github\.com\//, '')
       .replace(/\.git$/i, '')
       .replace(/^\/+|\/+$/g, '') || 'Merthyl/thedunceoffice';
-  const cleanSha = commitSha.trim() || 'adc82930477162111f780c453edf5affab37dbf1';
+  const cleanSha = commitSha.trim() || '1650f92e2667b8957b010037d3a9e0838864ada5';
   const baseCdn = `https://cdn.jsdelivr.net/gh/${cleanRepo}@${cleanSha}`;
+  const baseRaw = `https://raw.githubusercontent.com/${cleanRepo}/${cleanSha}`;
   const jsDelivrEngineUrl =
     repoLayout === 'aistudio'
       ? `${baseCdn}/public/github-kit/engine.js`
@@ -278,8 +279,8 @@ export default function PlaygroundBridgeView({
       : undefined;
   const commandDocsBase =
     repoLayout === 'aistudio'
-      ? `${baseCdn}/public/github-kit/commands`
-      : `${baseCdn}/commands`;
+      ? `${baseRaw}/public/github-kit/commands`
+      : `${baseRaw}/commands`;
   const commandDocsUrls = {
     mapKaldor: `${commandDocsBase}/map-kaldor.md`,
     recap: `${commandDocsBase}/recap.md`,
