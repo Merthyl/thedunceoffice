@@ -244,7 +244,7 @@ export default function PlaygroundBridgeView({
   const [githubRepo, setGithubRepo] = useState('Merthyl/thedunceoffice');
   const [commitSha, setCommitSha] = useState('1650f92e2667b8957b010037d3a9e0838864ada5');
   const [repoLayout, setRepoLayout] = useState<'aistudio' | 'zip'>('aistudio');
-  const [textCommandsMode, setTextCommandsMode] = useState<'url-context' | 'markdown' | 'engine'>('url-context');
+  const [textCommandsMode, setTextCommandsMode] = useState<'url-context' | 'markdown' | 'engine'>('markdown');
   const [rpPreviewJson, setRpPreviewJson] = useState(DEFAULT_RP_SAMPLE);
 
   // Function Calling JSON state
@@ -270,13 +270,6 @@ export default function PlaygroundBridgeView({
     repoLayout === 'aistudio'
       ? `${baseCdn}/public/github-kit/worlds/kaldor-valeroth.js`
       : `${baseCdn}/worlds/kaldor-valeroth.js`;
-  const jsDelivrAssetsUrls =
-    repoLayout === 'aistudio'
-      ? {
-          valeroth: `${baseCdn}/src/assets/images/valeroth_map_v2_1795197882349.jpg`,
-          norsvale: `${baseCdn}/src/assets/images/norsvale_interior_1795197881444.jpg`,
-        }
-      : undefined;
   const commandDocsBase =
     repoLayout === 'aistudio'
       ? `${baseRaw}/public/github-kit/commands`
@@ -312,10 +305,9 @@ export default function PlaygroundBridgeView({
       overworldList,
       norsvaleList,
       textCommandsMode,
-      assetsUrls: jsDelivrAssetsUrls,
       commandDocsUrls,
     });
-  }, [jsDelivrEngineUrl, jsDelivrWorldUrl, overworldList, norsvaleList, textCommandsMode, jsDelivrAssetsUrls, commandDocsUrls.mapKaldor, commandDocsUrls.recap, commandDocsUrls.transfer]);
+  }, [jsDelivrEngineUrl, jsDelivrWorldUrl, overworldList, norsvaleList, textCommandsMode, commandDocsUrls.mapKaldor, commandDocsUrls.recap, commandDocsUrls.transfer]);
 
   const livePreviewSrcDoc = useMemo(() => {
     let parsed: Record<string, unknown> = {};
@@ -648,17 +640,6 @@ export default function PlaygroundBridgeView({
                 <div className="flex flex-wrap border border-[#111111]/50 bg-white p-0.5">
                   <button
                     type="button"
-                    onClick={() => setTextCommandsMode('url-context')}
-                    className={`px-2.5 py-1 text-[11px] font-semibold transition-colors ${
-                      textCommandsMode === 'url-context'
-                        ? 'bg-[#111111] text-[#FAF8F4]'
-                        : 'text-[#111111] hover:bg-[#EAE6DC]'
-                    }`}
-                  >
-                    Siêu nhẹ 6 dòng (bật URL Context đọc .md từ GitHub)
-                  </button>
-                  <button
-                    type="button"
                     onClick={() => setTextCommandsMode('markdown')}
                     className={`px-2.5 py-1 text-[11px] font-semibold transition-colors ${
                       textCommandsMode === 'markdown'
@@ -666,7 +647,18 @@ export default function PlaygroundBridgeView({
                         : 'text-[#111111] hover:bg-[#EAE6DC]'
                     }`}
                   >
-                    Nhúng sẵn luật vào Prompt (không cần URL Context)
+                    Chuẩn chạy 100% (/map gọi jsDelivr · /recap &amp; /transfer in text)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setTextCommandsMode('url-context')}
+                    className={`px-2.5 py-1 text-[11px] font-semibold transition-colors ${
+                      textCommandsMode === 'url-context'
+                        ? 'bg-[#111111] text-[#FAF8F4]'
+                        : 'text-[#111111] hover:bg-[#EAE6DC]'
+                    }`}
+                  >
+                    URL Context (thử nghiệm)
                   </button>
                   <button
                     type="button"
