@@ -11,7 +11,7 @@ import PlaygroundBridgeView from './components/PlaygroundBridgeView';
 import SlashCommandDrawer from './components/SlashCommandDrawer';
 import type { MapScope, StoryWorldState } from './types/story';
 
-const STORAGE_KEY = 'valeroth-engraving-map-v18';
+const STORAGE_KEY = 'valeroth-engraving-map-v28';
 
 function loadInitialWorld(): StoryWorldState {
   try {

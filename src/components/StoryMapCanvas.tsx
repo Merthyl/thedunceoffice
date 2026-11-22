@@ -21,8 +21,8 @@ interface StoryMapCanvasProps {
 }
 
 const MAP_ARTWORK_BY_SCOPE: Record<MapScope, string> = {
-  valeroth: '/src/assets/images/valeroth_overworld_v22_1795283743457.jpg',
-  norsvale: '/src/assets/images/norsvale_interior_v12_1795283643903.jpg',
+  valeroth: '/src/assets/images/valeroth_v10_1795365600000.jpg',
+  norsvale: '/src/assets/images/norsvale_v14_1795367887097.jpg',
 };
 
 const INK = '#111111';

@@ -122,6 +122,7 @@ Kho mã nguồn **tách lõi dùng chung & gói bản đồ từng nhân vật**
 │   └── kaldor/
 │       ├── valeroth.jpg              ← Họa đồ toàn cảnh Valeroth
 │       └── norsvale.jpg              ← Họa đồ bên trong Bắc Ải
+├── transfer_template.md              ← Template tĩnh nguyên văn cho lệnh /transfer (AI Studio đọc từ jsDelivr)
 ├── commands/
 │   ├── world-and-chessboard.md       ← Section 3 & Section 4 của Kaldor
 │   ├── recap.md                      ← Đặc tả chuẩn lệnh /recap (dùng chung)
@@ -131,12 +132,16 @@ Kho mã nguồn **tách lõi dùng chung & gói bản đồ từng nhân vật**
 \`\`\`
 
 ## Cách đẩy lên GitHub & gắn vào Google AI Studio (KHÔNG cần API Key)
-1. Tạo 1 repository **Public** trên GitHub (ví dụ \`dunce-rp-kit\`) và đẩy toàn bộ thư mục này lên (giữ nguyên cấu trúc \`worlds/\`, \`assets/kaldor/\`, \`commands/\`).
+1. Tạo 1 repository **Public** trên GitHub (ví dụ \`dunce-rp-kit\`) và đẩy toàn bộ thư mục này lên (giữ nguyên cấu trúc \`worlds/\`, \`assets/kaldor/\`, \`commands/\`, \`transfer_template.md\`).
    - **Không cần API key hay token**: chỉ cần repo ở chế độ **Public** là jsDelivr tự phân phối miễn phí.
 2. Vào mục **Commits** trên GitHub → sao chép mã **Commit SHA** (ví dụ \`a1b2c3d\`).
    - Khi nâng cấp \`engine.js\` hay thêm nhân vật mới, chỉ cần đổi \`@SHA\` mới vào System Instructions là jsDelivr tải ngay bản mới, không bị dính cache cũ.
 3. Trong **Google AI Studio**:
-   - **Lệnh \`/recap\` & \`/transfer\`**: In **thuần text / Markdown trực tiếp ra màn hình** theo đúng mẫu trong \`commands/recap.md\` và \`commands/transfer.md\` (dùng chung cho mọi nhân vật, không cần tải HTML).
+   - **Luồng \`/transfer\` Template Markdown → HTML**:
+     - **GitHub**: Chỉ lưu nguyên văn file \`transfer_template.md\` tĩnh.
+     - **Google AI Studio**: Đọc \`transfer_template.md\` qua jsDelivr, phân tích toàn bộ diễn biến RP, điền các trường đã cập nhật rồi xuất 1 khối \`\`\`html ... \`\`\` đặt Markdown vào \`<script type="text/markdown" id="rp-markdown">...</script>\`.
+     - **HTML (\`engine.js\`)**: Nhận Markdown đã xử lý và render thành giao diện + nút sao chép sang \`+ (new chat)\`.
+   - **Lệnh \`/recap\`**: Tương tự, có thể in Markdown trực tiếp hoặc đặt vào \`<script type="text/markdown" id="rp-markdown">\` với \`data-mode="recap"\`.
    - **Lệnh \`/map\` của Kaldor**: Xuất 1 đoạn HTML gọn gọi 2 link \`...@SHA/worlds/kaldor-valeroth.js\` và \`...@SHA/engine.js\`.
    - **Bot nhân vật khác (có bản đồ riêng)**: Copy \`worlds/_template.js\` → \`worlds/<ten-bot>.js\`, thêm ảnh vào \`assets/<ten-bot>/\`, rồi gắn \`worlds/<ten-bot>.js\` + \`engine.js\` (tuyệt đối không lẫn sang bản đồ của Kaldor).
 
@@ -162,12 +167,12 @@ export function buildGithubKitZip(rootDir: string): Buffer {
     path.resolve(rootDir, 'dist/github-kit/index.html'),
   ]);
   const valerothJpg = readFirstExisting([
-    path.resolve(rootDir, 'src/assets/images/valeroth_overworld_v22_1795283743457.jpg'),
-    path.resolve(rootDir, 'dist/src/assets/images/valeroth_overworld_v22_1795283743457.jpg'),
+    path.resolve(rootDir, 'src/assets/images/valeroth_v10_1795365600000.jpg'),
+    path.resolve(rootDir, 'dist/src/assets/images/valeroth_v10_1795365600000.jpg'),
   ]);
   const norsvaleJpg = readFirstExisting([
-    path.resolve(rootDir, 'src/assets/images/norsvale_interior_v12_1795283643903.jpg'),
-    path.resolve(rootDir, 'dist/src/assets/images/norsvale_interior_v12_1795283643903.jpg'),
+    path.resolve(rootDir, 'src/assets/images/norsvale_v13_1795365600000.jpg'),
+    path.resolve(rootDir, 'dist/src/assets/images/norsvale_v13_1795365600000.jpg'),
   ]);
 
   const mapKaldorMd = readFirstExisting([
@@ -178,12 +183,24 @@ export function buildGithubKitZip(rootDir: string): Buffer {
     path.resolve(rootDir, 'map-kaldor.txt'),
     path.resolve(rootDir, 'public/github-kit/commands/map-kaldor.md'),
   ]);
+  const transferTemplateMd = readFirstExisting([
+    path.resolve(rootDir, 'transfer_template.md'),
+    path.resolve(rootDir, 'public/github-kit/transfer_template.md'),
+    path.resolve(rootDir, 'dist/github-kit/transfer_template.md'),
+  ]);
+  const recapTemplateMd = readFirstExisting([
+    path.resolve(rootDir, 'recap_template.md'),
+    path.resolve(rootDir, 'public/github-kit/recap_template.md'),
+    path.resolve(rootDir, 'dist/github-kit/recap_template.md'),
+  ]);
 
   return createZipBuffer([
     { name: 'engine.js', data: engineJs },
     { name: 'worlds/kaldor-valeroth.js', data: kaldorWorldJs },
     { name: 'worlds/_template.js', data: templateWorldJs },
     { name: 'index.html', data: indexHtml },
+    { name: 'transfer_template.md', data: transferTemplateMd },
+    { name: 'recap_template.md', data: recapTemplateMd },
     { name: 'map-kaldor.txt', data: mapKaldorTxt },
     { name: 'transfer.txt', data: Buffer.from(TRANSFER_COMMAND_MARKDOWN, 'utf8') },
     { name: 'recap.txt', data: Buffer.from(RECAP_COMMAND_MARKDOWN, 'utf8') },

@@ -16,9 +16,9 @@
 (function (global) {
   'use strict';
 
-  var INK = '#111111';
-  var INK_SOFT = '#3D3A35';
-  var PAPER = '#FAF8F4';
+  var INK = '#33281E';
+  var INK_SOFT = '#5A4B3C';
+  var PAPER = '#F6EEDB';
   var CRIMSON = '#8B1E1E';
 
   var CURRENT_SCRIPT = document.currentScript;
@@ -111,6 +111,18 @@
         '.vd-sec-hd{padding:6px 12px;background:#F5F2EA;border-bottom:1px solid rgba(17,17,17,.2);font-family:"Playfair Display","Spectral",Georgia,serif;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;display:flex;align-items:center;justify-content:space-between;gap:8px}',
         '.vd-sec-hd.is-crimson{color:#8B1E1E;background:#F8F1EE;border-bottom-color:rgba(139,30,30,.25)}',
         '.vd-sec-bd{padding:10px 14px;font-size:13.5px;white-space:pre-wrap;word-break:break-word}',
+        '.vd-sec-bd.vd-md,.vd-details-bd.vd-md{white-space:normal;line-height:1.65}',
+        '.vd-md p{margin:0 0 8px 0}.vd-md p:last-child{margin-bottom:0}',
+        '.vd-md h3,.vd-md h4{font-family:"Playfair Display","Spectral",Georgia,serif;font-weight:700;color:#8B1E1E;margin:10px 0 4px 0;font-size:13px;letter-spacing:.02em}',
+        '.vd-md h3:first-child,.vd-md h4:first-child{margin-top:0}',
+        '.vd-md ul,.vd-md ol{margin:4px 0 8px 0;padding-left:20px}',
+        '.vd-md li{margin-bottom:3px}',
+        '.vd-md li>ul,.vd-md li>ol{margin:2px 0 4px 0}',
+        '.vd-md blockquote{margin:6px 0;padding:6px 10px;border-left:2.5px solid #8B1E1E;background:#FAF8F4;color:#2E2C28;font-style:italic}',
+        '.vd-md pre{margin:6px 0;padding:8px 10px;background:#F5F3EE;border:1px solid rgba(17,17,17,.22);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;line-height:1.48;overflow-x:auto;white-space:pre-wrap;word-break:break-word}',
+        '.vd-md code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;background:#F2EFE8;padding:1px 4px;border:1px solid rgba(17,17,17,.15)}',
+        '.vd-md pre code{background:transparent;padding:0;border:none;font-size:11.5px}',
+        '.vd-md hr{border:none;border-top:1px solid rgba(17,17,17,.22);margin:10px 0}',
         '.vd-ledger-list{display:flex;flex-direction:column;gap:8px;padding:10px 14px}',
         '.vd-ledger-item{border-left:2.5px solid #111111;padding:6px 10px;background:#FAF8F4;font-size:13px}',
         '.vd-ledger-id{font-family:"Playfair Display",Georgia,serif;font-weight:700;color:#8B1E1E;font-size:12px;margin-bottom:3px}',
@@ -124,25 +136,76 @@
     }
   }
 
+  function unescapeScriptClose(str) {
+    return String(str || '').replace(/<\\\/script>/gi, '</script>');
+  }
+
+  function readMarkdownSource(container) {
+    if (typeof global.RP_MARKDOWN === 'string' && global.RP_MARKDOWN.trim()) {
+      return unescapeScriptClose(global.RP_MARKDOWN);
+    }
+    var mdEl =
+      document.getElementById('rp-markdown') ||
+      document.querySelector('script[type="text/markdown"]') ||
+      document.querySelector('textarea[data-rp-markdown]');
+    if (mdEl) {
+      var text = typeof mdEl.value === 'string' ? mdEl.value : mdEl.textContent;
+      if (text && text.trim()) {
+        return unescapeScriptClose(text);
+      }
+    }
+    if (container && container.getAttribute('data-markdown')) {
+      return unescapeScriptClose(container.getAttribute('data-markdown'));
+    }
+    return '';
+  }
+
+  function detectMarkdownMode(md) {
+    var s = String(md || '');
+    if (/##\s*(TRANSFER METADATA|NARRATIVE TRANSFER PACK|CUMULATIVE TRANSFER LEDGER|USER CHARACTER PROFILE LOCK|NEW CHAT RESTORATION PROTOCOL)/i.test(s) || /^```Transfer Pack/m.test(s)) {
+      return 'transfer';
+    }
+    if (/TÓM TẮT DIỄN BIẾN|```Narrative Summary/i.test(s)) {
+      return 'recap';
+    }
+    return 'transfer';
+  }
+
   function readInputData(container) {
+    var attrMode = container && container.getAttribute('data-mode');
+    var data = null;
+
     if (global.RP_DATA && typeof global.RP_DATA === 'object') {
-      return global.RP_DATA;
+      data = global.RP_DATA;
+    } else if (global.VALEROTH_DATA && typeof global.VALEROTH_DATA === 'object') {
+      data = global.VALEROTH_DATA;
+    } else {
+      var jsonScript = document.getElementById('rp-data') || document.getElementById('valeroth-data');
+      if (jsonScript && jsonScript.textContent) {
+        try {
+          data = JSON.parse(jsonScript.textContent);
+        } catch (e) {}
+      } else if (container && container.getAttribute('data-rp')) {
+        try {
+          data = JSON.parse(container.getAttribute('data-rp'));
+        } catch (e2) {}
+      }
     }
-    if (global.VALEROTH_DATA && typeof global.VALEROTH_DATA === 'object') {
-      return global.VALEROTH_DATA;
+
+    var mdText = readMarkdownSource(container);
+    if (!data) data = {};
+
+    if (mdText && typeof data.markdown !== 'string') {
+      data = Object.assign({}, data, { markdown: mdText });
     }
-    var jsonScript = document.getElementById('rp-data') || document.getElementById('valeroth-data');
-    if (jsonScript && jsonScript.textContent) {
-      try {
-        return JSON.parse(jsonScript.textContent);
-      } catch (e) {}
+    if (!data.mode) {
+      if (attrMode) {
+        data = Object.assign({}, data, { mode: attrMode });
+      } else if (typeof data.markdown === 'string' && data.markdown.trim()) {
+        data = Object.assign({}, data, { mode: detectMarkdownMode(data.markdown) });
+      }
     }
-    if (container && container.getAttribute('data-rp')) {
-      try {
-        return JSON.parse(container.getAttribute('data-rp'));
-      } catch (e2) {}
-    }
-    return {};
+    return data;
   }
 
   function findLocationInWorld(locations, query) {
@@ -666,7 +729,273 @@
     }
   }
 
+  function renderInlineMd(text) {
+    var tokens = [];
+    var escaped = esc(text).replace(/`([^`\n]+)`/g, function (_, code) {
+      var idx = tokens.length;
+      tokens.push('<code>' + code + '</code>');
+      return '\x00CODE' + idx + '\x00';
+    });
+    escaped = escaped
+      .replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>')
+      .replace(/__([^_\n]+)__/g, '<strong>$1</strong>')
+      .replace(/\*([^*\n]+)\*/g, '<em>$1</em>')
+      .replace(/(^|[\s(])_([^_\n]+)_/g, '$1<em>$2</em>');
+    return escaped.replace(/\x00CODE(\d+)\x00/g, function (_, idx) {
+      return tokens[Number(idx)] || '';
+    });
+  }
+
+  function renderMarkdownHtml(md) {
+    var lines = String(md || '').replace(/\r\n?/g, '\n').split('\n');
+    var out = [];
+    var i = 0;
+
+    function isBlockBoundary(line) {
+      var trimmed = line.trim();
+      return (
+        !trimmed ||
+        /^```/.test(trimmed) ||
+        /^#{1,4}\s+/.test(trimmed) ||
+        /^(-{3,}|\*{3,})$/.test(trimmed) ||
+        /^>\s?/.test(trimmed) ||
+        /^\s*[-*•]\s+/.test(line) ||
+        /^\s*\d+\.\s+/.test(line)
+      );
+    }
+
+    while (i < lines.length) {
+      var line = lines[i];
+      var trimmed = line.trim();
+
+      if (!trimmed) {
+        i++;
+        continue;
+      }
+
+      // Fenced code block
+      if (/^```/.test(trimmed)) {
+        var codeLines = [];
+        i++;
+        while (i < lines.length && !/^```\s*$/.test(lines[i].trim())) {
+          codeLines.push(lines[i]);
+          i++;
+        }
+        if (i < lines.length) i++;
+        out.push('<pre><code>' + esc(codeLines.join('\n')) + '</code></pre>');
+        continue;
+      }
+
+      // Horizontal rule
+      if (/^(-{3,}|\*{3,})$/.test(trimmed)) {
+        out.push('<hr/>');
+        i++;
+        continue;
+      }
+
+      // Headings (h3 / h4)
+      var hMatch = trimmed.match(/^(#{1,4})\s+(.+)$/);
+      if (hMatch) {
+        var tag = hMatch[1].length >= 4 ? 'h4' : 'h3';
+        out.push('<' + tag + '>' + renderInlineMd(hMatch[2]) + '</' + tag + '>');
+        i++;
+        continue;
+      }
+
+      // Blockquote
+      if (/^>\s?/.test(trimmed)) {
+        var bqLines = [];
+        while (i < lines.length && /^>\s?/.test(lines[i].trim())) {
+          bqLines.push(lines[i].trim().replace(/^>\s?/, ''));
+          i++;
+        }
+        out.push('<blockquote>' + renderMarkdownHtml(bqLines.join('\n')) + '</blockquote>');
+        continue;
+      }
+
+      // List (unordered or ordered, supporting 1 level of nesting)
+      if (/^\s*[-*•]\s+/.test(line) || /^\s*\d+\.\s+/.test(line)) {
+        var isOrdered = /^\s*\d+\.\s+/.test(line);
+        var listTag = isOrdered ? 'ol' : 'ul';
+        var itemsHtml = [];
+
+        while (i < lines.length) {
+          var cur = lines[i];
+          var curMatch = isOrdered
+            ? cur.match(/^(\s*)\d+\.\s+(.*)$/)
+            : cur.match(/^(\s*)[-*•]\s+(.*)$/);
+          if (!curMatch) break;
+
+          var baseIndent = curMatch[1].length;
+          var itemParts = [renderInlineMd(curMatch[2])];
+          i++;
+
+          // Collect nested indented sub-items or continuation lines
+          var subLines = [];
+          while (i < lines.length) {
+            var next = lines[i];
+            if (!next.trim()) break;
+            var nextListMatch = next.match(/^(\s*)(?:[-*•]|\d+\.)\s+(.*)$/);
+            if (nextListMatch) {
+              if (nextListMatch[1].length > baseIndent) {
+                subLines.push(next);
+                i++;
+                continue;
+              }
+              break;
+            }
+            if (/^\s{2,}/.test(next) && !isBlockBoundary(next)) {
+              itemParts.push('<br/>' + renderInlineMd(next.trim()));
+              i++;
+              continue;
+            }
+            break;
+          }
+          if (subLines.length) {
+            itemParts.push(renderMarkdownHtml(subLines.join('\n')));
+          }
+          itemsHtml.push('<li>' + itemParts.join('') + '</li>');
+        }
+
+        out.push('<' + listTag + '>' + itemsHtml.join('') + '</' + listTag + '>');
+        continue;
+      }
+
+      // Paragraph
+      var pLines = [line];
+      i++;
+      while (i < lines.length && !isBlockBoundary(lines[i])) {
+        pLines.push(lines[i]);
+        i++;
+      }
+      out.push('<p>' + pLines.map(function (pl) { return renderInlineMd(pl); }).join('<br/>') + '</p>');
+    }
+
+    return out.join('');
+  }
+
+  function countUnclosedFenceLines(lines) {
+    var inFence = false;
+    for (var i = 0; i < lines.length; i++) {
+      var trimmed = lines[i].trim();
+      if (/^```/.test(trimmed)) {
+        if (!inFence) {
+          inFence = true;
+        } else if (/^```\s*$/.test(trimmed)) {
+          inFence = false;
+        }
+      }
+    }
+    return inFence;
+  }
+
+  function unwrapOuterFence(text, fencePattern) {
+    var trimmed = String(text || '').replace(/\r\n?/g, '\n').trim();
+    var lines = trimmed.split('\n');
+    if (lines.length >= 2 && fencePattern.test(lines[0].trim())) {
+      var rest = lines.slice(1);
+      // Remove leading/trailing whitespace lines on rest copy
+      while (rest.length && !rest[rest.length - 1].trim()) rest.pop();
+      if (rest.length && /^```\s*$/.test(rest[rest.length - 1].trim())) {
+        var beforeClose = rest.slice(0, -1);
+        // Only strip the bottom ``` if inner fences are balanced before it
+        if (!countUnclosedFenceLines(beforeClose)) {
+          return { unwrapped: true, inner: beforeClose.join('\n').trim() };
+        }
+      }
+      return { unwrapped: true, inner: rest.join('\n').trim() };
+    }
+    return { unwrapped: false, inner: trimmed };
+  }
+
+  function normalizeTransferMarkdown(rawMd) {
+    var normalized = String(rawMd || '').replace(/\r\n?/g, '\n').trim();
+
+    // Strip instruction preamble if AI accidentally kept "(3) NARRATIVE TRANSFER PACK ... ## EXECUTION RULES"
+    var packHeadingIdx = normalized.search(/^##\s*NARRATIVE TRANSFER PACK\b/im);
+    var fenceStartIdx = normalized.search(/^```Transfer Pack\b/im);
+    var metaHeadingIdx = normalized.search(/^##\s*TRANSFER METADATA\b/im);
+
+    if (packHeadingIdx !== -1 && (fenceStartIdx === -1 || packHeadingIdx < fenceStartIdx)) {
+      normalized = normalized.slice(packHeadingIdx).replace(/^##\s*NARRATIVE TRANSFER PACK\s*\n+/i, '').trim();
+    } else if (fenceStartIdx > 0) {
+      normalized = normalized.slice(fenceStartIdx).trim();
+    } else if (metaHeadingIdx > 0) {
+      normalized = normalized.slice(metaHeadingIdx).trim();
+    }
+
+    // Strip trailing guide blockquote even if outside outer closing fence
+    normalized = normalized
+      .replace(/\n*>\s*__\*\*Hướng dẫn chuyển sinh:\*\*__[^\n]*(?:\n```)?\s*$/i, function (m) {
+        return /\n```\s*$/.test(m) ? '\n```' : '';
+      })
+      .trim();
+
+    var unwrapped = unwrapOuterFence(normalized, /^```(Transfer Pack|markdown|md)?\s*$/i);
+    var inner = unwrapped.inner
+      .replace(/\n*>\s*__\*\*Hướng dẫn chuyển sinh:\*\*__[\s\S]*$/i, '')
+      .trim();
+
+    var copyable = '```Transfer Pack\n' + inner + '\n```';
+    return {
+      copyable: copyable,
+      inner: inner,
+    };
+  }
+
+  function splitMarkdownByH2(md) {
+    var lines = String(md || '').replace(/\r\n?/g, '\n').split('\n');
+    var sections = [];
+    var currentTitle = '';
+    var currentLines = [];
+    var inFence = false;
+
+    for (var i = 0; i < lines.length; i++) {
+      var line = lines[i];
+      var trimmed = line.trim();
+
+      if (/^```/.test(trimmed)) {
+        if (!inFence) {
+          inFence = true;
+        } else if (/^```\s*$/.test(trimmed)) {
+          inFence = false;
+        }
+        currentLines.push(line);
+        continue;
+      }
+
+      if (!inFence) {
+        var h2 = line.match(/^##\s+(.+?)\s*$/);
+        if (h2) {
+          if (currentTitle || currentLines.join('\n').trim()) {
+            sections.push({
+              title: currentTitle,
+              body: currentLines.join('\n').trim(),
+            });
+          }
+          currentTitle = h2[1];
+          currentLines = [];
+          continue;
+        }
+      }
+
+      currentLines.push(line);
+    }
+
+    if (currentTitle || currentLines.join('\n').trim()) {
+      sections.push({
+        title: currentTitle,
+        body: currentLines.join('\n').trim(),
+      });
+    }
+
+    return sections;
+  }
+
   function buildRecapMarkdown(raw) {
+    if (raw && typeof raw.markdown === 'string' && raw.markdown.trim()) {
+      return String(raw.markdown).trim();
+    }
     var title = raw.title || 'TÓM TẮT DIỄN BIẾN';
     var pairs = [
       ['Current state', raw.currentState],
@@ -689,6 +1018,7 @@
   function mountRecapMode(container, raw) {
     var showRaw = false;
     var copied = false;
+    var isMarkdownInput = Boolean(raw && typeof raw.markdown === 'string' && raw.markdown.trim());
     var markdownText = buildRecapMarkdown(raw);
     var title = raw.title || 'TÓM TẮT DIỄN BIẾN';
 
@@ -702,9 +1032,24 @@
       { key: 'continuityWarnings', label: 'Continuity Warnings · Cảnh báo & Khoảng trống', crimson: true },
     ];
 
+    function renderMarkdownRecapBody() {
+      var cleaned = markdownText
+        .replace(/^###\s*TÓM TẮT DIỄN BIẾN\s*\n*/i, '')
+        .trim();
+      var unwrapped = unwrapOuterFence(cleaned, /^```(Narrative Summary|markdown|md)?\s*$/i);
+      return (
+        '<div class="vd-sec">' +
+        '<div class="vd-sec-hd is-crimson"><span>Narrative Summary · Tóm tắt diễn biến</span></div>' +
+        '<div class="vd-sec-bd vd-md">' + renderMarkdownHtml(unwrapped.inner) + '</div>' +
+        '</div>'
+      );
+    }
+
     function render() {
       var bodyHtml = showRaw
         ? '<textarea class="vd-raw" readonly>' + esc(markdownText) + '</textarea>'
+        : isMarkdownInput
+        ? renderMarkdownRecapBody()
         : sections
             .map(function (s) {
               var val = formatFieldValue(raw[s.key]);
@@ -827,7 +1172,9 @@
   function mountTransferMode(container, raw) {
     var showRaw = false;
     var copied = false;
-    var markdownText = buildTransferMarkdown(raw);
+    var isMarkdownInput = Boolean(raw && typeof raw.markdown === 'string' && raw.markdown.trim());
+    var mdPack = isMarkdownInput ? normalizeTransferMarkdown(raw.markdown) : null;
+    var markdownText = mdPack ? mdPack.copyable : buildTransferMarkdown(raw);
 
     var orderedSections = [
       { key: 'userProfileLock', label: 'USER CHARACTER PROFILE LOCK · Hồ sơ {{user}}' },
@@ -865,10 +1212,59 @@
       return strVal ? '<div class="vd-sec"><div class="vd-sec-hd"><span>CUMULATIVE TRANSFER LEDGER [HARD_LOCK]</span></div><div class="vd-sec-bd">' + esc(strVal) + '</div></div>' : '';
     }
 
+    function isCrimsonTransferHeading(title) {
+      var up = String(title || '').toUpperCase();
+      return (
+        up.indexOf('CURRENT TIME') !== -1 ||
+        up.indexOf('PERSISTENT CONSEQUENCES') !== -1 ||
+        up.indexOf('CURRENT SCENE ANCHOR') !== -1
+      );
+    }
+
+    function renderTransferSectionsFromMarkdown() {
+      var parsed = splitMarkdownByH2(mdPack.inner);
+      if (!parsed.length) {
+        return (
+          '<div class="vd-sec"><div class="vd-sec-hd"><span>NARRATIVE TRANSFER PACK</span></div>' +
+          '<div class="vd-sec-bd vd-md">' + renderMarkdownHtml(mdPack.inner) + '</div></div>'
+        );
+      }
+      return parsed
+        .map(function (sec) {
+          var cleanBody = sec.body
+            .replace(/^\s*-{3,}\s*\n+/, '')
+            .replace(/\n*-{3,}\s*$/, '')
+            .trim();
+          var upperTitle = String(sec.title || '').toUpperCase();
+
+          if (upperTitle.indexOf('NEW CHAT RESTORATION PROTOCOL') !== -1) {
+            var protoUnwrapped = unwrapOuterFence(cleanBody, /^```(Restoration Protocol)?\s*$/i);
+            return (
+              '<details class="vd-details"><summary>' + esc(sec.title) + ' (đã giữ nguyên khi sao chép)</summary>' +
+              '<div class="vd-details-bd vd-md">' + renderMarkdownHtml(protoUnwrapped.inner || RESTORATION_PROTOCOL) + '</div></details>'
+            );
+          }
+
+          if (!cleanBody && upperTitle.indexOf('USER RESPONSE') === -1) return '';
+
+          var displayTitle = sec.title || 'NARRATIVE TRANSFER PACK';
+          var crimson = isCrimsonTransferHeading(displayTitle);
+          return (
+            '<div class="vd-sec">' +
+            '<div class="vd-sec-hd' + (crimson ? ' is-crimson' : '') + '"><span>' + esc(displayTitle) + '</span></div>' +
+            '<div class="vd-sec-bd vd-md">' + renderMarkdownHtml(cleanBody || '_Sẵn sàng nhập phản hồi tiếp theo sau khi dán sang chat mới._') + '</div>' +
+            '</div>'
+          );
+        })
+        .join('');
+    }
+
     function render() {
       var bodyHtml = '';
       if (showRaw) {
         bodyHtml = '<textarea class="vd-raw" readonly>' + esc(markdownText) + '</textarea>';
+      } else if (isMarkdownInput && mdPack) {
+        bodyHtml = renderTransferSectionsFromMarkdown();
       } else {
         var metaVal = formatFieldValue(raw.metadata);
         var metaHtml = metaVal ? '<div class="vd-sec"><div class="vd-sec-hd"><span>TRANSFER METADATA</span></div><div class="vd-sec-bd">' + esc(metaVal) + '</div></div>' : '';

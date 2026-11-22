@@ -3,7 +3,9 @@ export const DEFAULT_GITHUB_BASE_URL =
 
 export const COMMANDS: Record<string, string> = {
   '/transfer': 'transfer.txt',
+  '/transfer_template': 'transfer_template.md',
   '/recap': 'recap.txt',
+  '/recap_template': 'recap_template.md',
 };
 
 export interface SlashCommandMeta {
@@ -23,10 +25,24 @@ export const SLASH_COMMAND_LIST: SlashCommandMeta[] = [
     kind: 'github-raw',
   },
   {
+    command: '/transfer_template',
+    filename: COMMANDS['/transfer_template'],
+    label: 'Transfer Template (MD)',
+    description: 'Tải nguyên văn transfer_template.md tĩnh từ GitHub Raw (0 token)',
+    kind: 'github-raw',
+  },
+  {
     command: '/recap',
     filename: COMMANDS['/recap'],
     label: 'Recap Diễn Biến',
     description: 'Tải nguyên văn recap.txt từ GitHub Raw (0 token)',
+    kind: 'github-raw',
+  },
+  {
+    command: '/recap_template',
+    filename: COMMANDS['/recap_template'],
+    label: 'Recap Template (MD)',
+    description: 'Tải nguyên văn recap_template.md tĩnh từ GitHub Raw (0 token)',
     kind: 'github-raw',
   },
   {

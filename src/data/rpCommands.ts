@@ -294,8 +294,11 @@ export interface UnifiedPromptOptions {
   jsDelivrWorldUrl: string;
   overworldList: string;
   norsvaleList: string;
-  textCommandsMode: 'url-context' | 'markdown' | 'engine';
+  textCommandsMode: 'url-context' | 'markdown' | 'markdown-html' | 'engine';
   includeWorldLore?: boolean;
+  mapTemplateUrl?: string;
+  transferTemplateUrl?: string;
+  recapTemplateUrl?: string;
   assetsUrls?: {
     valeroth: string;
     norsvale: string;
@@ -314,6 +317,9 @@ export function buildUnifiedJsDelivrSystemPrompt({
   norsvaleList,
   textCommandsMode,
   includeWorldLore = false,
+  mapTemplateUrl,
+  transferTemplateUrl,
+  recapTemplateUrl,
   assetsUrls,
   commandDocsUrls,
 }: UnifiedPromptOptions): string {
@@ -337,6 +343,51 @@ export function buildUnifiedJsDelivrSystemPrompt({
 * FAILURE HANDLING: If the source file cannot be accessed (e.g., the URL was not included in the user's message, the platform blocks System-Prompt URLs, or the repo is Private), do not fabricate its contents, generate a substitute template, or claim successful execution. Briefly state that the source file could not be accessed and ask the user to resend the command as a standalone message with its raw URL attached (e.g., \`/transfer ${commandDocsUrls.transfer}\`).
 
 * POST-EXECUTION: Stop immediately after presenting the completed output. Do not resume roleplay or introduce new story developments in the same response.`;
+  }
+
+  if (textCommandsMode === 'markdown-html') {
+    const resolvedMapUrl = mapTemplateUrl || commandDocsUrls?.mapKaldor || 'map-kaldor.txt';
+    const resolvedTransferUrl =
+      transferTemplateUrl || commandDocsUrls?.transfer || 'transfer_template.md';
+    const resolvedRecapUrl = recapTemplateUrl || commandDocsUrls?.recap || 'recap_template.md';
+
+    const commandBlock = `# SECTION 5 | HỆ THỐNG LỆNH RP 3 BƯỚC: GITHUB TEMPLATE → AI STUDIO → HTML [HARD_LOCK]
+
+* COMMAND PRIORITY [ABSOLUTE]: Chỉ kích hoạt khi người chơi gửi lệnh riêng \`/map\` (hoặc \`/map valeroth\`, \`/map bắc ải\`), \`/transfer\`, hoặc \`/recap\` (kèm hoặc không kèm URL trong tin nhắn). Lập tức tạm dừng mạch kể — KHÔNG tiếp tục cảnh, KHÔNG tua thời gian, KHÔNG tự ý hành động thay \`{{user}}\`.
+
+* NGUỒN TEMPLATE TĨNH TRÊN GITHUB (JSDELIVR) [MANDATORY]:
+  AI PHẢI đọc nguyên văn tệp template tương ứng từ URL trong tin nhắn người dùng (nếu có) hoặc từ link dưới đây (KHÔNG tự bịa cấu trúc hay nhớ mang máng), rồi phân tích toàn bộ diễn biến RP để điền đầy đủ dữ liệu thực tế:
+  - \`/map\` → ${resolvedMapUrl}
+  - \`/transfer\` → ${resolvedTransferUrl}
+  - \`/recap\` → ${resolvedRecapUrl}
+
+* ĐẦU RA HTML DUY NHẤT [HARD_LOCK] (chỉ xuất 1 khối \`\`\`html ... \`\`\` hoàn chỉnh rồi DỪNG NGAY):
+  1. **Với \`/map\`**: Làm đúng mọi quy tắc, mã địa điểm và khóa \`[HARD_LOCKED]\` trong \`map-kaldor.txt\`; dùng đúng 2 script \`${jsDelivrWorldUrl}\` và \`${jsDelivrEngineUrl}\`.
+  2. **Với \`/transfer\` & \`/recap\`**: Làm đúng mọi quy tắc và điền đủ các mục trong template tương ứng (\`transfer_template.md\` hoặc \`recap_template.md\`), bỏ phần mô tả rule đầu file, giữ nguyên phần nội dung Markdown đã điền (nhớ chép NGUYÊN VĂN 100% phản hồi AI liền trước vào \`[LAST RESPONSE]\` khi \`/transfer\`, đổi \`</script>\` thành \`<\\/script>\` nếu có), rồi đặt vào khung HTML gọn bên dưới để \`engine.js\` tự render giao diện & nút sao chép:
+
+\`\`\`html
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>html,body{margin:0;padding:8px;background:#EAE6DC;}</style>
+</head>
+<body>
+  <div id="rp-app" data-mode="transfer hoặc recap"></div>
+  <script type="text/markdown" id="rp-markdown">
+  <!-- DÁN TOÀN BỘ NỘI DUNG MARKDOWN ĐÃ ĐIỀN TỪ TEMPLATE GITHUB TẠI ĐÂY -->
+  </script>
+  <script src="${jsDelivrEngineUrl}"></script>
+</body>
+</html>
+\`\`\`
+
+* FAILURE HANDLING: Nếu nền tảng chặn truy cập URL đặt trong System Instructions (hoặc repo đang Private), KHÔNG tự bịa nội dung thay thế — báo ngắn gọn và nhắc người chơi gửi lệnh kèm link tương ứng (vd: \`/transfer ${resolvedTransferUrl}\`).`;
+
+    return includeWorldLore
+      ? `${VALEROTH_WORLD_AND_CHESSBOARD_PROMPT}\n\n====================================================================\n${commandBlock}`
+      : commandBlock;
   }
 
   const assetsSnippet = assetsUrls
