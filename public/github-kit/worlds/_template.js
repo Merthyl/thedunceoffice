@@ -8,7 +8,6 @@
  *        window.RP_DATA = { world: "nhan-vat-b", mode: "map", ... };
  *        <script src="https://cdn.jsdelivr.net/gh/<USER>/<REPO>@<SHA>/worlds/nhan-vat-b.js"></script>
  *        <script src="https://cdn.jsdelivr.net/gh/<USER>/<REPO>@<SHA>/engine.js"></script>
- *      (Lệnh /recap và /transfer của bot B chỉ cần nạp mỗi engine.js là chạy!)
  */
 (function (global) {
   'use strict';
@@ -48,7 +47,6 @@
         summary: 'Mô tả ngắn về khu vực này.',
       },
     ],
-    routes: [],
   };
 
   global.RP_WORLDS = global.RP_WORLDS || {};

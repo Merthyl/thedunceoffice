@@ -12,8 +12,8 @@ const __dirname = path.dirname(__filename);
 const PORT = Number(process.env.PORT) || 3000;
 
 const GITHUB_KIT_ASSET_MAP: Record<string, string> = {
-  'valeroth.jpg': 'valeroth_v10_1795365600000.jpg',
-  'norsvale.jpg': 'norsvale_v14_1795367887097.jpg',
+  'valeroth.jpg': 'valeroth_master_v40_1795441016467.jpg',
+  'norsvale.jpg': 'norsvale_ink_v20_1795432498475.jpg',
 };
 
 async function startServer() {

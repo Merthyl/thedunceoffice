@@ -20,6 +20,8 @@ export interface StoryLocation {
   zonePath?: string;
   /** Softer blended edge for zones that merge organically (e.g. Cấm Địa & U Lâm) */
   softBlend?: boolean;
+  /** Display name label only on the map; non-clickable (does not open detail inspector) */
+  labelOnly?: boolean;
 }
 
 export interface StoryCharacter {

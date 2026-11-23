@@ -10,8 +10,8 @@ export const MAP_SCOPE_LABELS: Record<MapScope, string> = {
 
 /**
  * Pixel-aligned territorial zones (khoanh vùng) synced with:
- * 1) Vương quốc Valeroth (valeroth_v10_1795365600000.jpg)
- * 2) Thành Bắc Ải (norsvale_v14_1795367887097.jpg)
+ * 1) Vương quốc Valeroth (valeroth_master_v40_1795441016467.jpg)
+ * 2) Thành Bắc Ải (norsvale_ink_v20_1795432498475.jpg)
  * Coordinate space: 1000 x 562.
  */
 export const INITIAL_STORY_WORLD: StoryWorldState = {
@@ -29,15 +29,15 @@ export const INITIAL_STORY_WORLD: StoryWorldState = {
       scope: 'valeroth',
       name: 'Vương Đô',
       altName: 'Valerius',
-      region: 'Trung tâm Vương quốc',
+      region: 'Đông – Trung tâm Vương quốc',
       ruler: 'Hoàng gia & Đại Giáo Đường',
       summary:
-        'Kinh thành tường bát giác đồ sộ với tháp nhọn Đại Giáo Đường và mái vòm hoàng cung uy nghiêm giữa lòng đồng bằng trù phú; bao quanh bởi cối xay gió và đồng ruộng nối liền sang thương lộ Lam Vịnh.',
+        'Đại kinh thành tường bát giác rộng lớn với tháp đôi Đại Giáo Đường, mái vòm hoàng cung uy nghiêm và các khu dân cư san sát, phía tây bắc mở ra vựa đồng ruộng cối xay gió trù phú nối tới Lam Vịnh.',
       status: 'visited',
-      x: 546,
-      y: 256,
+      x: 682,
+      y: 242,
       zonePath:
-        'M 424 202 L 498 154 L 594 154 L 664 202 L 668 294 L 594 338 L 494 338 L 424 296 Z',
+        'M 548 286 L 548 180 L 664 108 L 742 138 L 816 180 L 816 288 L 740 338 L 630 338 Z',
     },
     {
       id: 'loc-zarath',
@@ -47,12 +47,12 @@ export const INITIAL_STORY_WORLD: StoryWorldState = {
       region: 'Dãy núi tường thành Bắc – Đông Bắc',
       ruler: 'Công tước Vayne Gillet',
       summary:
-        'Dãy núi đá hiểm trở bao bọc phía bắc và đông bắc vương quốc như tường thành tự nhiên; trên mỏm đá cao sừng sững pháo đài của Công tước Vayne Gillet nhìn xuống mỏ lộ thiên, cửa hầm, cầu gỗ tải quặng, cụm lò nung và làng thợ mỏ.',
+        'Dãy núi đá hiểm trở bao bọc phía bắc và đông bắc vương quốc ngay sát mạn bắc Vương Đô; trên mỏm đá cao sừng sững pháo đài của Công tước Vayne Gillet nối cầu vòm đá xuống mỏ lộ thiên bậc thang cùng thị trấn thợ mỏ, cụm lò nung và khu nhà đá bậc thang đông đúc.',
       status: 'visited',
-      x: 758,
-      y: 92,
+      x: 842,
+      y: 112,
       zonePath:
-        'M 514 12 L 988 12 L 988 224 L 936 208 L 844 210 L 756 200 L 716 172 L 648 154 L 564 140 Z',
+        'M 684 6 L 994 6 L 994 234 L 892 224 L 832 204 L 822 166 L 764 134 L 714 120 L 672 78 Z',
     },
     {
       id: 'loc-corinth',
@@ -62,57 +62,57 @@ export const INITIAL_STORY_WORLD: StoryWorldState = {
       region: 'Duyên hải Vùng Biển Xa · Giao thoa Phương Đông',
       ruler: 'Công tước Diocles Ingelrandus',
       summary:
-        'Đô thị thương cảng sầm uất mở ra Vùng Biển Xa với cầu cảng đá tấp nập tàu buôn, khu phố thương nhân san sát cùng các thương sảnh mái vòm và hành lang cột mang dấu ấn giao thoa phương Đông; phía đông nối qua đồng ruộng vào Vương Đô, phía nam áp sát trục thương lộ xuống Bắc Ải.',
+        'Đại đô thị thương cảng sầm uất mở rộng ra Vùng Biển Xa với đê chắn sóng vòng cung cùng hải đăng đá, hàng loạt cầu cảng tấp nập tàu buôn, phố thương nhân san sát và các thương sảnh mái vòm uy nghi.',
       status: 'unexplored',
-      x: 368,
-      y: 112,
+      x: 296,
+      y: 148,
       zonePath:
-        'M 284 12 L 506 12 L 554 96 L 554 144 L 496 152 L 444 192 L 410 206 L 376 196 L 324 174 L 326 152 L 288 158 L 278 166 L 234 134 L 226 86 L 258 42 Z',
+        'M 152 206 L 158 152 L 206 56 L 368 46 L 468 114 L 474 196 L 424 244 L 306 268 L 194 250 Z',
     },
     {
       id: 'loc-norsvale',
       scope: 'valeroth',
       name: 'Bắc Ải',
       altName: 'Norsvale',
-      region: 'Thành lũy biên ải',
+      region: 'Thành lũy biên ải phía Tây',
       ruler: 'Công tước Kaldor Oakhart',
       summary:
-        'Tòa thành biên ải quy mô rộng lớn án ngữ giữa biển tây và bìa rừng U Lâm, nổi bật với Tháp Công Tước sừng sững trên vách đá đất liền áp sát Đại Sảnh cùng khu đô thị ngoại thành đông đúc nhà dân — kéo dài bức tường thành kín bưng nối sang U Lâm để bịt chặt hoàn toàn lối từ Hoang Vực vào Valeroth.',
+        'Tòa thành biên ải kiên cố. Cổng Bắc tháp đôi mở lên vùng đồng cỏ, mặt đông khép kín ôm sát dải rừng U Lâm ngăn cách với Vương Đô, và Cổng Nam tháp đôi là cửa ngõ duy nhất dẫn sang Hoang Vực.',
       status: 'current',
-      x: 302,
-      y: 294,
+      x: 362,
+      y: 364,
       zonePath:
-        'M 196 222 L 234 222 L 236 240 L 298 212 L 402 274 L 402 344 L 324 378 L 242 336 L 196 304 Z',
+        'M 232 356 L 234 270 L 274 270 L 344 282 L 408 288 L 478 302 L 472 422 L 406 454 L 336 448 L 252 422 L 252 368 Z',
     },
     {
       id: 'loc-sylva',
       scope: 'valeroth',
       name: 'U Lâm',
       altName: 'Sylva',
-      region: 'Dải rừng cổ thụ Đông – Nam',
+      region: 'Dải rừng cổ thụ Trung – Đông Nam',
       ruler: 'Công tước Artur Houtmann',
       summary:
-        'Dải rừng cổ thụ rộng lớn ôm trọn mạn đông với tòa thành lâu đài Gothic bề thế của Công tước Artur Houtmann cùng khu thị trấn cư dân lâm nghiệp trù phú giữa khoảng rừng quang, nối liền bằng trục đường về Vương Đô và được bức tường đá kín bưng của Bắc Ải che chắn hoàn toàn khỏi Hoang Vực.',
+        'Cánh rừng cổ thụ dày đặc trải rộng từ mạn đông nam; nổi bật giữa vùng lãnh địa rộng lớn là quần thể lâu đài của Công tước Artur Houtmann cùng thị trấn lâm nghiệp đông đúc.',
       status: 'unexplored',
-      x: 840,
-      y: 356,
+      x: 842,
+      y: 382,
       zonePath:
-        'M 504 406 L 542 368 L 622 344 L 678 304 L 700 258 L 748 210 L 850 212 L 936 208 L 988 224 L 988 462 L 928 464 L 894 494 L 896 550 L 732 550 L 686 526 L 582 466 Z',
+        'M 714 404 L 740 354 L 794 344 L 822 336 L 860 258 L 944 260 L 974 322 L 974 384 L 904 424 L 850 444 L 784 468 L 726 446 Z',
     },
     {
       id: 'loc-morvath',
       scope: 'valeroth',
       name: 'Cấm Địa',
       altName: 'Morvath',
-      region: 'Rừng sương độc · Lẩn khuất trong U Lâm',
-      ruler: 'Vô chủ (Tin đồn về Phù Thủy)',
+      region: 'Rừng sâu tách biệt · Không đường dẫn tới',
+      ruler: 'Vô chủ',
       summary:
-        'Vùng trũng cây khô héo lẩn khuất sâu kín dưới tán rừng đông nam của U Lâm; ẩn khuất bên trong là một căn nhà gỗ nhỏ đơn độc gắn với lời đồn về Phù Thủy.',
+        'Góc rừng chết tối tăm và khuất lấp hoàn toàn ở cực đông nam, không hề có đường mòn nào từ U Lâm dẫn tới; ẩn sâu dưới tán cây khô rậm rạp gần như khó nhận ra chỉ có một căn nhà gỗ nhỏ cũ kỹ gắn với lời đồn về Phù Thủy.',
       status: 'locked',
       x: 928,
-      y: 506,
+      y: 500,
       zonePath:
-        'M 896 550 L 894 494 L 928 464 L 988 462 L 988 550 Z',
+        'M 892 556 L 892 514 L 914 468 L 994 452 L 994 556 Z',
       softBlend: true,
     },
     {
@@ -123,96 +123,93 @@ export const INITIAL_STORY_WORLD: StoryWorldState = {
       region: 'Ngoại vực Tây Nam',
       ruler: 'Vô chủ',
       summary:
-        'Ngoại vực hiểm ác trải rộng ngay ngoài cổng Nam Bắc Ải — mỏm đá bazan đen sắc lẹm, khe đá nứt gãy lởm chởm, cây chết trơ cành vặn vẹo, phế tích tháp canh đổ nát, bia cự thạch đen và bộ xương rồng khổng lồ phơi mình giữa vùng đất chết đầy quái vật.',
+        'Vùng đất chết hiểm ác chỉ mở lối duy nhất từ cổng Nam Bắc Ải — địa hình đá nứt lởm chởm với rặng núi lửa sắc nhọn, khe nứt sâu hẹp sắc lẹm giữa mặt đất vỡ nát, phế tích đá đổ nát, cây gai khô chết cùng xương thú và hài cốt trắng hếu rải rác giữa các hốc đá.',
       status: 'locked',
       x: 344,
-      y: 478,
+      y: 508,
       zonePath:
-        'M 12 550 L 12 424 L 48 366 L 98 420 L 184 374 L 242 344 L 324 384 L 368 366 L 478 414 L 582 478 L 682 538 L 704 550 Z',
+        'M 6 556 L 6 446 L 110 410 L 252 424 L 336 450 L 404 456 L 438 438 L 696 556 Z',
     },
 
     // =========================================================================
-    // LAYER 2: THÀNH BẮC ẢI (ĐỒNG BỘ HƯỚNG VỚI VALEROTH: BIỂN TRÁI · BẮC TRÊN · HOANG VỰC DƯỚI · RỪNG PHẢI)
+    // LAYER 2: THÀNH BẮC ẢI (NỘI THÀNH CÔNG TƯỚC TÁCH BIỆT BẰNG TƯỜNG ĐÁ · BIỂN TRÁI · BẮC TRÊN · HOANG VỰC DƯỚI · RỪNG PHẢI)
     // =========================================================================
     {
       id: 'loc-nors-keep',
       scope: 'norsvale',
-      name: 'Tháp Công Tước',
-      altName: 'Tháp Vách Biển · Phòng Công tước',
-      region: 'Thành nội Công tước',
+      name: 'Tháp Chính',
+      altName: 'Phòng Công tước',
+      region: 'Nội thành Công tước',
       summary:
-        'Ngọn tháp đá vuông cao đứng vững trên mỏm vách đá giáp Vùng Biển Xa ngay sát mạn tây Thành Nội, nối liền sang Đại Sảnh qua nhịp cầu đá ngắn lộng gió biển; bên trong tối giản với giường phủ da thú, bàn bản đồ quân sự và rượu mạnh.',
+        'Ngọn tháp đá vuông rất cao xây liền vào tường tây nội thành, chỉ chớm mép vách đá nhìn ra Vùng Biển Xa và thông thẳng sang Đại Sảnh; bên trong tối giản với giường phủ da thú, bàn bản đồ quân sự và rượu mạnh.',
       status: 'visited',
-      x: 222,
-      y: 102,
-      zonePath: 'M 192 68 L 254 68 L 254 240 L 192 224 Z',
+      x: 242,
+      y: 124,
+      zonePath: 'M 194 46 L 242 20 L 292 46 L 286 192 L 252 258 L 194 244 Z',
     },
     {
       id: 'loc-nors-hall',
       scope: 'norsvale',
       name: 'Đại Sảnh',
       altName: 'Sảnh Tiệc & Hội Nghị',
-      region: 'Thành nội Công tước',
+      region: 'Nội thành Công tước',
       summary:
-        'Tòa đại sảnh Gothic mái dốc bề thế tọa lạc bên trong Thành Nội và nối thẳng hành lang cầu đá ngắn hướng tây sang Tháp Công Tước giáp biển; nổi bật với lò sưởi khổng lồ và dãy bàn sồi thô nơi Công tước cùng hiệp sĩ họp bàn.',
+        'Tòa đại sảnh Gothic mái dốc bề thế nằm ngay sát Tháp Chính bên trong tường nội thành tách biệt với dân thường; nổi bật với lò sưởi khổng lồ và dãy bàn sồi thô nơi Công tước cùng hiệp sĩ họp bàn.',
       status: 'visited',
-      x: 344,
-      y: 136,
-      zonePath: 'M 256 96 L 398 22 L 428 22 L 432 156 L 316 224 L 256 202 Z',
+      x: 374,
+      y: 132,
+      zonePath: 'M 292 134 L 414 42 L 452 88 L 448 148 L 360 212 L 292 192 Z',
     },
     {
       id: 'loc-nors-kitchen',
       scope: 'norsvale',
       name: 'Bếp & Hậu Cần',
       altName: 'Bếp Lửa & Kho Lương',
-      region: 'Thành nội Công tước',
+      region: 'Nội thành Công tước',
       summary:
-        'Cụm nhà bếp đỏ lửa, lò nướng bánh và kho lương thực nằm kín đáo ngay sát cánh đông Đại Sảnh dọc tường bắc Thành Nội, do người hầu cùng thương binh cựu chiến vận hành.',
+        'Cụm nhà bếp đỏ lửa, lò nướng bánh, giếng nước và kho lương thực nằm kín đáo bên trong tường nội thành ngay cánh đông Đại Sảnh, do người hầu cùng thương binh cựu chiến vận hành.',
       status: 'visited',
-      x: 472,
-      y: 118,
-      zonePath: 'M 434 58 L 512 58 L 512 184 L 462 154 L 434 168 Z',
+      x: 514,
+      y: 142,
+      zonePath: 'M 454 74 L 590 76 L 562 204 L 438 178 L 454 128 Z',
     },
     {
       id: 'loc-nors-barracks',
       scope: 'norsvale',
       name: 'Trại Huấn Luyện',
       altName: 'Sân Kỵ Binh & Chuồng Ngựa',
-      region: 'Thành nội Công tước',
+      region: 'Nội thành Công tước',
       summary:
-        'Sân tập rộng mở giữa lòng Thành Nội với bia bắn cung, chuồng ngựa chiến và bãi luyện kỵ binh, suốt ngày vang tiếng hò hét thao luyện cùng vó ngựa tuần biên.',
+        'Sân tập quân sự có tường nội thành và cổng gác tách biệt hẳn khỏi khu dân cư, gồm chuồng ngựa chiến, bia bắn cung, giá binh khí và bãi luyện kỵ binh.',
       status: 'visited',
-      x: 398,
-      y: 266,
+      x: 382,
+      y: 262,
       zonePath:
-        'M 294 242 L 460 164 L 510 198 L 510 222 L 530 222 L 530 266 L 462 308 L 386 336 L 348 314 L 294 288 Z',
+        'M 258 264 L 266 210 L 516 256 L 492 318 L 366 324 L 328 286 L 262 304 Z',
     },
     {
       id: 'loc-nors-forge',
       scope: 'norsvale',
       name: 'Xưởng Quân Nhu',
       altName: 'Lò Rèn & Kho Vũ Khí',
-      region: 'Thành nội Công tước',
+      region: 'Nội thành · Tuyến Nam',
       summary:
-        'Khu xưởng rèn và kho quân nhu nằm sát tường nam Thành Nội nhìn ra vách biển, rực lửa lò bễ, đe sắt và giá binh khí phục vụ sửa giáp trụ chống quái vật.',
+        'Khu xưởng rèn và kho quân nhu nằm trong nội thành sát tường Nam, rực lửa lò bễ, đe sắt và giá binh khí phục vụ trực tiếp cho phòng tuyến chống quái vật.',
       status: 'visited',
-      x: 416,
-      y: 392,
+      x: 374,
+      y: 364,
       zonePath:
-        'M 308 308 L 346 322 L 386 344 L 518 344 L 518 424 L 408 424 L 308 386 Z',
+        'M 262 304 L 328 286 L 366 324 L 492 318 L 456 420 L 264 388 Z',
     },
     {
       id: 'loc-nors-northgate',
       scope: 'norsvale',
       name: 'Cổng Bắc & Chợ Tiếp Vận',
-      altName: 'Cổng Quan Lộ Lam Vịnh',
       region: 'Thành ngoại phía Bắc',
-      summary:
-        'Cửa ngõ phía bắc đón đoàn xe ngựa từ Lam Vịnh và Vương Đô, mở thẳng ra quảng trường chợ tiếp vận tấp nập sạp vải, thùng hàng và thương nhân.',
       status: 'visited',
-      x: 584,
-      y: 88,
-      zonePath: 'M 522 24 L 646 24 L 646 136 L 624 148 L 624 218 L 514 218 L 514 148 L 522 140 Z',
+      x: 656,
+      y: 98,
+      labelOnly: true,
     },
     {
       id: 'loc-nors-tavern',
@@ -221,52 +218,49 @@ export const INITIAL_STORY_WORLD: StoryWorldState = {
       altName: 'Quán Lính Đánh Thuê',
       region: 'Quảng trường Thành ngoại',
       summary:
-        'Quán rượu khung gỗ lớn nằm ngay ngã tư đường đá đối diện cổng tháp đôi Thành Nội, nồng mùi bia ấm, thịt nướng và tiếng cười thô ráp của lính đánh thuê.',
+        'Quán rượu khung gỗ lớn nằm ngay quảng trường Thành Ngoại đối diện cổng gác nội thành, nồng mùi bia ấm, thịt nướng và tiếng cười thô ráp của lính đánh thuê.',
       status: 'visited',
-      x: 595,
-      y: 298,
-      zonePath: 'M 536 226 L 626 226 L 650 282 L 650 358 L 536 358 Z',
+      x: 672,
+      y: 266,
+      zonePath: 'M 620 250 L 680 198 L 722 232 L 724 298 L 664 354 L 620 310 Z',
     },
     {
       id: 'loc-nors-town',
       scope: 'norsvale',
       name: 'Khu Dân Cư & Chợ Đêm',
       altName: 'Nhà Dân · Chợ · Nhà Thổ',
-      region: 'Thị trấn Thành ngoại',
+      region: 'Hậu phương Đông Bắc Thành ngoại',
       summary:
-        'Khu thị trấn ngoại thành rộng lớn và đông đúc trải dài toàn bộ mạn đông giáp rìa rừng U Lâm với hàng chục dãy nhà dân khung gỗ san sát, ngõ đá buôn bán tấp nập, chợ đêm treo đèn lồng cùng dãy nhà thổ và quán trọ biên ải.',
+        'Khu thị trấn dân sự đông đúc nằm bên ngoài tường nội thành với hàng chục dãy nhà khung gỗ san sát, ngõ đá chợ đêm cùng quán trọ biên ải.',
       status: 'visited',
-      x: 766,
-      y: 214,
+      x: 816,
+      y: 180,
       zonePath:
-        'M 628 148 L 656 82 L 764 82 L 906 174 L 906 376 L 848 376 L 836 312 L 780 312 L 758 340 L 668 298 L 628 242 Z',
+        'M 688 190 L 726 76 L 928 78 L 912 294 L 780 276 L 726 232 Z',
     },
     {
       id: 'loc-nors-apothecary',
       scope: 'norsvale',
       name: 'Trạm Y Dược & Luyện Kim',
       altName: 'Nhà Thuốc Biên Ải',
-      region: 'Thành ngoại phía Nam',
+      region: 'Khu đệm Đông Nam',
       summary:
-        'Ngôi nhà đá mái vòm yên tĩnh cùng khu vườn thảo dược có tường bao nằm ở phía nam khu phố, chuyên băng bó thương binh từ tường Nam và bào chế thuốc giải độc.',
+        'Khu nhà đá mái vòm có tường bao kín đáo cùng vườn thảo dược nằm tách giữa khu dân cư và tường Nam.',
       status: 'unexplored',
-      x: 762,
-      y: 386,
+      x: 798,
+      y: 362,
       zonePath:
-        'M 662 390 L 758 342 L 782 316 L 832 316 L 844 368 L 844 394 L 762 436 L 662 414 Z',
+        'M 690 344 L 780 280 L 908 300 L 898 366 L 786 452 L 690 404 Z',
     },
     {
       id: 'loc-nors-southgate',
       scope: 'norsvale',
       name: 'Cổng Hoang Vực & Tường Nam',
-      altName: 'Cửa Ải Tuyến Đầu',
-      region: 'Tường Nam Thành Bắc Ải',
-      summary:
-        'Hai tháp canh đá dày kẹp cửa sắt nặng ở mạn nam hướng thẳng ra những mỏm đá bazan đen sắc lẹm và cây chết Hoang Vực — chốt gác tuyến đầu khắc nghiệt nhất Thành Bắc Ải.',
+      region: 'Phòng tuyến Nam Thành Bắc Ải',
       status: 'current',
-      x: 592,
-      y: 452,
-      zonePath: 'M 522 374 L 662 374 L 662 514 L 522 514 Z',
+      x: 598,
+      y: 456,
+      labelOnly: true,
     },
   ],
   characters: [

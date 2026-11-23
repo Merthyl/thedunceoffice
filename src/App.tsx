@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Code2, Map as MapIcon, MapPin, RotateCcw, Shield, Terminal, X } from 'lucide-react';
+import { Code2, Map as MapIcon, MapPin, RotateCcw, Shield, X } from 'lucide-react';
 import {
   INITIAL_STORY_WORLD,
   MAP_SCOPE_LABELS,
@@ -8,10 +8,9 @@ import {
 import StoryMapCanvas from './components/StoryMapCanvas';
 import LocationInspector from './components/LocationInspector';
 import PlaygroundBridgeView from './components/PlaygroundBridgeView';
-import SlashCommandDrawer from './components/SlashCommandDrawer';
 import type { MapScope, StoryWorldState } from './types/story';
 
-const STORAGE_KEY = 'valeroth-engraving-map-v28';
+const STORAGE_KEY = 'valeroth-engraving-map-v46';
 
 function loadInitialWorld(): StoryWorldState {
   try {
@@ -36,7 +35,6 @@ export default function App() {
   const [focusLocationId, setFocusLocationId] = useState<string | null>(null);
   const [showPlayerMapCard, setShowPlayerMapCard] = useState(false);
   const [isBridgeOpen, setIsBridgeOpen] = useState(false);
-  const [isCommandDrawerOpen, setIsCommandDrawerOpen] = useState(false);
 
   useEffect(() => {
     try {
@@ -45,19 +43,6 @@ export default function App() {
       // Ignore storage quota errors
     }
   }, [world, activeScope]);
-
-  useEffect(() => {
-    const handleGlobalKeyDown = (e: KeyboardEvent) => {
-      if (e.key !== '/' || e.metaKey || e.ctrlKey || e.altKey) return;
-      const target = e.target as HTMLElement | null;
-      const tag = target?.tagName?.toLowerCase();
-      if (tag === 'input' || tag === 'textarea' || target?.isContentEditable) return;
-      e.preventDefault();
-      setIsCommandDrawerOpen(true);
-    };
-    window.addEventListener('keydown', handleGlobalKeyDown);
-    return () => window.removeEventListener('keydown', handleGlobalKeyDown);
-  }, []);
 
   const playerPosition = useMemo(() => resolvePlayerPosition(world), [world]);
 
@@ -97,10 +82,11 @@ export default function App() {
     setSelectedLocationId(null);
   };
 
-  const selectedLocation = world.locations.find((l) => l.id === selectedLocationId) ?? null;
+  const selectedLocation =
+    world.locations.find((l) => l.id === selectedLocationId && !l.labelOnly) ?? null;
 
   return (
-    <div className="relative h-screen w-screen overflow-hidden bg-[#EAE6DC] text-[#111111]">
+    <div className="relative h-screen w-screen overflow-hidden bg-[#EDEAE3] text-[#111111]">
       {/* Full-Viewport Ink-Engraved Map (Valeroth ↔ Bên trong Bắc Ải) */}
       <StoryMapCanvas
         world={world}
@@ -151,22 +137,8 @@ export default function App() {
         </button>
       </div>
 
-      {/* Minimal Top-Right Controls: Lệnh / + /map + GitHub jsDelivr + Reset */}
+      {/* Minimal Top-Right Controls: /map + GitHub jsDelivr + Reset */}
       <div className="absolute top-3 right-3 z-20 flex items-center gap-1 border border-[#111111] bg-[#FAF8F4]/96 p-1 shadow-sm backdrop-blur-xs">
-        <button
-          type="button"
-          onClick={() => setIsCommandDrawerOpen((v) => !v)}
-          className={`flex items-center gap-1 border px-2.5 py-1.5 font-mono text-[11px] font-semibold transition-colors whitespace-nowrap shrink-0 ${
-            isCommandDrawerOpen
-              ? 'border-[#111111] bg-[#111111] text-[#FAF8F4]'
-              : 'border-[#111111]/45 bg-[#FAF8F4] text-[#111111] hover:bg-[#E7E3DA]'
-          }`}
-          title="Mở bảng Slash Command kết nối GitHub Raw (/transfer, /recap)"
-        >
-          <Terminal size={12} />
-          <span>Lệnh /</span>
-        </button>
-
         <button
           type="button"
           onClick={triggerPlayerMap}
@@ -256,13 +228,6 @@ export default function App() {
           </div>
         </div>
       )}
-
-      {/* GitHub Raw Slash Command Drawer (/transfer, /recap, /map) */}
-      <SlashCommandDrawer
-        isOpen={isCommandDrawerOpen}
-        onClose={() => setIsCommandDrawerOpen(false)}
-        onTriggerMap={triggerPlayerMap}
-      />
 
       {/* GitHub + jsDelivr Modal */}
       {isBridgeOpen && (

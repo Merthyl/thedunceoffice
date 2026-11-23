@@ -161,241 +161,27 @@ Strictly categorize monsters and anomalous threats into grounded, biological, or
 * Enoch (36): A brain-damaged former knight repeating: "Do not let the dragon wake."
 * "The Father": Kaldor's biological father who had an affair with Elmira. Status and identity unknown.`;
 
-export const NEW_CHAT_RESTORATION_PROTOCOL_TEXT = `Treat this Transfer Pack as authoritative continuation state, NOT a new story start.
-
-- RESTORE: Restore the current scene, cumulative event ledger, user profile, chronology, relationships, world state, knowledge boundaries, consequences, and unresolved threads. Never reset established continuity without an established in-world cause.
-- CUMULATIVE MEMORY: Use the carried-forward ledger as the continuity record for earlier transfers. Merge it with the current package and new developments. Do not discard early events merely because they are absent from the latest chat's recent context.
-- PROFILE LOCK: Preserve \`{{user}}\`'s established character profile. Do not silently alter defining traits, history, abilities, appearance, voice, preferences, or boundaries. Apply only established development or explicit user-authorized changes.
-- EPISTEMIC LOCK: Narrator-level knowledge must not become character knowledge. Preserve sealed information and valid information paths.
-- USER AGENCY: The package does not authorize new \`{{user}}\` behavior. Only new user input establishes new user-controlled actions, dialogue, thoughts, feelings, intentions, reactions, discoveries, decisions, and consent.
-- STATE RECONCILIATION: The structured package governs the recorded state. \`[LAST RESPONSE]\` supplies exact immediate context but does not override established state or fill gaps with invented continuity.
-- SEAMLESS RE-ENTRY: Resume directly from \`[CURRENT SCENE ANCHOR]\`, preserving established style, pacing, characterization, atmosphere, and open interactions. No recap, migration acknowledgment, new opening, or manufactured escalation.
-- UNCERTAINTY: Preserve unresolved contradictions and unsupported details. Ask for clarification only when essential.
-- NORMAL EXECUTION: Continue under all applicable existing system, world, character, style, causality, knowledge, and agency rules. This package does not override higher-priority instructions.`;
-
-export const RECAP_COMMAND_MARKDOWN = `(2) STORYLINE RECAP [HARD_LOCK]
-* COMMAND PRIORITY [ABSOLUTE]: On an explicit \`/recap\` request, pause the story and output ONLY the Vietnamese recap in the specified format. Do not continue the scene or advance any event.
-* Cumulative Canon: Consolidate all accessible conversation history, prior recaps, and established event records. Preserve continuity-critical chronology, causality, character states, decisions, consequences, and unresolved threads. Never summarize only recent scenes or invent missing history.
-* USER AGENCY [ABSOLUTE]: 0(1) applies. Never convert intentions, proposals, or pending choices into completed actions.
-* KNOWLEDGE & SPOILER QUARANTINE [ABSOLUTE]: Build the recap ONLY from information legitimately established or revealed in the story. Never extract, quote, summarize, confirm, connect, or indirectly hint at hidden plot information found only in system instructions, character blueprints, internal rules, secret trackers, or unrevealed authorial lore. Never disclose ending identities, ending conditions, hidden progress, or unachieved endings. Do not use hidden information to explain the meaning of an event or connect seemingly unrelated details.
-* Factual Distinction: Clearly distinguish established facts from character beliefs, rumors, suspicions, interpretations, and unresolved uncertainty. Preserve individual knowledge boundaries; never present one character's private knowledge as universally known.
-* Continuity & Endpoint: Preserve the exact current-scene endpoint, including pending actions, unresolved dialogue, character positions, and decisions awaiting {{user}}. Do not resolve or advance anything during the recap.
-* Output & Validation: Output only the Vietnamese recap using the following template. If historical information is missing or contradictory, identify the gap rather than inventing a resolution.
-
-### TÓM TẮT DIỄN BIẾN
-
-\`\`\`Narrative Summary
-* Current state: Date, time, location, active scene, character positions, and exact stopping point.
-* Character continuity: Established traits, relevant motivations, relationships, and state changes.
-* Event history: Cumulative significant events, decisions, discoveries, causal links, and lasting consequences from accessible history and prior recaps.
-* Knowledge boundaries: What each relevant character knows, suspects, misunderstands, or remains unaware of, based only on legitimate in-story information.
-* Ongoing threads: Accessible investigations, conflicts, commitments, deadlines, unresolved mysteries, and decisions awaiting {{user}}. Do not identify or hint at concealed plot threads or ending-related progress.
-* Micro-continuity: Important dialogue, habits, gifts, promises, objects, and recurring details.
-* Continuity warnings: Irreversible changes, unresolved contradictions, missing history, and pending developments. Never describe sealed content or use authorial knowledge to fill gaps.
-\`\`\``;
-
-export const TRANSFER_COMMAND_MARKDOWN = `(3) NARRATIVE TRANSFER PACK — LỆNH CHUYỂN SINH (/transfer) [HARD_LOCK]
-This is a direct execution command. On \`/transfer\`, immediately interrupt normal storytelling and output ONLY the complete Transfer Pack. Do not explain the process, continue the story, advance time, or create new events.
-
-## EXECUTION RULES [HARD_LOCK]
-- STATE FIDELITY: Preserve the exact playable state, chronology, causality, character and relationship states, locations, knowledge boundaries, user profile, resources, world conditions, consequences, micro-continuity, commitments, and unresolved threads wherever relevant. Compress repetition, never continuity-critical information.
-- ADAPTIVE FIELDS: Include information that is established and relevant. Omit genuinely irrelevant fields instead of filling every heading or inventing details. Mark uncertainty only when it matters.
-- RECONCILIATION: Incorporate the latest established developments. Update changed states while retaining the historical events that explain them. Preserve unresolved contradictions and distinguish fact from belief, rumor, inference, and speculation.
-- USER CANON [ABSOLUTE]: Never invent or complete \`{{user}}\`'s actions, dialogue, thoughts, feelings, intentions, reactions, discoveries, decisions, or consent. Plans are not completed actions.
-- KNOWLEDGE LOCK [ABSOLUTE]: Preserve who knows, suspects, misunderstands, remembers, or remains unaware of each relevant fact. Narrator knowledge must not become character knowledge without a valid information path.
-- SEALED CONTINUITY [ABSOLUTE]: Preserve existing hidden-information restrictions using only the minimum opaque lock necessary. Never reveal sealed content directly or indirectly.
-- PROFILE LOCK [ABSOLUTE]: Preserve the established \`{{user}}\` character profile and distinguish fixed canon from temporary states, development, and user-authorized changes. Never silently rewrite the profile to match recent behavior.
-- CUMULATIVE TRANSFER [ABSOLUTE]: If previous Transfer Packs or continuity ledgers are available, reconcile them with the current chat. Carry forward significant events from earlier chats even when they are no longer in recent context. Never assume missing history was uneventful.
-- LAST RESPONSE [ABSOLUTE]: Copy the complete immediately preceding AI response into \`[LAST RESPONSE]\` verbatim. Never summarize, truncate, or reconstruct it. If unavailable in accessible context, state that it is unavailable.
-- The resulting package must be self-contained and ready to paste into a new chat.
-
-## NARRATIVE TRANSFER PACK
-\`\`\`Transfer Pack
-## TRANSFER METADATA
-- Transfer sequence / package version:
-- Previous Transfer Pack or ledger reference, if available:
-- Timeline coverage: earliest reliably preserved event → current scene.
-- Known history gaps or unresolved discrepancies, if relevant.
-
-## USER CHARACTER PROFILE LOCK
-[Preserve the established user-character profile needed to prevent drift: canonical name and identity, appearance, personality, voice and speech patterns, background, abilities, preferences, boundaries, important relationships, and other defining traits actually established in the story. Include only applicable details. Separate fixed canon from changeable states. Do not invent missing traits or turn temporary behavior into permanent characterization.]
-
-## CURRENT TIME, LOCATION & SCENE
-[Current in-universe time and timeline position; location; relevant characters' established positions; environment; active situation; current interaction; immediate circumstances and open responses. Include only relevant details.]
-
-## CURRENT CHARACTER & RELATIONSHIP STATES
-[Relevant characters' current conditions, motivations, intentions, limitations, relationship dynamics, trust, tension, commitments, and recent changes. Distinguish actual states from assumptions. Preserve unresolved user choices.]
-
-## WORLD, RESOURCES & ACTIVE PRESSURES
-[Relevant setting rules, locations, world conditions, possessions, resources, capabilities, obstacles, threats, social pressures, organizations, or faction states. Include only what affects continuity.]
-
-## KNOWLEDGE & SEALED CONTINUITY
-[Who knows, suspects, misunderstands, or remains unaware of important facts; relevant information sources; disputed claims; existing sealed-information restrictions and prerequisites. Do not reveal protected content.]
-
-## MICRO-CONTINUITY
-[Important established dialogue, nicknames, habits, preferences, promises, gifts, favors, recurring jokes, prior interactions, small discoveries, and details likely to matter again. Preserve who experienced or knows each detail.]
-
-## ACTIVE THREADS & PENDING COMMITMENTS
-[Ongoing goals, conflicts, investigations, promises, deadlines, planned events, unresolved mysteries, pending consequences, dependencies, and decisions awaiting \`{{user}}\`. Distinguish planned, attempted, ongoing, completed, failed, and unresolved.]
-
-## CUMULATIVE TRANSFER LEDGER [HARD_LOCK]
-[Maintain a compact, persistent record of significant events across the entire story and all previous transfers. Preserve stable Event IDs where possible.]
-
-For each continuity-critical event, retain only the fields needed:
-- Event ID / approximate in-universe time
-- Location and participants
-- Established event and causal context
-- Important decisions, discoveries, or changes
-- Who learned what, and how, when relevant
-- Persistent consequences and current status
-
-Ledger rules:
-- Merge previous ledgers with newly established events; do not replace older history with a summary of only the latest chat.
-- Preserve the original order of events and stable Event IDs. Add new IDs for new events.
-- Record meaningful changes as new events or state updates; never erase the event that caused a change.
-- Preserve important early-story events, defining interactions, irreversible decisions, major revelations, relationship turning points, and unresolved threads even after many transfers.
-- Compress repetitive scenes and obsolete intermediate states, but retain any information needed to understand current states or causal dependencies.
-- Distinguish confirmed canon from disputed, unverified, or sealed information.
-- If two records conflict, preserve the discrepancy until the conflict can be resolved from reliable context.
-- If an earlier Transfer Pack or chat history is unavailable, do not pretend to remember it. Preserve what is accessible and identify consequential gaps.
-- Do not include the entire conversation transcript here. Preserve a durable event ledger, not a verbatim chat archive.
-
-## PERSISTENT CONSEQUENCES & CONTINUITY WARNINGS
-[Irreversible or ongoing consequences; previous states that must not reset; uncertain outcomes; contradictions; missing information; causal dependencies; restrictions on knowledge; unresolved user actions; and details likely to drift across chats.]
-
-## CURRENT SCENE ANCHOR
-[The exact playable state at the end of the current AI response. Record established actions, positions, dialogue, revelations, ongoing events, and open interactions. Specify what has happened and what remains unresolved. Do not invent a user response.]
-
-## LAST VALID USER INPUT
-[The latest actual user input relevant to the current scene. Preserve its meaning without embellishment. If unavailable, mark it unavailable.]
-
----
-
-## NEW CHAT RESTORATION PROTOCOL [ABSOLUTE]
-\`\`\`Restoration Protocol
-${NEW_CHAT_RESTORATION_PROTOCOL_TEXT}
-\`\`\`
----
-
-## [LAST RESPONSE]
-[Copy the complete immediately preceding AI response verbatim, preserving wording, dialogue, formatting, and paragraph order. If unavailable in accessible context, explicitly state that it is unavailable.]
-
----
-
-## [USER RESPONSE]
-[Write your next action or dialogue here. This placeholder is not an established action.]
-
----
-
-> __**Hướng dẫn chuyển sinh:**__ Sử dụng chức năng copy dưới dạng markdown. Copy toàn bộ kết quả ở trên. Mở giao diện chat mới bằng cách ấn \`+ (new chat)\` ở góc trên bên tay phải, điền tiếp phản hồi của bạn dưới phần \`[USER RESPONSE]\` rồi gửi toàn bộ vào đoạn chat mới. Xóa dòng hướng dẫn này.`;
-
-export interface UnifiedPromptOptions {
+export interface MapSystemPromptOptions {
   jsDelivrEngineUrl: string;
   jsDelivrWorldUrl: string;
   overworldList: string;
   norsvaleList: string;
-  textCommandsMode: 'url-context' | 'markdown' | 'markdown-html' | 'engine';
   includeWorldLore?: boolean;
-  mapTemplateUrl?: string;
-  transferTemplateUrl?: string;
-  recapTemplateUrl?: string;
-  assetsUrls?: {
-    valeroth: string;
-    norsvale: string;
-  };
-  commandDocsUrls?: {
-    mapKaldor: string;
-    recap: string;
-    transfer: string;
-  };
 }
 
-export function buildUnifiedJsDelivrSystemPrompt({
+export function buildMapSystemPrompt({
   jsDelivrEngineUrl,
   jsDelivrWorldUrl,
   overworldList,
   norsvaleList,
-  textCommandsMode,
   includeWorldLore = false,
-  mapTemplateUrl,
-  transferTemplateUrl,
-  recapTemplateUrl,
-  assetsUrls,
-  commandDocsUrls,
-}: UnifiedPromptOptions): string {
-  if (textCommandsMode === 'url-context' && commandDocsUrls) {
-    return `# SECTION 5 | /map, /recap & /transfer COMMAND SYSTEM [HARD_LOCK]
+}: MapSystemPromptOptions): string {
+  const mapCommandBlock = `# SECTION 5 | LỆNH BẢN ĐỒ RP (/map) — KALDOR / VALEROTH [HARD_LOCK]
 
-* COMMAND PRIORITY [ABSOLUTE]: Activate only when the player sends a dedicated command message starting with \`/map\` (or \`/map valeroth\`, \`/map bắc ải\`), \`/recap\`, or \`/transfer\` — with or without the source URL attached in the same message (e.g., \`/transfer ${commandDocsUrls.transfer}\`). Immediately interrupt all ongoing storytelling and switch to command execution mode. Do not continue the scene, advance the plot, progress time, or autonomously determine any actions on behalf of \`{{user}}\`.
+* COMMAND PRIORITY [ABSOLUTE]: Chỉ kích hoạt khi người chơi gửi lệnh riêng \`/map\` (hoặc \`/map valeroth\`, \`/map bắc ải\`). Lập tức tạm dừng mạch kể — KHÔNG tiếp tục cảnh, KHÔNG tua thời gian, KHÔNG tự ý quyết định hành động thay \`{{user}}\`.
 
-* SOURCE RETRIEVAL [MANDATORY]: Retrieve and read the entire original content of the corresponding source file before execution. Prefer the URL provided directly in the user's message (required on platforms that restrict opening System-Prompt-only URLs); otherwise use the mapped source URL if accessible. Do not rely on memory, previously stored content, summaries, or assumptions in place of reading the source:
-  - \`/map\` (hoặc \`/map valeroth\`, \`/map bắc ải\`) → ${commandDocsUrls.mapKaldor}
-  - \`/recap\` → ${commandDocsUrls.recap}
-  - \`/transfer\` → ${commandDocsUrls.transfer}
-
-* EXECUTION FIDELITY [ABSOLUTE]: Execute all instructions in the corresponding source file completely and accurately. Preserve its exact requirements regarding content, structure, sequence, formatting, knowledge/spoiler locks (\`[HARD_LOCKED]\`), and output. Do not omit, add, reinterpret, or independently modify any part of the specified procedure. For \`/map\`, always load the two jsDelivr scripts \`${jsDelivrWorldUrl}\` and \`${jsDelivrEngineUrl}\`.
-
-* OUTPUT FORMAT [HARD_LOCK]:
-  - For \`/recap\` and \`/transfer\`: Output only the completed result directly in the response as plain text or Markdown. Strictly preserve the exact formatting and presentation required by the source template. Do not wrap the output in HTML or extra outer code blocks.
-  - For \`/map\`: Output ONLY a single complete, preview-ready \`\`\`html ... \`\`\` block (\`<!DOCTYPE html>\`) using the exact template in the source file.
-  - For ALL commands: Do not include introductions, explanations, procedural commentary, observations, or any content outside the scope of the command.
-
-* FAILURE HANDLING: If the source file cannot be accessed (e.g., the URL was not included in the user's message, the platform blocks System-Prompt URLs, or the repo is Private), do not fabricate its contents, generate a substitute template, or claim successful execution. Briefly state that the source file could not be accessed and ask the user to resend the command as a standalone message with its raw URL attached (e.g., \`/transfer ${commandDocsUrls.transfer}\`).
-
-* POST-EXECUTION: Stop immediately after presenting the completed output. Do not resume roleplay or introduce new story developments in the same response.`;
-  }
-
-  if (textCommandsMode === 'markdown-html') {
-    const resolvedMapUrl = mapTemplateUrl || commandDocsUrls?.mapKaldor || 'map-kaldor.txt';
-    const resolvedTransferUrl =
-      transferTemplateUrl || commandDocsUrls?.transfer || 'transfer_template.md';
-    const resolvedRecapUrl = recapTemplateUrl || commandDocsUrls?.recap || 'recap_template.md';
-
-    const commandBlock = `# SECTION 5 | HỆ THỐNG LỆNH RP 3 BƯỚC: GITHUB TEMPLATE → AI STUDIO → HTML [HARD_LOCK]
-
-* COMMAND PRIORITY [ABSOLUTE]: Chỉ kích hoạt khi người chơi gửi lệnh riêng \`/map\` (hoặc \`/map valeroth\`, \`/map bắc ải\`), \`/transfer\`, hoặc \`/recap\` (kèm hoặc không kèm URL trong tin nhắn). Lập tức tạm dừng mạch kể — KHÔNG tiếp tục cảnh, KHÔNG tua thời gian, KHÔNG tự ý hành động thay \`{{user}}\`.
-
-* NGUỒN TEMPLATE TĨNH TRÊN GITHUB (JSDELIVR) [MANDATORY]:
-  AI PHẢI đọc nguyên văn tệp template tương ứng từ URL trong tin nhắn người dùng (nếu có) hoặc từ link dưới đây (KHÔNG tự bịa cấu trúc hay nhớ mang máng), rồi phân tích toàn bộ diễn biến RP để điền đầy đủ dữ liệu thực tế:
-  - \`/map\` → ${resolvedMapUrl}
-  - \`/transfer\` → ${resolvedTransferUrl}
-  - \`/recap\` → ${resolvedRecapUrl}
-
-* ĐẦU RA HTML DUY NHẤT [HARD_LOCK] (chỉ xuất 1 khối \`\`\`html ... \`\`\` hoàn chỉnh rồi DỪNG NGAY):
-  1. **Với \`/map\`**: Làm đúng mọi quy tắc, mã địa điểm và khóa \`[HARD_LOCKED]\` trong \`map-kaldor.txt\`; dùng đúng 2 script \`${jsDelivrWorldUrl}\` và \`${jsDelivrEngineUrl}\`.
-  2. **Với \`/transfer\` & \`/recap\`**: Làm đúng mọi quy tắc và điền đủ các mục trong template tương ứng (\`transfer_template.md\` hoặc \`recap_template.md\`), bỏ phần mô tả rule đầu file, giữ nguyên phần nội dung Markdown đã điền (nhớ chép NGUYÊN VĂN 100% phản hồi AI liền trước vào \`[LAST RESPONSE]\` khi \`/transfer\`, đổi \`</script>\` thành \`<\\/script>\` nếu có), rồi đặt vào khung HTML gọn bên dưới để \`engine.js\` tự render giao diện & nút sao chép:
-
-\`\`\`html
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <style>html,body{margin:0;padding:8px;background:#EAE6DC;}</style>
-</head>
-<body>
-  <div id="rp-app" data-mode="transfer hoặc recap"></div>
-  <script type="text/markdown" id="rp-markdown">
-  <!-- DÁN TOÀN BỘ NỘI DUNG MARKDOWN ĐÃ ĐIỀN TỪ TEMPLATE GITHUB TẠI ĐÂY -->
-  </script>
-  <script src="${jsDelivrEngineUrl}"></script>
-</body>
-</html>
-\`\`\`
-
-* FAILURE HANDLING: Nếu nền tảng chặn truy cập URL đặt trong System Instructions (hoặc repo đang Private), KHÔNG tự bịa nội dung thay thế — báo ngắn gọn và nhắc người chơi gửi lệnh kèm link tương ứng (vd: \`/transfer ${resolvedTransferUrl}\`).`;
-
-    return includeWorldLore
-      ? `${VALEROTH_WORLD_AND_CHESSBOARD_PROMPT}\n\n====================================================================\n${commandBlock}`
-      : commandBlock;
-  }
-
-  const assetsSnippet = assetsUrls
-    ? `\n    assets: {\n      valeroth: "${assetsUrls.valeroth}",\n      norsvale: "${assetsUrls.norsvale}"\n    },`
-    : '';
-
-  const mapSection = `(1) BẢN ĐỒ RP (/map) — MODULAR GITHUB + JSDELIVR ENGINE [HARD_LOCK]
-* COMMAND PRIORITY [ABSOLUTE]: Khi người chơi gửi tin nhắn lệnh \`/map\` (hoặc \`/map valeroth\`, \`/map bắc ải\`), tạm dừng mạch kể (KHÔNG tự ý thúc đẩy sự kiện hay hành động mới của {{user}}), đọc đúng ĐOẠN HỘI THOẠI / DIỄN BIẾN HIỆN TẠI và xuất DUY NHẤT 1 khối mã \`\`\`html ... \`\`\` hoàn chỉnh (có thể chạy Preview HTML ngay) theo đúng khung bên dưới (KHÔNG tự viết lại CSS, SVG hay giao diện; AI không cần truy cập mạng vì trình duyệt của người chơi sẽ tự nạp 2 script jsDelivr):
+* ĐẦU RA HTML DUY NHẤT [HARD_LOCK]:
+  Khi nhận lệnh \`/map\`, đọc đúng diễn biến hội thoại hiện tại và xuất DUY NHẤT 1 khối mã \`\`\`html ... \`\`\` hoàn chỉnh (\`<!DOCTYPE html>\`, chạy Preview HTML ngay) theo đúng khung bên dưới — KHÔNG tự viết lại CSS/SVG/giao diện, KHÔNG xuất trường \`tags\` hay \`routes\`, KHÔNG viết thêm lời giải thích bên ngoài khối HTML:
 
 \`\`\`html
 <!DOCTYPE html>
@@ -404,7 +190,7 @@ export function buildUnifiedJsDelivrSystemPrompt({
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Valeroth · Bản Đồ RP</title>
-  <style>html,body{margin:0;padding:8px;background:#EAE6DC;}</style>
+  <style>html,body{margin:0;padding:8px;background:#EDEAE3;}</style>
 </head>
 <body>
   <div id="rp-app"></div>
@@ -415,12 +201,12 @@ export function buildUnifiedJsDelivrSystemPrompt({
     view: "valeroth hoặc norsvale",
     playerLoc: "mã_vị_trí_đứng_hiện_tại_theo_hội_thoại",
     chapter: "Mốc thời gian / bối cảnh hiện tại",
-    status: "Tóm tắt 1 câu vị trí đứng và tình huống hiện tại của {{user}} đúng theo hội thoại.",${assetsSnippet}
+    status: "Tóm tắt 1 câu vị trí đứng hiện tại của {{user}} đúng theo hội thoại.",
     npcs: [
       {
-        name: "Tên NPC",
+        name: "Tên NPC (có sẵn trong Section 4 HOẶC mới tạo trong hội thoại)",
         loc: "mã_địa_điểm_hiện_tại_của_NPC",
-        role: "Chức vụ công khai ngắn gọn",
+        role: "Chức vụ công khai ngắn gọn (2–5 từ, CẤM tiết lộ bí mật HARD_LOCKED)",
         status: "Còn sống"
       }
     ]
@@ -440,131 +226,17 @@ ${overworldList}
 ${norsvaleList}
 
 QUY TẮC BẮT BUỘC CHO /map:
-1. VỊ TRÍ NGƯỜI CHƠI THEO HỘI THOẠI [ABSOLUTE]: \`playerLoc\` PHẢI phản ánh chính xác nơi {{user}} đang đứng dựa trên đoạn hội thoại tại thời điểm gõ \`/map\`. Nếu {{user}} đang ở bên trong Bắc Ải và không yêu cầu xem toàn cảnh, đặt \`view: "norsvale"\`; ngược lại đặt \`view: "valeroth"\`.
-2. HIỂN THỊ NPC TRONG TỪNG VÙNG [HARD_LOCK — NGẮN GỌN, KHÔNG SPOIL]:
-   - Giao diện chỉ hiển thị NPC khi người chơi bấm vào từng vùng đất. Vùng chưa có NPC sẽ tự động hiện \`Chưa có dữ liệu\`.
-   - **CHỈ ĐIỀN NPC ĐÃ XUẤT HIỆN HOẶC ĐƯỢC NHẮC ĐẾN** trong mạch truyện (hỗ trợ cả NPC có sẵn lẫn NPC mới tạo). Nếu chưa có, để \`npcs: []\`.
-   - **ĐỊNH DẠNG BẮT BUỘC (KHÔNG VIẾT DÀI DÒNG)**: Mỗi NPC CHỈ gồm 4 trường: \`name\` (Tên NPC), \`loc\` (mã địa điểm), \`role\` (chức vụ công khai thật ngắn gọn), và \`status\` CHỈ ĐƯỢC phép là 1 trong 3 giá trị: \`"Còn sống"\` | \`"Đã chết"\` | \`"Mất tích"\`. Tuyệt đối không viết mô tả hành động dài dòng vào \`status\` hay \`role\`.
-   - **KNOWLEDGE & NAME LOCK**: Tuyệt đối không rò rỉ thông tin \`[HARD_LOCKED]\` vào \`name\` hay \`role\` (ví dụ: chỉ ghi \`"Rowan"\` chứ KHÔNG ghi \`"Rowan Valerius"\` nếu chưa lộ thân phận; Silas Venn / Maelle Voss chỉ hiện vỏ bọc người hầu nếu chưa bị phát hiện; không lộ bí mật Giáo Hoàng, Cedric, Elmira...).
-3. KHÔNG sinh mảng \`tags\` và KHÔNG vẽ tuyến đường. Giữ nguyên \`world: "kaldor-valeroth"\` cùng 2 thẻ \`<script>\` trỏ về jsDelivr.
-4. POST-EXECUTION: Dừng ngay sau khi xuất xong khối \`\`\`html ... \`\`\`, không viết lời mở đầu hay tiếp tục mạch truyện.`;
+1. VỊ TRÍ NGƯỜI CHƠI & LỚP BẢN ĐỒ [ABSOLUTE]:
+   - \`playerLoc\` PHẢI phản ánh chính xác nơi \`{{user}}\` đang đứng tại thời điểm gõ \`/map\`.
+   - Nếu gõ \`/map valeroth\` → đặt \`view: "valeroth"\`. Nếu gõ \`/map bắc ải\` → đặt \`view: "norsvale"\`. Nếu chỉ gõ \`/map\` → tự chọn \`view: "norsvale"\` khi \`{{user}}\` đang ở trong Thành Bắc Ải, ngược lại chọn \`view: "valeroth"\`.
+   - Lưu ý: Hai cổng (\`"loc-nors-northgate"\` và \`"loc-nors-southgate"\`) chỉ hiện tên và ghim vị trí \`playerLoc\`, không bấm xem thẻ chi tiết được; với NPC đang ở Thành Bắc Ải, ưu tiên gán \`loc\` vào các khu vực bấm được gần nhất.
+2. HIỂN THỊ NPC [HARD_LOCK — KHÔNG SPOIL — NGẮN GỌN]:
+   - Mảng \`npcs\` hỗ trợ cả NPC có sẵn lẫn NPC mới xuất hiện trong hội thoại, **CHỈ đưa vào khi đã được nhắc đến hoặc chạm trán trong hội thoại** (nếu chưa có, đặt \`npcs: []\`).
+   - Mỗi NPC CHỈ gồm đúng 4 trường: \`name\`, \`loc\`, \`role\` (chức vụ công khai ngắn gọn 2–5 từ), \`status\` (CHỈ dùng 1 trong 3 giá trị: \`"Còn sống"\`, \`"Đã chết"\`, hoặc \`"Mất tích"\`).
+   - **KNOWLEDGE & NAME LOCK**: Tuyệt đối không rò rỉ thông tin \`[HARD_LOCKED]\` vào \`name\` hay \`role\` (ví dụ: chỉ ghi \`"Rowan"\` nếu chưa lộ thân phận; Silas Venn / Maelle Voss chỉ ghi vỏ bọc người hầu nếu chưa lộ).
+3. Dừng ngay sau khi xuất khối HTML. Không tiếp tục mạch truyện trong cùng phản hồi.`;
 
-  if (textCommandsMode === 'markdown') {
-    const commandBlock = `# SECTION 5 | HỆ THỐNG LỆNH RP HỢP NHẤT (/map · /recap · /transfer) [HARD_LOCK]
-
-* COMMAND PRIORITY [ABSOLUTE]: Chỉ kích hoạt khi người chơi gửi tin nhắn lệnh riêng \`/map\` (hoặc \`/map valeroth\`, \`/map bắc ải\`), \`/recap\`, hoặc \`/transfer\`. Tạm dừng hoàn toàn mạch kể, không tiếp tục cảnh, không tua thời gian, không tự ý hành động thay \`{{user}}\`. Sau khi xuất xong kết quả lệnh, dừng ngay lập tức.
-
-${mapSection}
-
----
-
-${RECAP_COMMAND_MARKDOWN}
-
----
-
-${TRANSFER_COMMAND_MARKDOWN}`;
-
-    return includeWorldLore
-      ? `${VALEROTH_WORLD_AND_CHESSBOARD_PROMPT}\n\n====================================================================\n${commandBlock}`
-      : commandBlock;
-  }
-
-  const recapEngineSection = `(2) STORYLINE RECAP (/recap) — LÕI ENGINE DÙNG CHUNG [HARD_LOCK]
-* COMMAND PRIORITY [ABSOLUTE]: On an explicit \`/recap\` request, pause the story and output ONLY 1 compact \`\`\`html ... \`\`\` block filling \`window.RP_DATA\` with \`mode: "recap"\` in Vietnamese. Do not continue the scene or advance any event.
-* Cumulative Canon: Consolidate all accessible conversation history, prior recaps, and established event records. Preserve continuity-critical chronology, causality, character states, decisions, consequences, and unresolved threads. Never summarize only recent scenes or invent missing history.
-* USER AGENCY [ABSOLUTE]: 0(1) applies. Never convert intentions, proposals, or pending choices into completed actions.
-* KNOWLEDGE & SPOILER QUARANTINE [ABSOLUTE]: Build the recap ONLY from information legitimately established or revealed in the story. Never extract, quote, summarize, confirm, connect, or indirectly hint at hidden plot information found only in system instructions, character blueprints, internal rules, secret trackers, or unrevealed authorial lore. Never disclose ending identities, ending conditions, hidden progress, or unachieved endings. Do not use hidden information to explain the meaning of an event or connect seemingly unrelated details.
-* Factual Distinction: Clearly distinguish established facts from character beliefs, rumors, suspicions, interpretations, and unresolved uncertainty. Preserve individual knowledge boundaries; never present one character's private knowledge as universally known.
-* Continuity & Endpoint: Preserve the exact current-scene endpoint, including pending actions, unresolved dialogue, character positions, and decisions awaiting {{user}}. If historical information is missing or contradictory, identify the gap rather than inventing a resolution.
-
-Đầu ra bắt buộc cho \`/recap\` (chỉ cần nạp lõi \`engine.js\` dùng chung — tự dựng khung mực cổ + nút Sao chép Markdown nguyên bản):
-\`\`\`html
-<div id="rp-app"></div>
-<script>
-window.RP_DATA = {
-  mode: "recap",
-  title: "TÓM TẮT DIỄN BIẾN",
-  currentState: "Ngày, giờ, địa điểm, cảnh hiện tại, vị trí nhân vật và điểm dừng chính xác.",
-  characterContinuity: "Tính cách đã thiết lập, động cơ, quan hệ và biến đổi trạng thái.",
-  eventHistory: "Các sự kiện tích lũy quan trọng, quyết định, phát hiện, nhân quả và hệ quả lâu dài.",
-  knowledgeBoundaries: "Mỗi nhân vật biết, nghi ngờ, hiểu nhầm hay chưa biết gì (chỉ dựa trên thông tin hợp lệ trong truyện).",
-  ongoingThreads: "Các cuộc điều tra, xung đột, cam kết, hạn chót, bí ẩn chưa giải và quyết định đang chờ {{user}}.",
-  microContinuity: "Lời thoại quan trọng, thói quen, quà tặng, lời hứa, vật phẩm và chi tiết lặp lại.",
-  continuityWarnings: "Thay đổi không thể đảo ngược, mâu thuẫn chưa giải, khoảng trống lịch sử và diễn biến đang treo."
-};
-</script>
-<script src="${jsDelivrEngineUrl}"></script>
-\`\`\``;
-
-  const transferEngineSection = `(3) NARRATIVE TRANSFER PACK (/transfer) — LÕI ENGINE DÙNG CHUNG [HARD_LOCK]
-This is a direct execution command. On \`/transfer\`, immediately interrupt normal storytelling and output ONLY 1 compact \`\`\`html ... \`\`\` block with \`mode: "transfer"\`. Do not explain the process, continue the story, advance time, or create new events.
-
-EXECUTION RULES [HARD_LOCK]:
-- STATE FIDELITY: Preserve exact playable state, chronology, causality, character/relationship states, locations, knowledge boundaries, user profile, resources, world conditions, consequences, micro-continuity, commitments, and unresolved threads. Compress repetition, never continuity-critical information.
-- ADAPTIVE FIELDS: Include established, relevant information. Omit genuinely irrelevant keys (or leave empty string) instead of inventing details. Mark uncertainty only when it matters.
-- RECONCILIATION: Incorporate latest established developments, keep historical events that explain changes, preserve unresolved contradictions, distinguish fact from belief/rumor/inference/speculation.
-- USER CANON [ABSOLUTE]: Never invent or complete \`{{user}}\`'s actions, dialogue, thoughts, feelings, intentions, reactions, discoveries, decisions, or consent. Plans are not completed actions.
-- KNOWLEDGE LOCK [ABSOLUTE]: Preserve who knows, suspects, misunderstands, remembers, or remains unaware of each relevant fact. Narrator knowledge must not become character knowledge without a valid information path.
-- SEALED CONTINUITY [ABSOLUTE]: Preserve existing hidden-information restrictions using only minimum opaque lock. Never reveal sealed content directly or indirectly.
-- PROFILE LOCK [ABSOLUTE]: Preserve established \`{{user}}\` character profile; separate fixed canon from temporary states. Never silently rewrite profile.
-- CUMULATIVE TRANSFER [ABSOLUTE]: Reconcile previous Transfer Packs / continuity ledgers with current chat; carry forward significant earlier events with stable Event IDs; never erase causal origin events.
-- LAST RESPONSE [ABSOLUTE]: Copy the complete immediately preceding AI response into \`lastResponse\` VERBATIM (preserving wording, dialogue, formatting, paragraph order). Never summarize, truncate, or reconstruct it. If unavailable, state that it is unavailable.
-- NOTE: Lõi \`engine.js\` đã nhúng sẵn \`NEW CHAT RESTORATION PROTOCOL [ABSOLUTE]\`, \`[USER RESPONSE]\` và nút 1-bấm Sao chép toàn bộ Markdown Transfer Pack để dán sang \`+ (new chat)\`, nên AI KHÔNG cần viết lại phần khuôn tĩnh đó.
-
-Đầu ra bắt buộc cho \`/transfer\` (chỉ cần nạp lõi \`engine.js\` dùng chung):
-\`\`\`html
-<div id="rp-app"></div>
-<script>
-window.RP_DATA = {
-  mode: "transfer",
-  metadata: {
-    sequence: "Transfer #1 / v1",
-    previousRef: "Không có (phiên đầu tiên) hoặc mã Transfer trước",
-    timelineCoverage: "Sự kiện đầu tiên → cảnh hiện tại",
-    gaps: "Khoảng trống hoặc mâu thuẫn chưa giải (nếu có)"
-  },
-  userProfileLock: "Hồ sơ cố định của {{user}} tách biệt với trạng thái tạm thời...",
-  currentScene: "Thời gian, địa điểm, vị trí từng nhân vật, bối cảnh, tình huống đang mở...",
-  characterStates: "Trạng thái, động cơ, quan hệ, mức tin cậy, lựa chọn đang chờ...",
-  worldPressures: "Quy tắc thế giới, tài nguyên, vật phẩm, mối đe dọa, thế lực...",
-  knowledgeSealed: "Ai biết/nghi ngờ/hiểu nhầm/chưa biết gì; giới hạn thông tin niêm phong...",
-  microContinuity: "Lời thoại, biệt danh, thói quen, lời hứa, quà tặng, chi tiết nhỏ...",
-  activeThreads: "Mục tiêu, xung đột, hạn chót, phân rõ planned/ongoing/completed/failed/unresolved...",
-  cumulativeLedger: [
-    {
-      id: "EV-01",
-      time: "Mốc thời gian ước lượng",
-      whereWho: "Địa điểm & nhân vật tham gia",
-      event: "Sự kiện đã xác lập & bối cảnh nhân quả",
-      changes: "Quyết định, phát hiện hoặc thay đổi quan trọng",
-      knowledge: "Ai biết điều gì và bằng cách nào",
-      consequences: "Hệ quả kéo dài & trạng thái hiện tại"
-    }
-  ],
-  persistentWarnings: "Hệ quả không thể đảo ngược, trạng thái cấm reset, cảnh báo drift...",
-  sceneAnchor: "Điểm neo chính xác tại cuối lượt AI gần nhất, chưa có phản hồi của {{user}}...",
-  lastUserInput: "Đầu vào hợp lệ gần nhất của {{user}}...",
-  lastResponse: "DÁN NGUYÊN VĂN 100% PHẢN HỒI AI LIỀN TRƯỚC TẠI ĐÂY (KHÔNG TÓM TẮT)."
-};
-</script>
-<script src="${jsDelivrEngineUrl}"></script>
-\`\`\``;
-
-  return `${VALEROTH_WORLD_AND_CHESSBOARD_PROMPT}
-
-====================================================================
-# SECTION 5 | HỆ THỐNG LỆNH RP MODULAR — 1 GITHUB REPO · 1 @SHA
-====================================================================
-- Lõi dùng chung mọi nhân vật (/recap, /transfer, bộ vẽ bản đồ): \`${jsDelivrEngineUrl}\`
-- Gói bản đồ riêng của bot Kaldor (/map): \`${jsDelivrWorldUrl}\`
-
-${mapSection}
-
----
-
-${recapEngineSection}
-
----
-
-${transferEngineSection}`;
+  return includeWorldLore
+    ? `${VALEROTH_WORLD_AND_CHESSBOARD_PROMPT}\n\n${mapCommandBlock}`
+    : mapCommandBlock;
 }

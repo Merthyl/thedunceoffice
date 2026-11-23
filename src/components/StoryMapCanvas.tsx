@@ -21,8 +21,8 @@ interface StoryMapCanvasProps {
 }
 
 const MAP_ARTWORK_BY_SCOPE: Record<MapScope, string> = {
-  valeroth: '/src/assets/images/valeroth_v10_1795365600000.jpg',
-  norsvale: '/src/assets/images/norsvale_v14_1795367887097.jpg',
+  valeroth: '/src/assets/images/valeroth_master_v40_1795441016467.jpg',
+  norsvale: '/src/assets/images/norsvale_ink_v20_1795432498475.jpg',
 };
 
 const INK = '#111111';
@@ -120,11 +120,13 @@ export default function StoryMapCanvas({
   };
 
   const handleLocationClick = (e: React.MouseEvent, loc: StoryLocation) => {
+    if (loc.labelOnly) return;
     e.stopPropagation();
     onSelectLocation(loc.id);
   };
 
   const handleLocationDoubleClick = (e: React.MouseEvent, loc: StoryLocation) => {
+    if (loc.labelOnly) return;
     e.stopPropagation();
     if (activeScope === 'valeroth' && loc.id === 'loc-norsvale' && onEnterNorsvale) {
       onEnterNorsvale();
@@ -151,7 +153,7 @@ export default function StoryMapCanvas({
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
       onPointerLeave={handlePointerUp}
-      className={`relative h-full w-full overflow-hidden select-none bg-[#EAE6DC] ${
+      className={`relative h-full w-full overflow-hidden select-none bg-[#EDEAE3] ${
         isPanning ? 'cursor-grabbing' : 'cursor-grab'
       }`}
     >
@@ -173,11 +175,11 @@ export default function StoryMapCanvas({
               referrerPolicy="no-referrer"
               draggable={false}
               onError={() => setImgError(true)}
-              className="pointer-events-none absolute inset-0 h-full w-full object-cover"
+              className="pointer-events-none absolute inset-0 h-full w-full object-cover saturate-[0.62] brightness-[1.03] contrast-[1.01]"
             />
           )}
 
-          {/* Interactive Territorial Zones, Routes, Location Pin & Engraved Scroll Labels */}
+          {/* Interactive Territorial Zones, Location Pin & Engraved Scroll Labels */}
           <svg
             data-story-map="true"
             viewBox={`0 0 ${MAP_WIDTH} ${MAP_HEIGHT}`}
@@ -211,17 +213,6 @@ export default function StoryMapCanvas({
                 <circle cx="2.5" cy="2.5" r="0.85" fill={INK} opacity="0.14" />
                 <circle cx="7.5" cy="7.5" r="0.7" fill={INK} opacity="0.1" />
               </pattern>
-              <marker
-                id="ink-arrow-active"
-                viewBox="0 0 10 10"
-                refX="8"
-                refY="5"
-                markerWidth="5"
-                markerHeight="5"
-                orient="auto-start-reverse"
-              >
-                <path d="M 0 1.5 L 8.5 5 L 0 8.5 z" fill={WAX_CRIMSON} />
-              </marker>
             </defs>
 
             {/* 1. TERRITORIAL DEMARCATION LAYER (KHOANH VÙNG) */}
@@ -292,8 +283,9 @@ export default function StoryMapCanvas({
 
             {/* 2. ENGRAVED VICTORIAN SCROLL BANNERS & USER LOCATION PIN ONLY */}
             {scopedLocations.map((loc) => {
-              const isSelected = selectedLocationId === loc.id;
-              const isHovered = hoveredLocationId === loc.id;
+              const isLabelOnly = Boolean(loc.labelOnly);
+              const isSelected = !isLabelOnly && selectedLocationId === loc.id;
+              const isHovered = !isLabelOnly && hoveredLocationId === loc.id;
               const isHighlighted = highlightedLocationIds.includes(loc.id);
               const isPlayerHere = playerDisplayLoc?.id === loc.id;
 
@@ -303,24 +295,18 @@ export default function StoryMapCanvas({
               return (
                 <g
                   key={loc.id}
-                  data-map-interactive="true"
+                  data-map-interactive={isLabelOnly ? undefined : 'true'}
                   transform={`translate(${loc.x}, ${loc.y})`}
-                  onMouseEnter={() => setHoveredLocationId(loc.id)}
-                  onMouseLeave={() => setHoveredLocationId((cur) => (cur === loc.id ? null : cur))}
-                  onClick={(e) => handleLocationClick(e, loc)}
-                  onDoubleClick={(e) => handleLocationDoubleClick(e, loc)}
-                  className="cursor-pointer"
+                  onMouseEnter={isLabelOnly ? undefined : () => setHoveredLocationId(loc.id)}
+                  onMouseLeave={
+                    isLabelOnly
+                      ? undefined
+                      : () => setHoveredLocationId((cur) => (cur === loc.id ? null : cur))
+                  }
+                  onClick={isLabelOnly ? undefined : (e) => handleLocationClick(e, loc)}
+                  onDoubleClick={isLabelOnly ? undefined : (e) => handleLocationDoubleClick(e, loc)}
+                  className={isLabelOnly ? 'pointer-events-none' : 'cursor-pointer'}
                 >
-                  {/* Custom added locations without zonePath get a crisp ink diamond pin */}
-                  {!loc.zonePath && (
-                    <polygon
-                      points="0,-16 7,-9 0,-2 -7,-9"
-                      fill={isPlayerHere ? WAX_CRIMSON : INK}
-                      stroke={PAPER}
-                      strokeWidth="1.5"
-                    />
-                  )}
-
                   {/* Folded Black-Ink Victorian Scroll Ribbon */}
                   <g transform="translate(0, 6)">
                     {/* Swallowtail ribbon folds */}
@@ -473,7 +459,7 @@ export default function StoryMapCanvas({
               );
             })}
 
-            {/* 4. ORNATE DOUBLE-RULED ANTIQUE BOOK-PLATE FRAME */}
+            {/* 3. ORNATE DOUBLE-RULED ANTIQUE BOOK-PLATE FRAME */}
             <rect
               x="7"
               y="7"
@@ -495,7 +481,7 @@ export default function StoryMapCanvas({
               className="pointer-events-none"
             />
 
-            {/* 5. ENGRAVED TITLE PLATE */}
+            {/* 4. ENGRAVED TITLE PLATE */}
             <g transform="translate(26, 24)" className="pointer-events-none">
               <rect x="2" y="2" width={titlePlateWidth} height="36" fill={INK} opacity="0.16" />
               <rect

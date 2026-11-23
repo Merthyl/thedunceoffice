@@ -1,10 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import {
-  RECAP_COMMAND_MARKDOWN,
-  TRANSFER_COMMAND_MARKDOWN,
-  VALEROTH_WORLD_AND_CHESSBOARD_PROMPT,
-} from '../data/rpCommands.ts';
+import { VALEROTH_WORLD_AND_CHESSBOARD_PROMPT } from '../data/rpCommands.ts';
 
 interface ZipEntry {
   name: string;
@@ -106,47 +102,35 @@ function readFirstExisting(paths: string[]): Buffer {
   throw new Error(`Không tìm thấy tệp nguồn: ${paths[0]}`);
 }
 
-const README_CONTENT = `# DUNCE RP ENGINE — Modular Multi-Character Kit (GitHub + jsDelivr + Google AI Studio)
+const README_CONTENT = `# VALEROTH MAP ENGINE — Modular Multi-World Kit (GitHub + jsDelivr)
 
-Kho mã nguồn **tách lõi dùng chung & gói bản đồ từng nhân vật** trên **1 kho GitHub duy nhất** và **1 mã \`@COMMIT_SHA\`**:
-- Mọi nhân vật/bot đều dùng chung \`engine.js\` cho \`/recap\`, \`/transfer\` và các lệnh mới về sau.
+Kho mã nguồn **tách lõi vẽ bản đồ dùng chung & gói bản đồ từng thế giới** trên **1 kho GitHub duy nhất** và **1 mã \`@COMMIT_SHA\`**:
+- Mọi nhân vật/thế giới đều dùng chung \`engine.js\` cho lệnh \`/map\`.
 - Mỗi nhân vật/thế giới có file \`worlds/<ten-bot>.js\` riêng — **tuyệt đối không lẫn bản đồ của Kaldor sang nhân vật khác**.
 
 ## Cấu trúc thư mục
 \`\`\`text
-├── engine.js                         ← Lõi dùng chung mọi bot (/recap, /transfer, bộ vẽ /map, API mở rộng registerMode)
+├── engine.js                         ← Lõi vẽ bản đồ tương tác dùng chung (/map + API mở rộng registerMode)
 ├── worlds/
 │   ├── kaldor-valeroth.js            ← Gói bản đồ riêng của Kaldor (Valeroth 7 vùng & Bắc Ải 10 khu vực)
 │   └── _template.js                  ← Mẫu trống để copy tạo thêm nhân vật / thế giới mới
 ├── assets/
 │   └── kaldor/
 │       ├── valeroth.jpg              ← Họa đồ toàn cảnh Valeroth
-│       └── norsvale.jpg              ← Họa đồ bên trong Bắc Ải
-├── transfer_template.md              ← Template tĩnh nguyên văn cho lệnh /transfer (AI Studio đọc từ jsDelivr)
+│       └── norsvale.jpg              ← Họa đồ bên trong Thành Bắc Ải
+├── map-kaldor.txt                    ← Đặc tả chuẩn lệnh /map của Kaldor
 ├── commands/
-│   ├── world-and-chessboard.md       ← Section 3 & Section 4 của Kaldor
-│   ├── recap.md                      ← Đặc tả chuẩn lệnh /recap (dùng chung)
-│   └── transfer.md                   ← Đặc tả chuẩn lệnh /transfer (dùng chung)
+│   ├── map-kaldor.md                 ← Đặc tả chuẩn lệnh /map của Kaldor
+│   └── world-and-chessboard.md       ← Section 3 & Section 4 của Kaldor
 ├── index.html                        ← Bản đồ độc lập của Kaldor
 └── README.md
 \`\`\`
 
-## Cách đẩy lên GitHub & gắn vào Google AI Studio (KHÔNG cần API Key)
-1. Tạo 1 repository **Public** trên GitHub (ví dụ \`dunce-rp-kit\`) và đẩy toàn bộ thư mục này lên (giữ nguyên cấu trúc \`worlds/\`, \`assets/kaldor/\`, \`commands/\`, \`transfer_template.md\`).
-   - **Không cần API key hay token**: chỉ cần repo ở chế độ **Public** là jsDelivr tự phân phối miễn phí.
+## Cách đẩy lên GitHub & gắn vào System Instructions (KHÔNG cần API Key)
+1. Tạo 1 repository **Public** trên GitHub (ví dụ \`thedunceoffice\`) và đẩy toàn bộ thư mục này lên (giữ nguyên cấu trúc \`worlds/\`, \`assets/kaldor/\`, \`commands/\`).
 2. Vào mục **Commits** trên GitHub → sao chép mã **Commit SHA** (ví dụ \`a1b2c3d\`).
-   - Khi nâng cấp \`engine.js\` hay thêm nhân vật mới, chỉ cần đổi \`@SHA\` mới vào System Instructions là jsDelivr tải ngay bản mới, không bị dính cache cũ.
-3. Trong **Google AI Studio**:
-   - **Luồng \`/transfer\` Template Markdown → HTML**:
-     - **GitHub**: Chỉ lưu nguyên văn file \`transfer_template.md\` tĩnh.
-     - **Google AI Studio**: Đọc \`transfer_template.md\` qua jsDelivr, phân tích toàn bộ diễn biến RP, điền các trường đã cập nhật rồi xuất 1 khối \`\`\`html ... \`\`\` đặt Markdown vào \`<script type="text/markdown" id="rp-markdown">...</script>\`.
-     - **HTML (\`engine.js\`)**: Nhận Markdown đã xử lý và render thành giao diện + nút sao chép sang \`+ (new chat)\`.
-   - **Lệnh \`/recap\`**: Tương tự, có thể in Markdown trực tiếp hoặc đặt vào \`<script type="text/markdown" id="rp-markdown">\` với \`data-mode="recap"\`.
-   - **Lệnh \`/map\` của Kaldor**: Xuất 1 đoạn HTML gọn gọi 2 link \`...@SHA/worlds/kaldor-valeroth.js\` và \`...@SHA/engine.js\`.
-   - **Bot nhân vật khác (có bản đồ riêng)**: Copy \`worlds/_template.js\` → \`worlds/<ten-bot>.js\`, thêm ảnh vào \`assets/<ten-bot>/\`, rồi gắn \`worlds/<ten-bot>.js\` + \`engine.js\` (tuyệt đối không lẫn sang bản đồ của Kaldor).
-
-## Mở rộng thêm lệnh mới (/status, /inventory, /relationship...)
-Tạo thêm tệp \`modes/<ten-lenh>.js\` gọi \`window.RPEngine.registerMode('ten_lenh', function(container, data) { ... })\` hoặc bổ sung trực tiếp vào \`engine.js\`, commit và đổi \`@SHA\`.
+3. Trong System Instructions của bot, khi nhận lệnh \`/map\`, xuất 1 khối HTML gọn gọi 2 link \`...@SHA/worlds/kaldor-valeroth.js\` và \`...@SHA/engine.js\`.
+4. **Bot nhân vật khác (có bản đồ riêng)**: Copy \`worlds/_template.js\` → \`worlds/<ten-bot>.js\`, thêm ảnh vào \`assets/<ten-bot>/\`, rồi gắn \`worlds/<ten-bot>.js\` + \`engine.js\`.
 `;
 
 export function buildGithubKitZip(rootDir: string): Buffer {
@@ -167,12 +151,12 @@ export function buildGithubKitZip(rootDir: string): Buffer {
     path.resolve(rootDir, 'dist/github-kit/index.html'),
   ]);
   const valerothJpg = readFirstExisting([
-    path.resolve(rootDir, 'src/assets/images/valeroth_v10_1795365600000.jpg'),
-    path.resolve(rootDir, 'dist/src/assets/images/valeroth_v10_1795365600000.jpg'),
+    path.resolve(rootDir, 'src/assets/images/valeroth_master_v40_1795441016467.jpg'),
+    path.resolve(rootDir, 'dist/src/assets/images/valeroth_master_v40_1795441016467.jpg'),
   ]);
   const norsvaleJpg = readFirstExisting([
-    path.resolve(rootDir, 'src/assets/images/norsvale_v13_1795365600000.jpg'),
-    path.resolve(rootDir, 'dist/src/assets/images/norsvale_v13_1795365600000.jpg'),
+    path.resolve(rootDir, 'src/assets/images/norsvale_ink_v20_1795432498475.jpg'),
+    path.resolve(rootDir, 'dist/src/assets/images/norsvale_ink_v20_1795432498475.jpg'),
   ]);
 
   const mapKaldorMd = readFirstExisting([
@@ -183,33 +167,21 @@ export function buildGithubKitZip(rootDir: string): Buffer {
     path.resolve(rootDir, 'map-kaldor.txt'),
     path.resolve(rootDir, 'public/github-kit/commands/map-kaldor.md'),
   ]);
-  const transferTemplateMd = readFirstExisting([
-    path.resolve(rootDir, 'transfer_template.md'),
-    path.resolve(rootDir, 'public/github-kit/transfer_template.md'),
-    path.resolve(rootDir, 'dist/github-kit/transfer_template.md'),
-  ]);
-  const recapTemplateMd = readFirstExisting([
-    path.resolve(rootDir, 'recap_template.md'),
-    path.resolve(rootDir, 'public/github-kit/recap_template.md'),
-    path.resolve(rootDir, 'dist/github-kit/recap_template.md'),
-  ]);
 
   return createZipBuffer([
     { name: 'engine.js', data: engineJs },
     { name: 'worlds/kaldor-valeroth.js', data: kaldorWorldJs },
     { name: 'worlds/_template.js', data: templateWorldJs },
     { name: 'index.html', data: indexHtml },
-    { name: 'transfer_template.md', data: transferTemplateMd },
-    { name: 'recap_template.md', data: recapTemplateMd },
     { name: 'map-kaldor.txt', data: mapKaldorTxt },
-    { name: 'transfer.txt', data: Buffer.from(TRANSFER_COMMAND_MARKDOWN, 'utf8') },
-    { name: 'recap.txt', data: Buffer.from(RECAP_COMMAND_MARKDOWN, 'utf8') },
     { name: 'commands/map-kaldor.md', data: mapKaldorMd },
-    { name: 'commands/world-and-chessboard.md', data: Buffer.from(VALEROTH_WORLD_AND_CHESSBOARD_PROMPT, 'utf8') },
-    { name: 'commands/recap.md', data: Buffer.from(RECAP_COMMAND_MARKDOWN, 'utf8') },
-    { name: 'commands/transfer.md', data: Buffer.from(TRANSFER_COMMAND_MARKDOWN, 'utf8') },
+    {
+      name: 'commands/world-and-chessboard.md',
+      data: Buffer.from(VALEROTH_WORLD_AND_CHESSBOARD_PROMPT, 'utf8'),
+    },
     { name: 'README.md', data: Buffer.from(README_CONTENT, 'utf8') },
     { name: 'assets/kaldor/valeroth.jpg', data: valerothJpg },
     { name: 'assets/kaldor/norsvale.jpg', data: norsvaleJpg },
   ]);
 }
+

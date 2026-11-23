@@ -1,14 +1,11 @@
 /**
- * RP UNIFIED CORE ENGINE — Character-Agnostic Core for GitHub + jsDelivr + Google AI Studio
- * Version: 3.0.0 (Modular Multi-Character Architecture)
+ * RP UNIFIED MAP CORE ENGINE — Character-Agnostic Core for GitHub + jsDelivr
+ * Version: 3.1.0 (Modular Multi-World Map Architecture)
  *
  * This file contains ZERO character-specific map data.
- *   - Shared modes (work for ALL characters/bots):
- *       mode: "recap"    -> Storyline Recap [HARD_LOCK] dossier + 1-click Copy Markdown
- *       mode: "transfer" -> Narrative Transfer Pack [HARD_LOCK] + Restoration Protocol + 1-click Copy New Chat
- *   - World-specific mode:
- *       mode: "map"      -> Renders ONLY the world registered via worlds/<character>.js matching RP_DATA.world.
- *                           Never falls back to another character's map.
+ *   - Built-in mode:
+ *       mode: "map" -> Renders ONLY the world registered via worlds/<character>.js matching RP_DATA.world.
+ *                      Never falls back to another character's map.
  *   - Extensibility:
  *       window.RPEngine.registerWorld(worldDef)
  *       window.RPEngine.registerMode(modeName, renderFn)
@@ -16,9 +13,9 @@
 (function (global) {
   'use strict';
 
-  var INK = '#33281E';
-  var INK_SOFT = '#5A4B3C';
-  var PAPER = '#F6EEDB';
+  var INK = '#2A231C';
+  var INK_SOFT = '#52483D';
+  var PAPER = '#F8F5EE';
   var CRIMSON = '#8B1E1E';
 
   var CURRENT_SCRIPT = document.currentScript;
@@ -70,17 +67,15 @@
       var style = document.createElement('style');
       style.id = 'rp-engine-css';
       style.textContent = [
-        '.vm-root{font-family:"Spectral",Georgia,serif;color:#111111;background:#EAE6DC;border:1px solid #111111;max-width:1200px;margin:0 auto;box-shadow:4px 4px 0 rgba(17,17,17,.16);user-select:none}',
-        '.vm-bar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;padding:8px 12px;background:#F2EFE8;border-bottom:1px solid #111111}',
+        '.vm-root{font-family:"Spectral",Georgia,serif;color:#111111;background:#EDEAE3;border:1px solid #111111;max-width:1200px;margin:0 auto;box-shadow:4px 4px 0 rgba(17,17,17,.16);user-select:none}',
+        '.vm-bar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;padding:8px 12px;background:#F3F0E9;border-bottom:1px solid #111111}',
         '.vm-tabs{display:inline-flex;border:1px solid #111111;background:#FAF8F4;padding:2px;gap:2px}',
         '.vm-btn{font-family:"Spectral",Georgia,serif;font-size:12px;font-weight:600;border:none;background:transparent;color:#111111;padding:4px 10px;cursor:pointer;display:inline-flex;align-items:center;gap:5px}',
         '.vm-btn:hover{background:#E7E3DA}',
         '.vm-btn.is-active{background:#111111;color:#FAF8F4}',
         '.vm-btn-outline{border:1px solid rgba(17,17,17,.45);background:#FAF8F4}',
-        '.vm-btn-crimson{border:1px solid #8B1E1E;color:#8B1E1E;background:#FAF8F4}',
-        '.vm-btn-crimson:hover{background:#8B1E1E;color:#FAF8F4}',
-        '.vm-stage{position:relative;width:100%;background:#FAF8F4;overflow:hidden}',
-        '.vm-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none}',
+        '.vm-stage{position:relative;width:100%;background:#F8F5EE;overflow:hidden}',
+        '.vm-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none;filter:saturate(0.62) brightness(1.03) contrast(1.01)}',
         '.vm-svg{position:relative;z-index:2;width:100%;height:100%;display:block}',
         '.vm-zone{cursor:pointer}',
         '.vm-zone:hover .vm-zone-fill{fill:rgba(17,17,17,.08)}',
@@ -99,76 +94,17 @@
         '.vm-npc-callout.is-missing{border-left-color:#6B665D}',
         '.vm-npc-head{display:flex;flex-wrap:wrap;align-items:center;gap:6px;line-height:1.35}',
         '.vm-npc-role{font-size:11.5px;color:#3D3A35;margin-top:2px}',
-        /* Shared Dossier Styles for /recap, /transfer & future text modes */
         '.vd-root{font-family:"Spectral",Georgia,serif;color:#111111;background:#FAF8F4;border:1.5px solid #111111;max-width:960px;margin:0 auto;box-shadow:5px 5px 0 rgba(17,17,17,.16);line-height:1.62;user-select:text}',
         '.vd-inner{border:1px solid rgba(17,17,17,.35);margin:4px}',
         '.vd-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;padding:12px 16px;background:#F2EFE8;border-bottom:1.5px solid #111111}',
         '.vd-title{font-family:"Playfair Display","Spectral",Georgia,serif;font-size:17px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;margin:0}',
         '.vd-sub{font-size:11.5px;color:#55524B;margin-top:2px;font-style:italic}',
-        '.vd-actions{display:flex;flex-wrap:wrap;gap:6px}',
         '.vd-body{padding:16px 18px;display:flex;flex-direction:column;gap:14px}',
         '.vd-sec{border:1px solid rgba(17,17,17,.25);background:#FFFFFF}',
-        '.vd-sec-hd{padding:6px 12px;background:#F5F2EA;border-bottom:1px solid rgba(17,17,17,.2);font-family:"Playfair Display","Spectral",Georgia,serif;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;display:flex;align-items:center;justify-content:space-between;gap:8px}',
-        '.vd-sec-hd.is-crimson{color:#8B1E1E;background:#F8F1EE;border-bottom-color:rgba(139,30,30,.25)}',
         '.vd-sec-bd{padding:10px 14px;font-size:13.5px;white-space:pre-wrap;word-break:break-word}',
-        '.vd-sec-bd.vd-md,.vd-details-bd.vd-md{white-space:normal;line-height:1.65}',
-        '.vd-md p{margin:0 0 8px 0}.vd-md p:last-child{margin-bottom:0}',
-        '.vd-md h3,.vd-md h4{font-family:"Playfair Display","Spectral",Georgia,serif;font-weight:700;color:#8B1E1E;margin:10px 0 4px 0;font-size:13px;letter-spacing:.02em}',
-        '.vd-md h3:first-child,.vd-md h4:first-child{margin-top:0}',
-        '.vd-md ul,.vd-md ol{margin:4px 0 8px 0;padding-left:20px}',
-        '.vd-md li{margin-bottom:3px}',
-        '.vd-md li>ul,.vd-md li>ol{margin:2px 0 4px 0}',
-        '.vd-md blockquote{margin:6px 0;padding:6px 10px;border-left:2.5px solid #8B1E1E;background:#FAF8F4;color:#2E2C28;font-style:italic}',
-        '.vd-md pre{margin:6px 0;padding:8px 10px;background:#F5F3EE;border:1px solid rgba(17,17,17,.22);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;line-height:1.48;overflow-x:auto;white-space:pre-wrap;word-break:break-word}',
-        '.vd-md code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;background:#F2EFE8;padding:1px 4px;border:1px solid rgba(17,17,17,.15)}',
-        '.vd-md pre code{background:transparent;padding:0;border:none;font-size:11.5px}',
-        '.vd-md hr{border:none;border-top:1px solid rgba(17,17,17,.22);margin:10px 0}',
-        '.vd-ledger-list{display:flex;flex-direction:column;gap:8px;padding:10px 14px}',
-        '.vd-ledger-item{border-left:2.5px solid #111111;padding:6px 10px;background:#FAF8F4;font-size:13px}',
-        '.vd-ledger-id{font-family:"Playfair Display",Georgia,serif;font-weight:700;color:#8B1E1E;font-size:12px;margin-bottom:3px}',
-        '.vd-raw{width:100%;box-sizing:border-box;min-height:280px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;line-height:1.5;padding:12px;border:1px solid rgba(17,17,17,.35);background:#F5F3EE;color:#111111;resize:vertical}',
-        '.vd-note{padding:10px 16px;background:#F2EFE8;border-top:1px solid #111111;font-size:12px;color:#3D3A35}',
-        '.vd-details{border:1px solid rgba(17,17,17,.25);background:#FAF8F4}',
-        '.vd-details summary{cursor:pointer;padding:7px 12px;font-family:"Playfair Display",Georgia,serif;font-size:12px;font-weight:700;text-transform:uppercase;background:#F2EFE8}',
-        '.vd-details-bd{padding:10px 14px;font-size:12.5px;white-space:pre-wrap;border-top:1px solid rgba(17,17,17,.18)}',
       ].join('\n');
       document.head.appendChild(style);
     }
-  }
-
-  function unescapeScriptClose(str) {
-    return String(str || '').replace(/<\\\/script>/gi, '</script>');
-  }
-
-  function readMarkdownSource(container) {
-    if (typeof global.RP_MARKDOWN === 'string' && global.RP_MARKDOWN.trim()) {
-      return unescapeScriptClose(global.RP_MARKDOWN);
-    }
-    var mdEl =
-      document.getElementById('rp-markdown') ||
-      document.querySelector('script[type="text/markdown"]') ||
-      document.querySelector('textarea[data-rp-markdown]');
-    if (mdEl) {
-      var text = typeof mdEl.value === 'string' ? mdEl.value : mdEl.textContent;
-      if (text && text.trim()) {
-        return unescapeScriptClose(text);
-      }
-    }
-    if (container && container.getAttribute('data-markdown')) {
-      return unescapeScriptClose(container.getAttribute('data-markdown'));
-    }
-    return '';
-  }
-
-  function detectMarkdownMode(md) {
-    var s = String(md || '');
-    if (/##\s*(TRANSFER METADATA|NARRATIVE TRANSFER PACK|CUMULATIVE TRANSFER LEDGER|USER CHARACTER PROFILE LOCK|NEW CHAT RESTORATION PROTOCOL)/i.test(s) || /^```Transfer Pack/m.test(s)) {
-      return 'transfer';
-    }
-    if (/TÓM TẮT DIỄN BIẾN|```Narrative Summary/i.test(s)) {
-      return 'recap';
-    }
-    return 'transfer';
   }
 
   function readInputData(container) {
@@ -192,18 +128,9 @@
       }
     }
 
-    var mdText = readMarkdownSource(container);
     if (!data) data = {};
-
-    if (mdText && typeof data.markdown !== 'string') {
-      data = Object.assign({}, data, { markdown: mdText });
-    }
-    if (!data.mode) {
-      if (attrMode) {
-        data = Object.assign({}, data, { mode: attrMode });
-      } else if (typeof data.markdown === 'string' && data.markdown.trim()) {
-        data = Object.assign({}, data, { mode: detectMarkdownMode(data.markdown) });
-      }
+    if (!data.mode && attrMode) {
+      data = Object.assign({}, data, { mode: attrMode });
     }
     return data;
   }
@@ -236,7 +163,6 @@
     }
     return best;
   }
-
 
   function normalizeNpcStatus(rawStatus) {
     var s = norm(rawStatus || '');
@@ -287,7 +213,7 @@
   }
 
   // ============================================================================
-  // MODE 1: GENERIC MULTI-WORLD MAP RENDERER (ZERO HARDCODED CHARACTER DATA)
+  // GENERIC MULTI-WORLD MAP RENDERER (ZERO HARDCODED CHARACTER DATA)
   // ============================================================================
 
   function resolveWorldForData(raw) {
@@ -295,8 +221,6 @@
     if (requestedId) {
       return WORLDS[requestedId] || null;
     }
-    // Strict isolation: ONLY auto-pick if EXACTLY 1 world pack script was loaded into this page.
-    // Never guess or bleed between multiple worlds!
     var keys = Object.keys(WORLDS);
     if (keys.length === 1) {
       return WORLDS[keys[0]];
@@ -447,7 +371,7 @@
           .join('');
       }
 
-      // 2. Banners & User Location Pin ONLY (no routes, no canvas NPC markers, no tags)
+      // 2. Banners & User Location Pin
       var bannersSvg = scopedLocs
         .map(function (loc) {
           var isPin = activePinLoc && activePinLoc.id === loc.id;
@@ -474,8 +398,13 @@
               '<text text-anchor="middle" y="0.8" font-size="8.8" font-style="italic" fill="' + INK_SOFT + '" font-family="Spectral, Georgia, serif">' + esc(loc.altName) + '</text></g>'
             : '';
 
+          var isLabelOnly = Boolean(loc.labelOnly);
+          var groupOpen = isLabelOnly
+            ? '<g pointer-events="none" transform="translate(' + loc.x + ',' + loc.y + ')">'
+            : '<g class="vm-zone" data-loc-id="' + loc.id + '" transform="translate(' + loc.x + ',' + loc.y + ')">';
+
           return (
-            '<g class="vm-zone" data-loc-id="' + loc.id + '" transform="translate(' + loc.x + ',' + loc.y + ')">' +
+            groupOpen +
             '<g transform="translate(0,6)">' +
             '<path d="M ' + (-half + 6) + ' -6 L ' + (-half - 10) + ' -6 L ' + (-half - 4) + ' 2.5 L ' + (-half - 10) + ' 11 L ' + (-half + 6) + ' 11 Z" fill="#EAE5DB" stroke="' + borderCol + '" stroke-width="1.05" />' +
             '<path d="M ' + (half - 6) + ' -6 L ' + (half + 10) + ' -6 L ' + (half + 4) + ' 2.5 L ' + (half + 10) + ' 11 L ' + (half - 6) + ' 11 Z" fill="#EAE5DB" stroke="' + borderCol + '" stroke-width="1.05" />' +
@@ -492,6 +421,7 @@
         .join('');
 
       var selectedObj = state.selectedLocId ? locById[state.selectedLocId] : null;
+      if (selectedObj && selectedObj.labelOnly) selectedObj = null;
       var inspectorHtml = '';
       if (selectedObj) {
         var selNpcs = npcsByLoc[selectedObj.id] || [];
@@ -585,7 +515,6 @@
         '</div>' +
         '</div>';
 
-      // Bindings
       container.querySelectorAll('[data-scope]').forEach(function (btn) {
         btn.addEventListener('click', function () {
           state.scope = btn.getAttribute('data-scope');
@@ -658,676 +587,8 @@
     };
   }
 
-  // ============================================================================
-  // MODE 2 & 3: SHARED /recap & /transfer (WORKS FOR EVERY CHARACTER / STORY)
-  // ============================================================================
-
-  var RESTORATION_PROTOCOL = [
-    'Treat this Transfer Pack as authoritative continuation state, NOT a new story start.',
-    '',
-    '- RESTORE: Restore the current scene, cumulative event ledger, user profile, chronology, relationships, world state, knowledge boundaries, consequences, and unresolved threads. Never reset established continuity without an established in-world cause.',
-    '- CUMULATIVE MEMORY: Use the carried-forward ledger as the continuity record for earlier transfers. Merge it with the current package and new developments. Do not discard early events merely because they are absent from the latest chat\'s recent context.',
-    '- PROFILE LOCK: Preserve `{{user}}`\'s established character profile. Do not silently alter defining traits, history, abilities, appearance, voice, preferences, or boundaries. Apply only established development or explicit user-authorized changes.',
-    '- EPISTEMIC LOCK: Narrator-level knowledge must not become character knowledge. Preserve sealed information and valid information paths.',
-    '- USER AGENCY: The package does not authorize new `{{user}}` behavior. Only new user input establishes new user-controlled actions, dialogue, thoughts, feelings, intentions, reactions, discoveries, decisions, and consent.',
-    '- STATE RECONCILIATION: The structured package governs the recorded state. `[LAST RESPONSE]` supplies exact immediate context but does not override established state or fill gaps with invented continuity.',
-    '- SEAMLESS RE-ENTRY: Resume directly from `[CURRENT SCENE ANCHOR]`, preserving established style, pacing, characterization, atmosphere, and open interactions. No recap, migration acknowledgment, new opening, or manufactured escalation.',
-    '- UNCERTAINTY: Preserve unresolved contradictions and unsupported details. Ask for clarification only when essential.',
-    '- NORMAL EXECUTION: Continue under all applicable existing system, world, character, style, causality, knowledge, and agency rules. This package does not override higher-priority instructions.'
-  ].join('\n');
-
-  function formatFieldValue(val) {
-    if (val === null || val === undefined) return '';
-    if (Array.isArray(val)) {
-      return val
-        .map(function (item) {
-          if (typeof item === 'string') return item;
-          if (item && typeof item === 'object') {
-            return Object.keys(item)
-              .filter(function (k) { return item[k] !== null && item[k] !== undefined && String(item[k]).trim() !== ''; })
-              .map(function (k) { return '- ' + k + ': ' + item[k]; })
-              .join('\n');
-          }
-          return String(item);
-        })
-        .filter(Boolean)
-        .join('\n');
-    }
-    if (typeof val === 'object') {
-      return Object.keys(val)
-        .filter(function (k) { return val[k] !== null && val[k] !== undefined && String(val[k]).trim() !== ''; })
-        .map(function (k) { return '- ' + k + ': ' + val[k]; })
-        .join('\n');
-    }
-    return String(val).trim();
-  }
-
-  function copyTextToClipboard(text, onDone) {
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(text).then(
-        function () { onDone(true); },
-        function () { fallbackCopy(text, onDone); }
-      );
-    } else {
-      fallbackCopy(text, onDone);
-    }
-  }
-
-  function fallbackCopy(text, onDone) {
-    try {
-      var ta = document.createElement('textarea');
-      ta.value = text;
-      ta.style.position = 'fixed';
-      ta.style.opacity = '0';
-      document.body.appendChild(ta);
-      ta.select();
-      var ok = document.execCommand('copy');
-      document.body.removeChild(ta);
-      onDone(Boolean(ok));
-    } catch (e) {
-      onDone(false);
-    }
-  }
-
-  function renderInlineMd(text) {
-    var tokens = [];
-    var escaped = esc(text).replace(/`([^`\n]+)`/g, function (_, code) {
-      var idx = tokens.length;
-      tokens.push('<code>' + code + '</code>');
-      return '\x00CODE' + idx + '\x00';
-    });
-    escaped = escaped
-      .replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>')
-      .replace(/__([^_\n]+)__/g, '<strong>$1</strong>')
-      .replace(/\*([^*\n]+)\*/g, '<em>$1</em>')
-      .replace(/(^|[\s(])_([^_\n]+)_/g, '$1<em>$2</em>');
-    return escaped.replace(/\x00CODE(\d+)\x00/g, function (_, idx) {
-      return tokens[Number(idx)] || '';
-    });
-  }
-
-  function renderMarkdownHtml(md) {
-    var lines = String(md || '').replace(/\r\n?/g, '\n').split('\n');
-    var out = [];
-    var i = 0;
-
-    function isBlockBoundary(line) {
-      var trimmed = line.trim();
-      return (
-        !trimmed ||
-        /^```/.test(trimmed) ||
-        /^#{1,4}\s+/.test(trimmed) ||
-        /^(-{3,}|\*{3,})$/.test(trimmed) ||
-        /^>\s?/.test(trimmed) ||
-        /^\s*[-*•]\s+/.test(line) ||
-        /^\s*\d+\.\s+/.test(line)
-      );
-    }
-
-    while (i < lines.length) {
-      var line = lines[i];
-      var trimmed = line.trim();
-
-      if (!trimmed) {
-        i++;
-        continue;
-      }
-
-      // Fenced code block
-      if (/^```/.test(trimmed)) {
-        var codeLines = [];
-        i++;
-        while (i < lines.length && !/^```\s*$/.test(lines[i].trim())) {
-          codeLines.push(lines[i]);
-          i++;
-        }
-        if (i < lines.length) i++;
-        out.push('<pre><code>' + esc(codeLines.join('\n')) + '</code></pre>');
-        continue;
-      }
-
-      // Horizontal rule
-      if (/^(-{3,}|\*{3,})$/.test(trimmed)) {
-        out.push('<hr/>');
-        i++;
-        continue;
-      }
-
-      // Headings (h3 / h4)
-      var hMatch = trimmed.match(/^(#{1,4})\s+(.+)$/);
-      if (hMatch) {
-        var tag = hMatch[1].length >= 4 ? 'h4' : 'h3';
-        out.push('<' + tag + '>' + renderInlineMd(hMatch[2]) + '</' + tag + '>');
-        i++;
-        continue;
-      }
-
-      // Blockquote
-      if (/^>\s?/.test(trimmed)) {
-        var bqLines = [];
-        while (i < lines.length && /^>\s?/.test(lines[i].trim())) {
-          bqLines.push(lines[i].trim().replace(/^>\s?/, ''));
-          i++;
-        }
-        out.push('<blockquote>' + renderMarkdownHtml(bqLines.join('\n')) + '</blockquote>');
-        continue;
-      }
-
-      // List (unordered or ordered, supporting 1 level of nesting)
-      if (/^\s*[-*•]\s+/.test(line) || /^\s*\d+\.\s+/.test(line)) {
-        var isOrdered = /^\s*\d+\.\s+/.test(line);
-        var listTag = isOrdered ? 'ol' : 'ul';
-        var itemsHtml = [];
-
-        while (i < lines.length) {
-          var cur = lines[i];
-          var curMatch = isOrdered
-            ? cur.match(/^(\s*)\d+\.\s+(.*)$/)
-            : cur.match(/^(\s*)[-*•]\s+(.*)$/);
-          if (!curMatch) break;
-
-          var baseIndent = curMatch[1].length;
-          var itemParts = [renderInlineMd(curMatch[2])];
-          i++;
-
-          // Collect nested indented sub-items or continuation lines
-          var subLines = [];
-          while (i < lines.length) {
-            var next = lines[i];
-            if (!next.trim()) break;
-            var nextListMatch = next.match(/^(\s*)(?:[-*•]|\d+\.)\s+(.*)$/);
-            if (nextListMatch) {
-              if (nextListMatch[1].length > baseIndent) {
-                subLines.push(next);
-                i++;
-                continue;
-              }
-              break;
-            }
-            if (/^\s{2,}/.test(next) && !isBlockBoundary(next)) {
-              itemParts.push('<br/>' + renderInlineMd(next.trim()));
-              i++;
-              continue;
-            }
-            break;
-          }
-          if (subLines.length) {
-            itemParts.push(renderMarkdownHtml(subLines.join('\n')));
-          }
-          itemsHtml.push('<li>' + itemParts.join('') + '</li>');
-        }
-
-        out.push('<' + listTag + '>' + itemsHtml.join('') + '</' + listTag + '>');
-        continue;
-      }
-
-      // Paragraph
-      var pLines = [line];
-      i++;
-      while (i < lines.length && !isBlockBoundary(lines[i])) {
-        pLines.push(lines[i]);
-        i++;
-      }
-      out.push('<p>' + pLines.map(function (pl) { return renderInlineMd(pl); }).join('<br/>') + '</p>');
-    }
-
-    return out.join('');
-  }
-
-  function countUnclosedFenceLines(lines) {
-    var inFence = false;
-    for (var i = 0; i < lines.length; i++) {
-      var trimmed = lines[i].trim();
-      if (/^```/.test(trimmed)) {
-        if (!inFence) {
-          inFence = true;
-        } else if (/^```\s*$/.test(trimmed)) {
-          inFence = false;
-        }
-      }
-    }
-    return inFence;
-  }
-
-  function unwrapOuterFence(text, fencePattern) {
-    var trimmed = String(text || '').replace(/\r\n?/g, '\n').trim();
-    var lines = trimmed.split('\n');
-    if (lines.length >= 2 && fencePattern.test(lines[0].trim())) {
-      var rest = lines.slice(1);
-      // Remove leading/trailing whitespace lines on rest copy
-      while (rest.length && !rest[rest.length - 1].trim()) rest.pop();
-      if (rest.length && /^```\s*$/.test(rest[rest.length - 1].trim())) {
-        var beforeClose = rest.slice(0, -1);
-        // Only strip the bottom ``` if inner fences are balanced before it
-        if (!countUnclosedFenceLines(beforeClose)) {
-          return { unwrapped: true, inner: beforeClose.join('\n').trim() };
-        }
-      }
-      return { unwrapped: true, inner: rest.join('\n').trim() };
-    }
-    return { unwrapped: false, inner: trimmed };
-  }
-
-  function normalizeTransferMarkdown(rawMd) {
-    var normalized = String(rawMd || '').replace(/\r\n?/g, '\n').trim();
-
-    // Strip instruction preamble if AI accidentally kept "(3) NARRATIVE TRANSFER PACK ... ## EXECUTION RULES"
-    var packHeadingIdx = normalized.search(/^##\s*NARRATIVE TRANSFER PACK\b/im);
-    var fenceStartIdx = normalized.search(/^```Transfer Pack\b/im);
-    var metaHeadingIdx = normalized.search(/^##\s*TRANSFER METADATA\b/im);
-
-    if (packHeadingIdx !== -1 && (fenceStartIdx === -1 || packHeadingIdx < fenceStartIdx)) {
-      normalized = normalized.slice(packHeadingIdx).replace(/^##\s*NARRATIVE TRANSFER PACK\s*\n+/i, '').trim();
-    } else if (fenceStartIdx > 0) {
-      normalized = normalized.slice(fenceStartIdx).trim();
-    } else if (metaHeadingIdx > 0) {
-      normalized = normalized.slice(metaHeadingIdx).trim();
-    }
-
-    // Strip trailing guide blockquote even if outside outer closing fence
-    normalized = normalized
-      .replace(/\n*>\s*__\*\*Hướng dẫn chuyển sinh:\*\*__[^\n]*(?:\n```)?\s*$/i, function (m) {
-        return /\n```\s*$/.test(m) ? '\n```' : '';
-      })
-      .trim();
-
-    var unwrapped = unwrapOuterFence(normalized, /^```(Transfer Pack|markdown|md)?\s*$/i);
-    var inner = unwrapped.inner
-      .replace(/\n*>\s*__\*\*Hướng dẫn chuyển sinh:\*\*__[\s\S]*$/i, '')
-      .trim();
-
-    var copyable = '```Transfer Pack\n' + inner + '\n```';
-    return {
-      copyable: copyable,
-      inner: inner,
-    };
-  }
-
-  function splitMarkdownByH2(md) {
-    var lines = String(md || '').replace(/\r\n?/g, '\n').split('\n');
-    var sections = [];
-    var currentTitle = '';
-    var currentLines = [];
-    var inFence = false;
-
-    for (var i = 0; i < lines.length; i++) {
-      var line = lines[i];
-      var trimmed = line.trim();
-
-      if (/^```/.test(trimmed)) {
-        if (!inFence) {
-          inFence = true;
-        } else if (/^```\s*$/.test(trimmed)) {
-          inFence = false;
-        }
-        currentLines.push(line);
-        continue;
-      }
-
-      if (!inFence) {
-        var h2 = line.match(/^##\s+(.+?)\s*$/);
-        if (h2) {
-          if (currentTitle || currentLines.join('\n').trim()) {
-            sections.push({
-              title: currentTitle,
-              body: currentLines.join('\n').trim(),
-            });
-          }
-          currentTitle = h2[1];
-          currentLines = [];
-          continue;
-        }
-      }
-
-      currentLines.push(line);
-    }
-
-    if (currentTitle || currentLines.join('\n').trim()) {
-      sections.push({
-        title: currentTitle,
-        body: currentLines.join('\n').trim(),
-      });
-    }
-
-    return sections;
-  }
-
-  function buildRecapMarkdown(raw) {
-    if (raw && typeof raw.markdown === 'string' && raw.markdown.trim()) {
-      return String(raw.markdown).trim();
-    }
-    var title = raw.title || 'TÓM TẮT DIỄN BIẾN';
-    var pairs = [
-      ['Current state', raw.currentState],
-      ['Character continuity', raw.characterContinuity],
-      ['Event history', raw.eventHistory],
-      ['Knowledge boundaries', raw.knowledgeBoundaries],
-      ['Ongoing threads', raw.ongoingThreads],
-      ['Micro-continuity', raw.microContinuity],
-      ['Continuity warnings', raw.continuityWarnings],
-    ];
-    var lines = pairs
-      .map(function (p) {
-        var v = formatFieldValue(p[1]);
-        return v ? '* ' + p[0] + ': ' + v : '';
-      })
-      .filter(Boolean);
-    return '### ' + title + '\n\n```Narrative Summary\n' + lines.join('\n') + '\n```';
-  }
-
-  function mountRecapMode(container, raw) {
-    var showRaw = false;
-    var copied = false;
-    var isMarkdownInput = Boolean(raw && typeof raw.markdown === 'string' && raw.markdown.trim());
-    var markdownText = buildRecapMarkdown(raw);
-    var title = raw.title || 'TÓM TẮT DIỄN BIẾN';
-
-    var sections = [
-      { key: 'currentState', label: 'Current State · Trạng thái & Điểm dừng hiện tại', crimson: true },
-      { key: 'characterContinuity', label: 'Character Continuity · Nhân vật & Quan hệ' },
-      { key: 'eventHistory', label: 'Event History · Chuỗi sự kiện tích lũy' },
-      { key: 'knowledgeBoundaries', label: 'Knowledge Boundaries · Ranh giới tri thức' },
-      { key: 'ongoingThreads', label: 'Ongoing Threads · Tuyến đang mở & Chờ {{user}}' },
-      { key: 'microContinuity', label: 'Micro-Continuity · Chi tiết nhỏ & Lời hứa' },
-      { key: 'continuityWarnings', label: 'Continuity Warnings · Cảnh báo & Khoảng trống', crimson: true },
-    ];
-
-    function renderMarkdownRecapBody() {
-      var cleaned = markdownText
-        .replace(/^###\s*TÓM TẮT DIỄN BIẾN\s*\n*/i, '')
-        .trim();
-      var unwrapped = unwrapOuterFence(cleaned, /^```(Narrative Summary|markdown|md)?\s*$/i);
-      return (
-        '<div class="vd-sec">' +
-        '<div class="vd-sec-hd is-crimson"><span>Narrative Summary · Tóm tắt diễn biến</span></div>' +
-        '<div class="vd-sec-bd vd-md">' + renderMarkdownHtml(unwrapped.inner) + '</div>' +
-        '</div>'
-      );
-    }
-
-    function render() {
-      var bodyHtml = showRaw
-        ? '<textarea class="vd-raw" readonly>' + esc(markdownText) + '</textarea>'
-        : isMarkdownInput
-        ? renderMarkdownRecapBody()
-        : sections
-            .map(function (s) {
-              var val = formatFieldValue(raw[s.key]);
-              if (!val) return '';
-              return (
-                '<div class="vd-sec">' +
-                '<div class="vd-sec-hd' + (s.crimson ? ' is-crimson' : '') + '"><span>' + esc(s.label) + '</span></div>' +
-                '<div class="vd-sec-bd">' + esc(val) + '</div>' +
-                '</div>'
-              );
-            })
-            .join('');
-
-      container.innerHTML =
-        '<div class="vd-root"><div class="vd-inner">' +
-        '<div class="vd-head">' +
-        '<div><h2 class="vd-title">· ' + esc(title) + ' ·</h2>' +
-        '<div class="vd-sub">Storyline Recap [HARD_LOCK] · Dùng chung cho mọi nhân vật</div></div>' +
-        '<div class="vd-actions">' +
-        '<button type="button" data-action="toggle-raw" class="vm-btn vm-btn-outline">' + (showRaw ? 'Xem bản khắc mực' : 'Xem Markdown thô') + '</button>' +
-        '<button type="button" data-action="copy-md" class="vm-btn is-active">' + (copied ? '✓ Đã sao chép Markdown' : 'Sao chép Markdown nguyên bản') + '</button>' +
-        '</div></div>' +
-        '<div class="vd-body">' + bodyHtml + '</div>' +
-        '</div></div>';
-
-      var rawBtn = container.querySelector('[data-action="toggle-raw"]');
-      if (rawBtn) rawBtn.addEventListener('click', function () { showRaw = !showRaw; render(); });
-      var copyBtn = container.querySelector('[data-action="copy-md"]');
-      if (copyBtn) {
-        copyBtn.addEventListener('click', function () {
-          copyTextToClipboard(markdownText, function (ok) {
-            copied = ok;
-            render();
-            if (ok) setTimeout(function () { copied = false; render(); }, 2000);
-          });
-        });
-      }
-    }
-    render();
-  }
-
-  function buildTransferMarkdown(raw) {
-    var parts = ['```Transfer Pack'];
-    var meta = raw.metadata;
-    if (meta) {
-      parts.push('## TRANSFER METADATA');
-      if (typeof meta === 'string') {
-        parts.push(meta.trim());
-      } else {
-        if (meta.sequence) parts.push('- Transfer sequence / package version: ' + meta.sequence);
-        if (meta.previousRef) parts.push('- Previous Transfer Pack or ledger reference: ' + meta.previousRef);
-        if (meta.timelineCoverage) parts.push('- Timeline coverage: ' + meta.timelineCoverage);
-        if (meta.gaps) parts.push('- Known history gaps or unresolved discrepancies: ' + meta.gaps);
-      }
-      parts.push('');
-    }
-
-    var textSections = [
-      ['## USER CHARACTER PROFILE LOCK', raw.userProfileLock],
-      ['## CURRENT TIME, LOCATION & SCENE', raw.currentScene],
-      ['## CURRENT CHARACTER & RELATIONSHIP STATES', raw.characterStates],
-      ['## WORLD, RESOURCES & ACTIVE PRESSURES', raw.worldPressures],
-      ['## KNOWLEDGE & SEALED CONTINUITY', raw.knowledgeSealed],
-      ['## MICRO-CONTINUITY', raw.microContinuity],
-      ['## ACTIVE THREADS & PENDING COMMITMENTS', raw.activeThreads],
-    ];
-    textSections.forEach(function (pair) {
-      var val = formatFieldValue(pair[1]);
-      if (val) { parts.push(pair[0]); parts.push(val); parts.push(''); }
-    });
-
-    if (raw.cumulativeLedger) {
-      parts.push('## CUMULATIVE TRANSFER LEDGER [HARD_LOCK]');
-      if (Array.isArray(raw.cumulativeLedger)) {
-        raw.cumulativeLedger.forEach(function (ev) {
-          if (typeof ev === 'string') { parts.push('- ' + ev); return; }
-          var head = (ev.id ? ev.id : 'EVENT') + (ev.time ? ' / ' + ev.time : '');
-          parts.push('- **' + head + '**');
-          if (ev.whereWho) parts.push('  - Location & participants: ' + ev.whereWho);
-          if (ev.event) parts.push('  - Established event & causal context: ' + ev.event);
-          if (ev.changes) parts.push('  - Decisions, discoveries, or changes: ' + ev.changes);
-          if (ev.knowledge) parts.push('  - Knowledge updates: ' + ev.knowledge);
-          if (ev.consequences) parts.push('  - Persistent consequences & status: ' + ev.consequences);
-        });
-      } else {
-        parts.push(formatFieldValue(raw.cumulativeLedger));
-      }
-      parts.push('');
-    }
-
-    var tailSections = [
-      ['## PERSISTENT CONSEQUENCES & CONTINUITY WARNINGS', raw.persistentWarnings],
-      ['## CURRENT SCENE ANCHOR', raw.sceneAnchor],
-      ['## LAST VALID USER INPUT', raw.lastUserInput],
-    ];
-    tailSections.forEach(function (pair) {
-      var val = formatFieldValue(pair[1]);
-      if (val) { parts.push(pair[0]); parts.push(val); parts.push(''); }
-    });
-
-    parts.push('---');
-    parts.push('');
-    parts.push('## NEW CHAT RESTORATION PROTOCOL [ABSOLUTE]');
-    parts.push('```Restoration Protocol');
-    parts.push(RESTORATION_PROTOCOL);
-    parts.push('```');
-    parts.push('---');
-    parts.push('');
-    parts.push('## [LAST RESPONSE]');
-    parts.push(formatFieldValue(raw.lastResponse) || 'Unavailable in accessible context.');
-    parts.push('');
-    parts.push('---');
-    parts.push('');
-    parts.push('## [USER RESPONSE]');
-    parts.push('[Write your next action or dialogue here. This placeholder is not an established action.]');
-    parts.push('```');
-    return parts.join('\n');
-  }
-
-  function mountTransferMode(container, raw) {
-    var showRaw = false;
-    var copied = false;
-    var isMarkdownInput = Boolean(raw && typeof raw.markdown === 'string' && raw.markdown.trim());
-    var mdPack = isMarkdownInput ? normalizeTransferMarkdown(raw.markdown) : null;
-    var markdownText = mdPack ? mdPack.copyable : buildTransferMarkdown(raw);
-
-    var orderedSections = [
-      { key: 'userProfileLock', label: 'USER CHARACTER PROFILE LOCK · Hồ sơ {{user}}' },
-      { key: 'currentScene', label: 'CURRENT TIME, LOCATION & SCENE · Bối cảnh hiện tại', crimson: true },
-      { key: 'characterStates', label: 'CURRENT CHARACTER & RELATIONSHIP STATES · Nhân vật & Quan hệ' },
-      { key: 'worldPressures', label: 'WORLD, RESOURCES & ACTIVE PRESSURES · Thế giới & Tài nguyên' },
-      { key: 'knowledgeSealed', label: 'KNOWLEDGE & SEALED CONTINUITY · Tri thức & Niêm phong' },
-      { key: 'microContinuity', label: 'MICRO-CONTINUITY · Chi tiết nhỏ & Lời hứa' },
-      { key: 'activeThreads', label: 'ACTIVE THREADS & PENDING COMMITMENTS · Tuyến đang mở' },
-    ];
-
-    function renderLedgerHtml() {
-      if (!raw.cumulativeLedger) return '';
-      if (Array.isArray(raw.cumulativeLedger)) {
-        if (!raw.cumulativeLedger.length) return '';
-        var items = raw.cumulativeLedger
-          .map(function (ev) {
-            if (typeof ev === 'string') return '<div class="vd-ledger-item">' + esc(ev) + '</div>';
-            var lines = [];
-            if (ev.whereWho) lines.push('<strong>Địa điểm & Nhân vật:</strong> ' + esc(ev.whereWho));
-            if (ev.event) lines.push('<strong>Sự kiện:</strong> ' + esc(ev.event));
-            if (ev.changes) lines.push('<strong>Quyết định / Thay đổi:</strong> ' + esc(ev.changes));
-            if (ev.knowledge) lines.push('<strong>Tri thức:</strong> ' + esc(ev.knowledge));
-            if (ev.consequences) lines.push('<strong>Hệ quả:</strong> ' + esc(ev.consequences));
-            return (
-              '<div class="vd-ledger-item">' +
-              '<div class="vd-ledger-id">' + esc((ev.id || 'EVENT') + (ev.time ? ' · ' + ev.time : '')) + '</div>' +
-              '<div>' + lines.join('<br/>') + '</div></div>'
-            );
-          })
-          .join('');
-        return '<div class="vd-sec"><div class="vd-sec-hd"><span>CUMULATIVE TRANSFER LEDGER [HARD_LOCK]</span></div><div class="vd-ledger-list">' + items + '</div></div>';
-      }
-      var strVal = formatFieldValue(raw.cumulativeLedger);
-      return strVal ? '<div class="vd-sec"><div class="vd-sec-hd"><span>CUMULATIVE TRANSFER LEDGER [HARD_LOCK]</span></div><div class="vd-sec-bd">' + esc(strVal) + '</div></div>' : '';
-    }
-
-    function isCrimsonTransferHeading(title) {
-      var up = String(title || '').toUpperCase();
-      return (
-        up.indexOf('CURRENT TIME') !== -1 ||
-        up.indexOf('PERSISTENT CONSEQUENCES') !== -1 ||
-        up.indexOf('CURRENT SCENE ANCHOR') !== -1
-      );
-    }
-
-    function renderTransferSectionsFromMarkdown() {
-      var parsed = splitMarkdownByH2(mdPack.inner);
-      if (!parsed.length) {
-        return (
-          '<div class="vd-sec"><div class="vd-sec-hd"><span>NARRATIVE TRANSFER PACK</span></div>' +
-          '<div class="vd-sec-bd vd-md">' + renderMarkdownHtml(mdPack.inner) + '</div></div>'
-        );
-      }
-      return parsed
-        .map(function (sec) {
-          var cleanBody = sec.body
-            .replace(/^\s*-{3,}\s*\n+/, '')
-            .replace(/\n*-{3,}\s*$/, '')
-            .trim();
-          var upperTitle = String(sec.title || '').toUpperCase();
-
-          if (upperTitle.indexOf('NEW CHAT RESTORATION PROTOCOL') !== -1) {
-            var protoUnwrapped = unwrapOuterFence(cleanBody, /^```(Restoration Protocol)?\s*$/i);
-            return (
-              '<details class="vd-details"><summary>' + esc(sec.title) + ' (đã giữ nguyên khi sao chép)</summary>' +
-              '<div class="vd-details-bd vd-md">' + renderMarkdownHtml(protoUnwrapped.inner || RESTORATION_PROTOCOL) + '</div></details>'
-            );
-          }
-
-          if (!cleanBody && upperTitle.indexOf('USER RESPONSE') === -1) return '';
-
-          var displayTitle = sec.title || 'NARRATIVE TRANSFER PACK';
-          var crimson = isCrimsonTransferHeading(displayTitle);
-          return (
-            '<div class="vd-sec">' +
-            '<div class="vd-sec-hd' + (crimson ? ' is-crimson' : '') + '"><span>' + esc(displayTitle) + '</span></div>' +
-            '<div class="vd-sec-bd vd-md">' + renderMarkdownHtml(cleanBody || '_Sẵn sàng nhập phản hồi tiếp theo sau khi dán sang chat mới._') + '</div>' +
-            '</div>'
-          );
-        })
-        .join('');
-    }
-
-    function render() {
-      var bodyHtml = '';
-      if (showRaw) {
-        bodyHtml = '<textarea class="vd-raw" readonly>' + esc(markdownText) + '</textarea>';
-      } else if (isMarkdownInput && mdPack) {
-        bodyHtml = renderTransferSectionsFromMarkdown();
-      } else {
-        var metaVal = formatFieldValue(raw.metadata);
-        var metaHtml = metaVal ? '<div class="vd-sec"><div class="vd-sec-hd"><span>TRANSFER METADATA</span></div><div class="vd-sec-bd">' + esc(metaVal) + '</div></div>' : '';
-        var midHtml = orderedSections
-          .map(function (s) {
-            var val = formatFieldValue(raw[s.key]);
-            return val ? '<div class="vd-sec"><div class="vd-sec-hd' + (s.crimson ? ' is-crimson' : '') + '"><span>' + esc(s.label) + '</span></div><div class="vd-sec-bd">' + esc(val) + '</div></div>' : '';
-          })
-          .join('');
-        var ledgerHtml = renderLedgerHtml();
-        var tailSpecs = [
-          { key: 'persistentWarnings', label: 'PERSISTENT CONSEQUENCES & CONTINUITY WARNINGS', crimson: true },
-          { key: 'sceneAnchor', label: 'CURRENT SCENE ANCHOR · Điểm neo tiếp nối', crimson: true },
-          { key: 'lastUserInput', label: 'LAST VALID USER INPUT' },
-          { key: 'lastResponse', label: '[LAST RESPONSE] · Nguyên văn phản hồi AI liền trước' },
-        ];
-        var tailHtml = tailSpecs
-          .map(function (s) {
-            var val = formatFieldValue(raw[s.key]);
-            if (!val && s.key !== 'lastResponse') return '';
-            return '<div class="vd-sec"><div class="vd-sec-hd' + (s.crimson ? ' is-crimson' : '') + '"><span>' + esc(s.label) + '</span></div><div class="vd-sec-bd">' + esc(val || 'Unavailable in accessible context.') + '</div></div>';
-          })
-          .join('');
-        var protoHtml =
-          '<details class="vd-details"><summary>NEW CHAT RESTORATION PROTOCOL [ABSOLUTE] (đã tự nhúng khi sao chép)</summary>' +
-          '<div class="vd-details-bd">' + esc(RESTORATION_PROTOCOL) + '</div></details>';
-        bodyHtml = metaHtml + midHtml + ledgerHtml + tailHtml + protoHtml;
-      }
-
-      container.innerHTML =
-        '<div class="vd-root"><div class="vd-inner">' +
-        '<div class="vd-head">' +
-        '<div><h2 class="vd-title">· NARRATIVE TRANSFER PACK · /TRANSFER ·</h2>' +
-        '<div class="vd-sub">Dùng chung cho mọi nhân vật · Tự động đính kèm Restoration Protocol & [USER RESPONSE]</div></div>' +
-        '<div class="vd-actions">' +
-        '<button type="button" data-action="toggle-raw" class="vm-btn vm-btn-outline">' + (showRaw ? 'Xem bản khắc mực' : 'Xem Markdown thô') + '</button>' +
-        '<button type="button" data-action="copy-md" class="vm-btn is-active">' + (copied ? '✓ Đã sao chép Transfer Pack' : 'Sao chép Transfer Pack (New Chat)') + '</button>' +
-        '</div></div>' +
-        '<div class="vd-body">' + bodyHtml + '</div>' +
-        '<div class="vd-note"><strong>Hướng dẫn chuyển sinh:</strong> Bấm nút <strong>Sao chép Transfer Pack (New Chat)</strong> ở góc trên, mở chat mới bằng nút <code>+ (new chat)</code>, dán toàn bộ vào ô nhập, điền tiếp phản hồi của bạn dưới phần <code>[USER RESPONSE]</code> rồi gửi.</div>' +
-        '</div></div>';
-
-      var rawBtn = container.querySelector('[data-action="toggle-raw"]');
-      if (rawBtn) rawBtn.addEventListener('click', function () { showRaw = !showRaw; render(); });
-      var copyBtn = container.querySelector('[data-action="copy-md"]');
-      if (copyBtn) {
-        copyBtn.addEventListener('click', function () {
-          copyTextToClipboard(markdownText, function (ok) {
-            copied = ok;
-            render();
-            if (ok) setTimeout(function () { copied = false; render(); }, 2200);
-          });
-        });
-      }
-    }
-    render();
-  }
-
-  // Register built-in modes
+  // Register built-in map mode
   MODES.map = mountMapMode;
-  MODES.recap = mountRecapMode;
-  MODES.transfer = mountTransferMode;
-  MODES.chuyensinh = mountTransferMode;
 
   function findMountTarget(targetSelector) {
     if (typeof targetSelector === 'string') return document.querySelector(targetSelector);
@@ -1354,7 +615,7 @@
   }
 
   var api = {
-    version: '3.0.0',
+    version: '3.1.0',
     mount: mountApp,
     remount: function () {
       var t = findMountTarget();
@@ -1376,7 +637,7 @@
   };
 
   global.RPEngine = api;
-  global.ValerothMap = api; // Legacy alias
+  global.ValerothMap = api;
 
   function autoBoot() {
     api._booted = true;
